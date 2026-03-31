@@ -18,7 +18,7 @@ const SearchBar = () => {
     <div>
       SearchBar
       <input type="text" onChange={searchAlbum} />
-      <button onClick={() => callApi(searcTerm)}>Search</button>
+      <button onClick={() => callApi(searchTerm)}>Search</button>
     </div>
   );
 };
