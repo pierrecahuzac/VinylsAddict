@@ -1,0 +1,33 @@
+services:
+  app:
+    build: ./app
+    ports:
+      - "55173:55173"
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+  api:
+    build: ./api
+    ports:
+      - "33000:33000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/vinyls_addict
+      - PORT=33000
+    volumes:
+      - ./api:/api
+      - /api/node_modules
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: vinyls_addict
+      DATABASE_URL: postgresql://postgres:password@db:5432/vinyls_addict
+      
+    ports:
+      - "55432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql
+volumes:
+  db_data:    
+      
