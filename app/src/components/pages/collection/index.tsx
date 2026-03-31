@@ -1,10 +1,18 @@
 import Header from "../../header";
-
+import '../../../styles/collection.scss'
+import Thumbnail from "../../thumbnail";
 const Collection = () => {
   return (
-    <div>
+    <div className="collection">
+     <h1>Vinyles addict</h1> 
       <Header />
-     <h1>Ma collection</h1> 
+     <div className="collection_list">
+      <Thumbnail /> 
+      <Thumbnail /> 
+      <Thumbnail /> 
+      <Thumbnail /> 
+      <Thumbnail /> 
+     </div>
     </div>
   );
 };

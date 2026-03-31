@@ -1,0 +1,21 @@
+.collection {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  &_list {
+    width: 90%;
+    margin: auto;
+  }
+}
+
+@media screen and (min-width: 480px) {
+  .collection {
+    display: flex;
+    background-color: red;
+    justify-content: flex-start;
+    
+  }
+}
