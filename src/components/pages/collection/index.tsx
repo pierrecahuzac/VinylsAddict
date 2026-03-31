@@ -1,4 +1,4 @@
-import Header from "../../hearder";
+import Header from "../../header";
 
 const Collection = () => {
   return (
