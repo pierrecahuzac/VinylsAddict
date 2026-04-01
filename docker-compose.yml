@@ -1,5 +1,6 @@
 services:
   app:
+    container_name: app
     build: ./app
     ports:
       - "55173:55173"
@@ -7,17 +8,21 @@ services:
       - ./app:/app
       - /app/node_modules
   api:
+    container_name: api
     build: ./api
     ports:
       - "33000:33000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:password@db:5432/vinyls_addict
-      - PORT=33000
+    env_file:
+      - .env
+    # environment:
+    #   - DATABASE_URL=postgresql://postgres:password@db:5432/vinyls_addict
+    #   - PORT=33000
     volumes:
       - ./api:/api
       - /api/node_modules
   db:
-    image: postgres:latest
+    container_name: db
+    image: postgres:18.3-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -28,6 +33,17 @@ services:
       - "55432:5432"
     volumes:
       - db_data:/var/lib/postgresql
+  prisma-studio:
+    container_name: prisma-studio
+    build: ./api # On utilise le même contexte que l'API
+    command: npx prisma studio --port 5555 --browser none
+    environment:
+      - POSTGRES_URL=postgresql://postgres:password@db:5432/vinyls_addict
+    ports:
+      - "55555:5555"
+    volumes:
+      - ./api:/api
+    working_dir: /api
 volumes:
   db_data:    
       
