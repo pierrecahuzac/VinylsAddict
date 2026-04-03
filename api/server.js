@@ -1,6 +1,6 @@
 import express from "express";
 import pkg from "@prisma/client";
-
+import GenreController from "./controllers/genre.controller.js";
 const { PrismaClient } = pkg;
 
 const app = express();
@@ -26,6 +26,12 @@ app.post("/setup-test", async (req, res) => {
   }
 });
 
+app.get("/genres", async (req, res) => {
+  console.log(req, res);  
+  const result = await GenreController.getAllGenres(req, res);
+  console.log(result);
+});
+
 app.get("/users", async (req, res) => {
   const users = await prisma.user.findMany();
   res.json(users);
@@ -34,5 +40,3 @@ app.get("/users", async (req, res) => {
 app.listen(port, () => {
   console.log(`API lancée sur le port ${port}`);
 });
-
-

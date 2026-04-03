@@ -1,5 +1,5 @@
 
-import Collection from './components/pages/collection'
+import Collection from './pages/collection'
 import Thumbnail from './components/thumbnail'
 import './App.scss'
 import SearchBar from './components/searchBar'
