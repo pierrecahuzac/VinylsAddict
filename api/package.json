@@ -6,13 +6,18 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node --loader ts-node/esm prisma/seed.ts"
   },
+  "prisma": {
+  "seed": "ts-node prisma/seed.ts"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.33.0",
   "dependencies": {
+    "@prisma/adapter-pg": "^7.6.0",
     "@prisma/client": "^6.4.1",
     "axios": "^1.14.0",
     "dotenv": "^17.3.1",
@@ -20,7 +25,10 @@
   },
   "devDependencies": {
     "@prisma/config": "^7.6.0",
+    "@types/node": "^25.5.0",
     "prisma": "6.4.1",
-    "tsx": "^4.21.0"
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
   }
 }

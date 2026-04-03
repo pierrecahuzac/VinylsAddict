@@ -17,6 +17,7 @@ model User {
   id     Int     @id @default(autoincrement())
   email  String  @unique
   name   String?
+  password String
   albums Album[]
 }
 
@@ -30,13 +31,13 @@ model Album {
   condition   String
   userId      Int
   user        User    @relation(fields: [userId], references: [id])
-  tags        Tag[]   @relation("AlbumTags")
+  genres       Genre[]   @relation("AlbumGenres")
 }
 
-model Tag {
+model Genre {
   id       Int      @id @default(autoincrement())
   name     String   @unique
-  albums   Album[]  @relation("AlbumTags")
+  albums   Album[]  @relation("AlbumGenres")
 }
 
 

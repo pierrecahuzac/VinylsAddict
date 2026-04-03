@@ -13,7 +13,7 @@ services:
     ports:
       - "33000:33000"
     env_file:
-      - .env
+      - ./api/.env
     # environment:
     #   - DATABASE_URL=postgresql://postgres:password@db:5432/vinyls_addict
     #   - PORT=33000

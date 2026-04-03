@@ -1,0 +1,35 @@
+{
+    "genres": [
+        {
+            "name": "rock"
+          
+        },
+        {
+            "name": "pop"
+        },
+        {
+            "name": "jazz"
+        },
+        {
+            "name": "hip-hop"
+        },
+        {
+            "name": "classical"
+        },
+        {
+            "name": "electronic"
+        },
+        {
+            "name": "blues"
+        },
+        {
+            "name": "country"
+        },
+        {
+            "name": "reggae"
+        },
+        {
+            "name": "metal"
+        }
+    ]
+}
