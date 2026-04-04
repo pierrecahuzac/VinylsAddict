@@ -54,10 +54,10 @@ const Usercontroller = {
         expiresIn: "1h",
       });
       res.cookie("va_token", jwtToken, {
-        httpOnly: true, // INTERDIT l'accès au token via document.cookie en JS
-        secure: process.env.NODE_ENV === "prod" ? true : false, // Uniquement via HTTPS (en prod)
-        sameSite: process.env.NODE_ENV === "strict", // Empêche les attaques CSRF
-        maxAge: 3600000, // 1 heure
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "prod", 
+        sameSite: "lax", 
+        maxAge: 3600000, 
       });
       return res
         .status(200)
@@ -67,28 +67,46 @@ const Usercontroller = {
       return res.status(500).json({ error: error.message });
     }
   },
+  logout: (req, res) => {
+    res.clearCookie("va_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "prod",
+      sameSite: "lax",
+    });
+    return res
+      .status(200)
+      .json({ message: "Logout successful", isLogged: false });
+  },
   checkToken: async (req, res) => {
-    const token = req.headers.cookie.replace("va_token=", "");
+    const token = req.cookies.va_token;
+    if (!token) return res.status(401).json({ isLogged: false });
 
-    console.log(token);
-
-    const tokenVerified = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("tokenVerified", tokenVerified);
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     try {
-      const userIsdConnected = await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: {
-          id: tokenVerified.userId,
+          id: decodedToken.userId,
         },
       });
-      if (userIsdConnected) {
-        delete userIsdConnected.password;
-        return res.status(200).json({ user: userIsdConnected, isLogged: true });
+      if(!user){
+        return res.status(404).json({ message: "User not found", isLogged: false });
+      }
+      if (user) {
+        delete user.password;
+        return res.status(200).json({ user: user, isLogged: true });
       } else {
         return res.status(401).json({ message: "Unauthorized" });
       }
     } catch (error) {
-      console.log(error);
+   
+    if (error.response?.status !== 401) {
+      console.error("Erreur technique :", error);
+    } else {
+      console.log("Visiteur anonyme (OK)");
     }
+  } finally {
+    setIsLoading(false);
+  }
   },
 };
 

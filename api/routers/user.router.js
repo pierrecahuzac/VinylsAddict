@@ -5,6 +5,7 @@ const UserRouter = Router();
 
 
 UserRouter.post('/login', UserController.login);
+UserRouter.post('/logout', UserController.logout);
 UserRouter.post('/signup', UserController.signup);
 UserRouter.get('/checkToken', UserController.checkToken);
 

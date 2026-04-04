@@ -20,7 +20,7 @@ interface UserContextType {
   login: (e: React.FormEvent) => Promise<void>;
   checkToken: () => Promise<void>;
   signup: (e: React.FormEvent) => Promise<void>;
-  setModaleSignup: (value: boolean) => void;    
+  setModaleSignup: (value: boolean) => void;
 
   modaleLogin: boolean;
   setModaleLogin: (value: boolean) => void;
@@ -31,6 +31,8 @@ interface UserContextType {
   passwordConfirmation: string;
   setPasswordConfirmation: (passwordConfirmation: string) => void;
   modaleSignup: boolean;
+  setUser: (user: any) => void;
+  setUserIslogged: (isLogged: boolean) => void;
 }
 
 // 1. On crée le contexte vide au départ
@@ -59,7 +61,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setUserIslogged(true);
       }
     } catch (error) {
-      console.log("Non connecté");
+      if (error.response?.status !== 401) {
+        console.error("Erreur technique :", error);
+      } else {
+        console.log("Visiteur anonyme (OK)");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -117,6 +123,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setPassword,
     passwordConfirmation,
     setPasswordConfirmation,
+    setUser,
+    setUserIslogged,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

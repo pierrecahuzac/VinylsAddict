@@ -1,8 +1,10 @@
 import express from "express";
 import mainRouter from "./routers/index.js";
 import cors  from 'cors'
+import cookieParser from 'cookie-parser';
 
 const app = express();
+app.use(cookieParser());
 const CORS = {
   origin: 'http://192.168.1.181:55173', // Remplacez par l'origine de votre frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes HTTP autorisées
