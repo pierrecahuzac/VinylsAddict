@@ -1,3 +1,5 @@
+import prisma from "../database/prismaClient.js";
+
 const GenreController = {
   getAllGenres: async (req, res) => {
     try {

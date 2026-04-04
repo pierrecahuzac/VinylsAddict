@@ -4,7 +4,7 @@ import Blackbraid from "../../assets/img/blackbraid3_front.jpg";
 import "../../styles/thumbnail.scss";
 const Thumbnail = () => {
   return (
-    <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+    <div style={{ display: "flex", gap: "2rem", marginBottom: "3rem" }}>
       <div className="thumbnail">
         <img src={SAOR} alt="" className="thumbnail_image" />
       </div>

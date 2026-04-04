@@ -7,10 +7,12 @@ import Thumbnail from "../../components/thumbnail";
 import "../../styles/collection.scss";
 
 const Collection = () => {
+  const [genres, setGenres] = useState([]);
   const getAllGenres = async () => {
-
     try {
-      const result = await axios.get("http://192.168.1.181:30000/genres");
+      const result = await axios.get("http://192.168.1.181:33000/api/genres");
+      setGenres(result.data);
+
       console.log(result);
     } catch (error) {
       console.error(error);
@@ -18,7 +20,7 @@ const Collection = () => {
   };
   const fetchAlbums = async () => {
     try {
-      const result = await axios.get("http://localhost:30000/albums");
+      const result = await axios.get("http://localhost:33000/albums");
       console.log(result);
     } catch (error) {
       console.error(error);
@@ -36,15 +38,16 @@ const Collection = () => {
   ): Promise<void> => {
     e.preventDefault();
     try {
-      const result = await axios.post("http://localhost:30000/albums", {});
+      const result = await axios.post("http://localhost:33000/albums", {});
       console.log(result);
     } catch (error) {
       console.error(error);
     }
   };
+  const title = "Vinyles addict";
   return (
     <div className="collection">
-      <h1>Vinyles addict</h1>
+      <h1>{title.toUpperCase()}</h1>
       <Header />
       <div className="collection_list">
         <Thumbnail />
@@ -66,9 +69,11 @@ const Collection = () => {
             <input type="text" placeholder="Année" />
             <select name="genre" id="">
               <option value="">Sélectionner un genre</option>
-              <option value="rock">Rock</option>
-              <option value="jazz">Jazz</option>
-              <option value="classique">Classique</option>
+              {genres.map((genre: { id: string; name: string }) => (
+                <option key={genre.id} value={genre.name}>
+                  {genre.name}
+                </option>
+              ))}
             </select>
             <input type="text" placeholder="Prix" />
             <button type="submit">Ajouter</button>
