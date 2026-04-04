@@ -1,12 +1,28 @@
-
 import SearchBar from "../searchBar";
-import { useUser } from "../../hooks/useUser";
 
+import { useUser } from "../../contexts/userContext";
 import "../../styles/header.scss";
 
 const Header = () => {
-  const { email, setEmail, password, setPassword, passwordConfirmation, setPasswordConfirmation, modaleLogin, setModaleLogin, modaleSignup, setModaleSignup, user, setUser, userIsLogged, setUserIslogged, login, signup } = useUser();
-  
+  const {
+    email,
+    setEmail,
+    user,
+    userIsLogged,
+    login,
+    signup,
+    setModaleSignup,
+    modaleLogin,
+    setModaleLogin,
+    password,
+    setPassword,
+    username,
+    setUsername,
+    passwordConfirmation,
+    setPasswordConfirmation,
+    modaleSignup,
+  } = useUser();
+
   const openLogin = () => {
     setModaleSignup(false); // Ferme la modale d'inscription si elle est ouverte
     // Ici tu peux ouvrir une modale de connexion ou rediriger vers une page de connexion
@@ -18,15 +34,22 @@ const Header = () => {
     setModaleSignup(true);
   };
   const title = "Vinyles addict";
+
+
   return (
     <header className="header">
       <h1>{title.toUpperCase()}</h1>
       {userIsLogged ? (
-        <div>Bienvenue, {user?.name}!</div>
+        <div>Bienvenue, {user?.username}!</div>
       ) : (
         <div className="auth-buttons">
-          <div  className="auth-buttons-login" onClick={openLogin}>Connexion </div> /  
-          <div className="auth-buttons-signup" onClick={openSubmit}>Créer un compte</div>
+          <div className="auth-buttons-login" onClick={openLogin}>
+            Connexion{" "}
+          </div>{" "}
+          /
+          <div className="auth-buttons-signup" onClick={openSubmit}>
+            Créer un compte
+          </div>
         </div>
       )}
       <SearchBar />
@@ -39,6 +62,7 @@ const Header = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
             <input
               type="password"
               placeholder="Mot de passe"
@@ -60,6 +84,12 @@ const Header = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Nom d'utilisateur"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
             <input
               type="password"

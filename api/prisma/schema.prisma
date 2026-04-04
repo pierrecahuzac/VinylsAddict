@@ -14,30 +14,28 @@ datasource db {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  email  String  @unique
-  name   String?
+  id       String  @id @default(uuid())
+  email    String  @unique
+  username     String?
   password String
-  albums Album[]
+  albums   Album[]
 }
 
 model Album {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(uuid())
   title       String
   artist      String
   releaseDate Int?
   genre       String
   coverUrl    String?
   condition   String
-  userId      Int
+  userId      String
   user        User    @relation(fields: [userId], references: [id])
-  genres       Genre[]   @relation("AlbumGenres")
+  genres      Genre[] @relation("AlbumGenres")
 }
 
 model Genre {
-  id       Int      @id @default(autoincrement())
-  name     String   @unique
-  albums   Album[]  @relation("AlbumGenres")
+  id     String  @id @default(uuid())
+  name   String  @unique
+  albums Album[] @relation("AlbumGenres")
 }
-
-
