@@ -1,12 +1,18 @@
 .collection {
   display: flex;
   flex-direction: column;
-  max-width: 100%;
+  width: 100%;
+  min-height: 100vh;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
   &_list {
-    width: 90%;
+    width: 100%;
+    justify-content: center;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 1rem;
     margin: auto;
   }
 }
@@ -14,9 +20,8 @@ h1 {
   font-size: 20px;
   text-align: center;
   letter-spacing: 1rem;
-
 }
-.modale_add_new_album{
+.modale_add_new_album {
   position: fixed;
   bottom: 0;
   left: 0;
@@ -32,6 +37,5 @@ h1 {
     display: flex;
     background-color: red;
     justify-content: flex-start;
-    
   }
 }

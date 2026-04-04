@@ -4,7 +4,7 @@ const GenreRouter = Router();
 
 
 
-GenreRouter.get('/genres', GenreController.getAllGenres);
+GenreRouter.get('/getAll', GenreController.getAllGenres);
 
 
 

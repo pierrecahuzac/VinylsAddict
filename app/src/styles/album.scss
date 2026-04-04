@@ -1,0 +1,30 @@
+.album {
+  display: flex;
+  flex-direction: column;
+  width: 140px;
+  height: 190px;
+  margin: 1rem;
+  
+
+  display: flex;
+  
+  overflow: hidden;
+
+  &_image {
+    width: 140px;
+    height: 140px;
+    min-width: 140px;
+    min-height: 140px;
+    border-radius: 15px;
+    border-bottom-left-radius: 15px;
+    object-fit: cover;
+  }
+  &_infos {
+    width: 100%;
+    background-color: transparent;
+    color: #b6b6b6;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: left;
+  }
+}
