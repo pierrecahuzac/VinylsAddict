@@ -1,6 +1,6 @@
 
-import Collection from './components/pages/collection'
-import Thumbnail from './components/thumbnail'
+import Collection from './pages/collection'
+import Thumbnail from './components/album'
 import './App.scss'
 import SearchBar from './components/searchBar'
 import { Route, Routes } from 'react-router-dom'

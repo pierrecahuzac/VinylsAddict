@@ -1,35 +1,19 @@
 import express from "express";
-import pkg from "@prisma/client";
-
-const { PrismaClient } = pkg;
+import mainRouter from "./routers/index.js";
+import cors  from 'cors'
 
 const app = express();
-const prisma = new PrismaClient();
+cors({
+  origin: 'http://192.168.1.181:55173', // Remplacez par l'origine de votre frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Méthodes HTTP autorisées
+  allowedHeaders: ['Content-Type', 'Authorization'], // En-têtes autorisés
+}); 
+ 
+app.use(cors());
 const port = process.env.PORT || 33000;
 
 app.use(express.json());
-app.get("/", (req, res) => {
-  res.send("Bienvenue sur l'API de Vinyls Addict !");
-});
-// Route de test pour créer un utilisateur et voir si la DB répond
-app.post("/setup-test", async (req, res) => {
-  try {
-    const newUser = await prisma.user.create({
-      data: {
-        email: "test@vinyls.com",
-        name: "Thaliios",
-      },
-    });
-    res.json({ message: "User créé !", user: newUser });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get("/users", async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
-});
+app.use("/api", mainRouter);
 
 app.listen(port, () => {
   console.log(`API lancée sur le port ${port}`);
