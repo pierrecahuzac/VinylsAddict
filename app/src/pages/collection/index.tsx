@@ -7,6 +7,7 @@ import Album from "../../components/album";
 import { useCollection } from "../../hooks/useCollection.ts";
 
 import "../../styles/collection.scss";
+import NavBar from "../../components/navBar/index.tsx";
 
 const Collection = () => {
   // On "déstructure" ce que le hook nous donne
@@ -40,12 +41,16 @@ const Collection = () => {
     }
   };
 
-  const title = "Vinyles addict";
-  console.log(albums);
+  
 
+  const openAlbumDetails = (albumId: string) => {
+    // Ici tu peux faire une redirection vers une page de détails de l'album
+    // ou ouvrir une modale avec les infos de l'album
+    console.log("Album ID:", albumId);
+  }
   return (
     <div className="collection">
-      <h1>{title.toUpperCase()}</h1>
+      
       <Header />
 
       <div className="collection_list">
@@ -56,7 +61,7 @@ const Collection = () => {
         ) : null}
         {/* On boucle sur les albums venant du Hook */}
         {albums.map((album: { id: string; title: string; artist: string; coverUrl: string }) => (
-          <Album key={album.id} title={album.title} artist={album.artist} cover={album.coverUrl} />
+          <Album key={album.id} title={album.title} artist={album.artist} cover={album.coverUrl} onClick={() => openAlbumDetails(album.id)} />
         ))}
       </div>
 
@@ -90,6 +95,7 @@ const Collection = () => {
           </form>
         </div>
       )}
+      <NavBar/>
     </div>
   );
 };

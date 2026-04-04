@@ -1,7 +1,8 @@
 import { Router } from "express";
 import GenreRouter from "./genre.router.js";
 import AlbumRouter from "./album.router.js";
-// import VinylRouter from "./vinyl.router.js"; // Futur exemple
+import UserRouter from "./user.router.js";
+
 
 const router = Router();
 router.get("/", (req, res) => {
@@ -9,6 +10,7 @@ router.get("/", (req, res) => {
 });
 router.use("/genres", GenreRouter);
 router.use("/albums", AlbumRouter);
-// router.use("/vinyls", VinylRouter);
+router.use("/user", UserRouter);
+
 
 export default router;

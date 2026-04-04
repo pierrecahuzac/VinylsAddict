@@ -1,24 +1,113 @@
+import prisma from "../database/prismaClient.js";
+import bcryptjs from "bcryptjs";
+import jwt from "jsonwebtoken";
+
 const Usercontroller = {
-  createUser: async (req, res) => {
+  signup: async (req, res) => {
     try {
-      const { email, name } = req.body;
+      const { email, password, passwordConfirmation, username } = req.body;
+
+      const foundUser = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+      if (foundUser) {
+        console.log("user exists");
+        return res.status(400).json({ message: "User already exists" });
+      }
+      if (password !== passwordConfirmation) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
+      const hashedPassword = await bcryptjs.hash(password, 10);
       const newUser = await prisma.user.create({
         data: {
           email,
-          name,
+          password: hashedPassword,
+          username,
         },
       });
-      res.json({ message: "User créé !", user: newUser });
+
+      return res.status(201).json({ message: "User créé !", user: newUser });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   },
-  getAllUsers: async (req, res) => {
+  login: async (req, res) => {
     try {
-      const users = await prisma.user.findMany();
-      res.json(users);
+      const { email, password } = req.body;
+      const user = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const comparePassword = await bcryptjs.compare(password, user.password);
+      if (!comparePassword) {
+        return res.status(400).json({ message: "Invalid password" });
+      }
+      delete user.password;
+      const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      res.cookie("va_token", jwtToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "prod", 
+        sameSite: "lax", 
+        maxAge: 3600000, 
+      });
+      return res
+        .status(200)
+        .json({ message: "Login successful", user, isLogged: true });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      console.log(error);
+      return res.status(500).json({ error: error.message });
     }
+  },
+  logout: (req, res) => {
+    res.clearCookie("va_token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "prod",
+      sameSite: "lax",
+    });
+    return res
+      .status(200)
+      .json({ message: "Logout successful", isLogged: false });
+  },
+  checkToken: async (req, res) => {
+    const token = req.cookies.va_token;
+    if (!token) return res.status(401).json({ isLogged: false });
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: decodedToken.userId,
+        },
+      });
+      if(!user){
+        return res.status(404).json({ message: "User not found", isLogged: false });
+      }
+      if (user) {
+        delete user.password;
+        return res.status(200).json({ user: user, isLogged: true });
+      } else {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+    } catch (error) {
+   
+    if (error.response?.status !== 401) {
+      console.error("Erreur technique :", error);
+    } else {
+      console.log("Visiteur anonyme (OK)");
+    }
+  } finally {
+    setIsLoading(false);
+  }
   },
 };
+
+export default Usercontroller;
