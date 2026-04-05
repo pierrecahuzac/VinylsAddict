@@ -33,6 +33,8 @@ interface UserContextType {
   modaleSignup: boolean;
   setUser: (user: any) => void;
   setUserIslogged: (isLogged: boolean) => void;
+  setErrorMessage: (message: string) => void;
+  errorMessage: string;
 }
 
 // 1. On crée le contexte vide au départ
@@ -48,7 +50,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
   const [userIsLogged, setUserIslogged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [errorMessage, setErrorMessage] = useState(null);
   // La fameuse fonction checkToken que tu avais dans App.tsx
   // On la met ici pour qu'elle s'exécute une seule fois au démarrage de l'app
   const checkToken = async () => {
@@ -89,7 +91,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           withCredentials: true,
         },
       );
-      console.dir(result);
+      console.log(result);
       if (result.status === 200 && result.data.isLogged === true) {
         setPassword("");
         setUser(result.data.user);
@@ -98,7 +100,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         //getUserCollection();
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
+      if (error.response.data.message) {
+        setErrorMessage(error.response.data.message);
+      }
     } finally {
       setModaleLogin(false);
       setIsLoading(false);
@@ -125,6 +130,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setPasswordConfirmation,
     setUser,
     setUserIslogged,
+    setErrorMessage,
+    errorMessage,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

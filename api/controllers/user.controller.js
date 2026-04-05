@@ -34,6 +34,8 @@ const Usercontroller = {
     }
   },
   login: async (req, res) => {
+    console.log("coucou");
+    
     try {
       const { email, password } = req.body;
       const user = await prisma.user.findUnique({
@@ -41,9 +43,10 @@ const Usercontroller = {
           email,
         },
       });
-
+    
+      
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        return res.status(404).json({ message: "Combinaison email / password not work" });
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
       if (!comparePassword) {
