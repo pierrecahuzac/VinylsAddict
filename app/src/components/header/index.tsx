@@ -21,6 +21,8 @@ const Header = () => {
     passwordConfirmation,
     setPasswordConfirmation,
     modaleSignup,
+    errorMessage, 
+    setErrorMessage
   } = useUser();
 
   const openLogin = () => {
@@ -107,6 +109,7 @@ const Header = () => {
             <button type="button" onClick={() => setModaleSignup(false)}>
               Annuler
             </button>
+            {errorMessage && errorMessage}
           </form>
         </div>
       )}

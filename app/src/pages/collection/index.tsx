@@ -11,10 +11,24 @@ import NavBar from "../../components/navBar/index.tsx";
 
 const Collection = () => {
   // On "déstructure" ce que le hook nous donne
-  const { genres, albums, getAllGenres, getAllAlbums, isLoading } = useCollection();
+  const { genres, albums, getAllGenres, getAllAlbums, isLoading } =
+    useCollection();
 
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
-
+  const [album, setAlbum] = useState({
+    artist: "",
+    title: "",
+    year: "",
+    genre:'',
+    price:'',
+    condition:''
+  });
+  const changeDataAlbum = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAlbum({
+      ...album,
+      [e.target.name]: e.target.value,
+    });
+  };
   // Chargement initial des albums
   useEffect(() => {
     getAllAlbums();
@@ -29,8 +43,9 @@ const Collection = () => {
     e.preventDefault();
     try {
       const result = await axios.post(
-        "http://192.168.1.181:33000/api/albums",
-        {},
+        "http://192.168.1.181:33000/api/albums/create",
+        album,
+        { withCredentials: true },
       );
       console.log(result);
       setModaleAddNewAlbum(false);
@@ -41,16 +56,13 @@ const Collection = () => {
     }
   };
 
-  
-
   const openAlbumDetails = (albumId: string) => {
     // Ici tu peux faire une redirection vers une page de détails de l'album
     // ou ouvrir une modale avec les infos de l'album
     console.log("Album ID:", albumId);
-  }
+  };
   return (
     <div className="collection">
-      
       <Header />
 
       <div className="collection_list">
@@ -60,9 +72,22 @@ const Collection = () => {
           <p>Aucun album dans votre collection.</p>
         ) : null}
         {/* On boucle sur les albums venant du Hook */}
-        {albums.map((album: { id: string; title: string; artist: string; coverUrl: string }) => (
-          <Album key={album.id} title={album.title} artist={album.artist} cover={album.coverUrl} onClick={() => openAlbumDetails(album.id)} />
-        ))}
+        {albums.map(
+          (album: {
+            id: string;
+            title: string;
+            artist: string;
+            coverUrl: string;
+          }) => (
+            <Album
+              key={album.id}
+              title={album.title}
+              artist={album.artist}
+              cover={album.coverUrl}
+              onClick={() => openAlbumDetails(album.id)}
+            />
+          ),
+        )}
       </div>
 
       <button className="add-button" onClick={openModaleAddNewAlbum}>
@@ -73,29 +98,37 @@ const Collection = () => {
         <div className="modale_add_new_album">
           <h2>Ajouter un nouvel album</h2>
           <form className="form_add_new_album" onSubmit={submitNewAlbum}>
-            <input type="text" placeholder="Titre de l'album" />
-            <input type="text" placeholder="Artiste" />
-            <input type="text" placeholder="Année" />
+            <input
+              type="text"
+              placeholder="Titre de l'album"
+              name="title"
+              onChange={ changeDataAlbum}
+            />
+            <input type="text" placeholder="Artiste" name="artist" value={album.artist} onChange={ changeDataAlbum}/>
+            <input type="text" placeholder="Année" name="year" value={album.year} onChange={ changeDataAlbum}/>
+            <input type="text" placeholder="Condition" name="condition" value={album.condition} onChange={ changeDataAlbum}/>
 
-            <select name="genre">
+            <select name="genre" value={album.genre}  onChange={ changeDataAlbum}>
               <option value="">Sélectionner un genre</option>
               {/* On boucle sur les genres venant du Hook */}
               {genres.map((genre: { id: string; name: string }) => (
-                <option key={genre.id} value={genre.id}>
+                <option key={genre.id} value={genre.id} >
                   {genre.name}
                 </option>
               ))}
             </select>
 
-            <input type="text" placeholder="Prix" />
-            <button type="submit">Ajouter</button>
+            <input type="text" placeholder="Prix" value={album.price} name="price" onChange={ changeDataAlbum}/>
+            <button type="button" onClick={submitNewAlbum}>
+              Ajouter
+            </button>
             <button type="button" onClick={() => setModaleAddNewAlbum(false)}>
               Annuler
             </button>
           </form>
         </div>
       )}
-      <NavBar/>
+      <NavBar />
     </div>
   );
 };

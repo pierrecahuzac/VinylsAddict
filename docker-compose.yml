@@ -36,7 +36,7 @@ services:
       - db_data:/var/lib/postgresql
   prisma-studio:
     container_name: prisma-studio
-    build: ./api # On utilise le même contexte que l'API
+    build: ./api 
     command: npx prisma studio --port 5555 --browser none
     environment:
       - POSTGRES_URL=postgresql://postgres:password@db:5432/vinyls_addict
