@@ -30,7 +30,7 @@ const NavBar = () => {
     <nav className="nav-bar">
       <Link to={`/collection/${user?.id}`}>Collection</Link>
       <Link to={`/wishlist/${user?.id}`}>Wishlist</Link>
-      <Link to="/search">
+      <Link to={`/profile/${user?.id}`}>
         {userIsLogged && user && !isLoading ? user.username : "Profil"}
       </Link>
       

@@ -1,35 +1,47 @@
 {
-    "genres": [
-        {
-            "name": "rock"
-          
-        },
-        {
-            "name": "pop"
-        },
-        {
-            "name": "jazz"
-        },
-        {
-            "name": "hip-hop"
-        },
-        {
-            "name": "classical"
-        },
-        {
-            "name": "electronic"
-        },
-        {
-            "name": "blues"
-        },
-        {
-            "name": "country"
-        },
-        {
-            "name": "reggae"
-        },
-        {
-            "name": "metal"
-        }
-    ]
+  "genres": [
+    { "name": "rock", "styles": ["punk", "grunge", "psychedelic", "metal"] },
+    { "name": "pop", "styles": ["synth-pop", "indie pop", "dream pop"] },
+    { "name": "jazz", "styles": ["bebop", "cool jazz", "fusion"] },
+    { "name": "hip-hop", "styles": ["boom bap", "trap", "gangsta rap"] },
+    { "name": "electronic", "styles": ["techno", "house", "ambient", "drum n bass"] },
+    { "name": "blues", "styles": ["delta blues", "chicago blues"] },
+    { "name": "classical", "styles": ["baroque", "romantic", "modern"] },
+    { "name": "reggae", "styles": ["dub", "dancehall", "roots"] },
+    { "name": "soul", "styles": ["neo-soul", "motown"] },
+    { "name": "funk", "styles": ["p-funk", "jazz-funk"] },
+    { "name": "disco", "styles": ["italo-disco", "euro-disco"] }
+  ],
+  "conditions": [
+    { "nameEN": "mint", "nameFR": "neuf" },
+    { "nameEN": "near mint", "nameFR": "presque neuf" },
+    { "nameEN": "very good plus", "nameFR": "très bon plus" },
+    { "nameEN": "very good", "nameFR": "très bon" },
+    { "nameEN": "good plus", "nameFR": "bon plus" },
+    { "nameEN": "good", "nameFR": "bon" },
+    { "nameEN": "fair", "nameFR": "passable" },
+    { "nameEN": "poor", "nameFR": "mauvais" }
+  ],
+  "vinylVariants": [
+    { "nameEN": "black", "nameFR": "noir" },
+    { "nameEN": "clear", "nameFR": "transparent" },
+    { "nameEN": "translucent", "nameFR": "translucide" },
+    { "nameEN": "opaque", "nameFR": "opaque" },
+    { "nameEN": "marble", "nameFR": "marbré" },
+    { "nameEN": "splatter", "nameFR": "tacheté" },
+    { "nameEN": "swirl", "nameFR": "tourbillon" },
+    { "nameEN": "smoke", "nameFR": "fumée" },
+    { "nameEN": "galaxy", "nameFR": "galaxie" },
+    { "nameEN": "split", "nameFR": "bicolore" },
+    { "nameEN": "color-in-color", "nameFR": "couleur dans couleur" },
+    { "nameEN": "picture disc", "nameFR": "disque image" },
+    { "nameEN": "etched", "nameFR": "gravé" }
+  ],
+  "formats": [
+    { "name": "12\" LP", "speed": "33 RPM", "description": "Grand format standard (30cm)" },
+    { "name": "7\" Single", "speed": "45 RPM", "description": "Petit format (17cm)" },
+    { "name": "10\" EP", "speed": "33/45 RPM", "description": "Format intermédiaire (25cm)" },
+    { "name": "12\" Maxi", "speed": "45 RPM", "description": "Grand format, souvent pour les clubs" },
+    { "name": "10\" 78 RPM", "speed": "78 RPM", "description": "Vieux disques en gomme-laque (Shellac)" }
+  ]
 }

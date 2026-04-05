@@ -50,7 +50,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
   const [userIsLogged, setUserIslogged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   // La fameuse fonction checkToken que tu avais dans App.tsx
   // On la met ici pour qu'elle s'exécute une seule fois au démarrage de l'app
   const checkToken = async () => {
@@ -109,6 +109,50 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       setIsLoading(false);
     }
   };
+  const signup = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    setIsLoading(true);
+    e.preventDefault();
+    try {
+      if(!password || !passwordConfirmation || !email || !username){
+        setErrorMessage("Tous les champs sont obligatoires.");
+        setIsLoading(false);
+        return;
+      }
+      if(password !== passwordConfirmation){
+        setErrorMessage("Les mots de passe ne correspondent pas.");
+        setIsLoading(false);
+        return;
+      }
+      const result = await axios.post(
+        `${API_URL}/user/signup`,
+        {
+          email,
+          password,
+          passwordConfirmation,
+          username
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      // console.log(result);
+      // if (result.status === 200 && result.data.message === "Utilisateur crée !") {
+      //   setPassword("");
+      //   setUser(result.data.user);
+
+      //   setUserIslogged(true);
+      //   //getUserCollection();
+      // }
+    } catch (error) {
+      console.log(error.response.data.message);
+      if (error.response.data.message) {
+        setErrorMessage(error.response.data.message);
+      }
+    } finally {
+      setModaleLogin(false);
+      setIsLoading(false);
+    }
+  };
   // On expose tout ce qu'on veut rendre disponible
   const value = {
     user,
@@ -132,6 +176,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUserIslogged,
     setErrorMessage,
     errorMessage,
+    signup
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

@@ -7,6 +7,23 @@ export const useCollection = () => {
   const [genres, setGenres] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [allMetadata, setAllMetadata] = useState(null); // Si tu veux stocker les métadonnées
+
+  const getAllMetadata = async () => {
+    setIsLoading(true);
+    try {
+      const result = await axios.get(`${API_URL}/metadata/getAllMetadatas`);
+      console.log("Métadonnées récupérées:", result.data);
+      setAllMetadata(result.data);
+      console.log(allMetadata);
+      
+    } catch (error) {
+      console.error("Erreur Métadonnées:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getAllGenres = async () => {
     setIsLoading(true);
     try {
@@ -32,5 +49,5 @@ export const useCollection = () => {
     }
   };
 
-  return { genres, albums, getAllGenres, getAllAlbums , isLoading };
+  return { genres, albums, getAllGenres, getAllAlbums , isLoading, getAllMetadata, allMetadata };
 };

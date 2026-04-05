@@ -1,11 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
-  // output   = "../generated/prisma"
 }
 
 datasource db {
@@ -16,26 +13,70 @@ datasource db {
 model User {
   id       String  @id @default(uuid())
   email    String  @unique
-  username     String?
+  username String?
   password String
   albums   Album[]
 }
 
 model Album {
-  id          String  @id @default(uuid())
+  id          String   @id @default(uuid())
   title       String
   artist      String
   releaseDate Int?
-  genre       String
   coverUrl    String?
-  condition   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  price       Float?
+  color       String?
+  speed       String?
+  // Propriétaire de l'album
   userId      String
-  user        User    @relation(fields: [userId], references: [id])
-  genres      Genre[] @relation("AlbumGenres")
+  user        User     @relation(fields: [userId], references: [id])
+
+  // État du disque (Relation vers Condition)
+  conditionId String?
+  condition   Condition? @relation(fields: [conditionId], references: [id])
+
+  // Classification (Plusieurs genres et styles possibles)
+  genres Genre[] @relation("AlbumGenres")
+  styles Style[] @relation("AlbumStyles")
+
+  // Caractéristiques physiques (Couleur, texture, etc.)
+  variants VinylVariant[] @relation("AlbumVariants")
 }
 
 model Genre {
   id     String  @id @default(uuid())
   name   String  @unique
   albums Album[] @relation("AlbumGenres")
+  styles Style[] // Un genre a plusieurs styles (ex: Rock -> Punk)
+}
+
+model Style {
+  id      String  @id @default(uuid())
+  name    String  @unique
+  genreId String
+  genre   Genre   @relation(fields: [genreId], references: [id])
+  albums  Album[] @relation("AlbumStyles")
+}
+
+model Condition {
+  id     String  @id @default(uuid())
+  nameEN String  @unique // ex: "mint"
+  nameFR String? // ex: "neuf"
+  albums Album[]
+}
+
+model VinylVariant {
+  id     String  @id @default(uuid())
+  nameEN String  @unique // ex: "splatter"
+  nameFR String? // ex: "tacheté"
+  albums Album[] @relation("AlbumVariants")
+}
+
+model Format {
+  id          String  @id @default(uuid())
+  name        String  @unique // ex: "12\" LP"
+  speed       String? // ex: "33 RPM"
+  description String? // ex: "Grand format standard (30cm)"
 }

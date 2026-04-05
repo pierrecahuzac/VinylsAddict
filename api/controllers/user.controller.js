@@ -6,6 +6,7 @@ const Usercontroller = {
   signup: async (req, res) => {
     try {
       const { email, password, passwordConfirmation, username } = req.body;
+      console.log(email, password, passwordConfirmation, username);
 
       const foundUser = await prisma.user.findUnique({
         where: {
@@ -35,7 +36,7 @@ const Usercontroller = {
   },
   login: async (req, res) => {
     console.log("coucou");
-    
+
     try {
       const { email, password } = req.body;
       const user = await prisma.user.findUnique({
@@ -43,10 +44,11 @@ const Usercontroller = {
           email,
         },
       });
-    
-      
+
       if (!user) {
-        return res.status(404).json({ message: "Combinaison email / password not work" });
+        return res
+          .status(404)
+          .json({ message: "Combinaison email / password not work" });
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
       if (!comparePassword) {
@@ -58,9 +60,9 @@ const Usercontroller = {
       });
       res.cookie("va_token", jwtToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "prod", 
-        sameSite: "lax", 
-        maxAge: 3600000, 
+        secure: process.env.NODE_ENV === "prod",
+        sameSite: "lax",
+        maxAge: 3600000,
       });
       return res
         .status(200)
@@ -91,8 +93,10 @@ const Usercontroller = {
           id: decodedToken.userId,
         },
       });
-      if(!user){
-        return res.status(404).json({ message: "User not found", isLogged: false });
+      if (!user) {
+        return res
+          .status(404)
+          .json({ message: "User not found", isLogged: false });
       }
       if (user) {
         delete user.password;
@@ -101,15 +105,12 @@ const Usercontroller = {
         return res.status(401).json({ message: "Unauthorized" });
       }
     } catch (error) {
-   
-    if (error.response?.status !== 401) {
-      console.error("Erreur technique :", error);
-    } else {
-      console.log("Visiteur anonyme (OK)");
+      if (error.response?.status !== 401) {
+        console.error("Erreur technique :", error);
+      } else {
+        console.log("Visiteur anonyme (OK)");
+      }
     }
-  } finally {
-    setIsLoading(false);
-  }
   },
 };
 

@@ -22,7 +22,6 @@ const Header = () => {
     setPasswordConfirmation,
     modaleSignup,
     errorMessage, 
-    setErrorMessage
   } = useUser();
 
   const openLogin = () => {
@@ -40,7 +39,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <h1>{title.toUpperCase()}</h1>
+      <h1 className="header__title">{title.toUpperCase()}</h1>
       {userIsLogged ? (
         <div>Bienvenue, {user?.username}!</div>
       ) : (
@@ -105,7 +104,9 @@ const Header = () => {
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
             />
-            <button type="submit">Créer un compte</button>
+            <button type="button" onClick={(e) => signup(e)}>
+              Créer un compte
+            </button>
             <button type="button" onClick={() => setModaleSignup(false)}>
               Annuler
             </button>
