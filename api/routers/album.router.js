@@ -6,6 +6,7 @@ const AlbumRouter = Router();
 
 AlbumRouter.get('/getAll', AlbumController.getAllAlbums);
 AlbumRouter.get('/getOneAlbum/:id', AlbumController.getOneAlbum);
+AlbumRouter.get('/getUserAlbum/:id', AlbumController.getUserAlbum);
 AlbumRouter.post('/create', AlbumController.create);
 
 

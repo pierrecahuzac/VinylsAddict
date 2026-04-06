@@ -4,17 +4,19 @@ interface AlbumProps {
   title: string;
   artist: string;
   cover?: string;
+  id:string;
+  year: string
   onClick: () => void;
 }
 
-const Album = ({ id, title, artist, cover, onClick }: AlbumProps) => {
+const Album = ({ id, title, artist, cover, year, onClick }: AlbumProps) => {
   return (
     <div
       id={id}
       className="album_card"
-      // On attache la fonction ICI
-      onClick={(e) => {
-        console.log("Clic DOM déclenché sur l'album");
+      
+      onClick={() => {
+        
         onClick();
       }}
       style={{ cursor: "pointer", position: "relative", zIndex: 10 }}
@@ -22,11 +24,12 @@ const Album = ({ id, title, artist, cover, onClick }: AlbumProps) => {
       <img
         src={cover || "/placeholder.jpg"}
         alt={title}
-        style={{ pointerEvents: "none" }} // Empêche l'image de voler le clic
+        style={{ pointerEvents: "none" }} 
       />
       <div style={{ pointerEvents: "none" }}>
         <h3>{title}</h3>
         <p>{artist}</p>
+        <p>{year}</p>
       </div>
     </div>
   );

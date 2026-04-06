@@ -13,9 +13,9 @@ export const useCollection = () => {
     setIsLoading(true);
     try {
       const result = await axios.get(`${API_URL}/metadata/getAllMetadatas`);
-      console.log("Métadonnées récupérées:", result.data);
+     
       setAllMetadata(result.data);
-      console.log(allMetadata);
+  
       
     } catch (error) {
       console.error("Erreur Métadonnées:", error);

@@ -15,7 +15,7 @@ const Usercontroller = {
       });
       if (foundUser) {
         console.log("user exists");
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message:`Une erreur est survenue lors de l'inscription. Veuillez vérifier vos informations ou essayer de vous connecter.` });
       }
       if (password !== passwordConfirmation) {
         return res.status(400).json({ message: "Passwords do not match" });
@@ -35,8 +35,7 @@ const Usercontroller = {
     }
   },
   login: async (req, res) => {
-    console.log("coucou");
-
+    
     try {
       const { email, password } = req.body;
       const user = await prisma.user.findUnique({

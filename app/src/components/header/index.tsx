@@ -2,6 +2,8 @@ import SearchBar from "../searchBar";
 
 import { useUser } from "../../contexts/userContext";
 import "../../styles/header.scss";
+import Login from "../login";
+import Signup from "../signup";
 
 const Header = () => {
   const {
@@ -21,7 +23,6 @@ const Header = () => {
     passwordConfirmation,
     setPasswordConfirmation,
     modaleSignup,
-    errorMessage,
   } = useUser();
 
   const openLogin = () => {
@@ -54,80 +55,28 @@ const Header = () => {
       )}
       <SearchBar />
       {modaleLogin && (
-        <div className="modale-login">
-          <form onSubmit={login}>
-            <h2>Connexion</h2>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              autoComplete="email"
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <input
-              type="password"
-              placeholder="Mot de passe"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <div className="buttons">
-              <button type="submit" className="btn-save">Se connecter</button>
-              <button type="button" className="btn-cancel" onClick={() => setModaleLogin(false)}>
-                Annuler
-              </button>
-            </div>
-          </form>
-        </div>
+        <Login
+          login={login}
+          email={email}
+          setEmail={setEmail}
+          password={password}
+          setPassword={setPassword}
+          setModaleLogin={setModaleLogin}
+        />
       )}
       {modaleSignup && (
-        <div className="modale-signup">
-          <form onSubmit={signup}>
-            {" "}
-            <h2>Créer un compte</h2>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Nom d'utilisateur"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Mot de passe"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Confirmation du mot de passe"
-              value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
-            />
-            <div className="buttons">
-              <button
-                className="btn-save"
-                type="button"
-                onClick={(e) => signup(e)}
-              >
-                Créer un compte
-              </button>
-              <button
-                className="btn-cancel"
-                type="button"
-                onClick={() => setModaleSignup(false)}
-              >
-                Annuler
-              </button>
-            </div>
-            {errorMessage && errorMessage}
-          </form>
-        </div>
+        <Signup
+          signup={signup}
+          email={email}
+          setEmail={setEmail}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          passwordConfirmation={passwordConfirmation}
+          setPasswordConfirmation={setPasswordConfirmation}
+          setModaleSignup={setModaleSignup}
+        />
       )}
     </header>
   );
