@@ -1,7 +1,63 @@
-import { log } from "node:console";
 import prisma from "../database/prismaClient.js";
 import jwt from "jsonwebtoken";
 const AlbumController = {
+  getOneAlbum: async (req, res) => {
+    try {
+      const albumId = req.params.id;
+      console.log(albumId);
+
+      const album = await prisma.album.findUnique({
+        where: {
+          id: albumId,
+        },
+      });
+      console.log(album);
+      if (!album) {
+        return res.status(200).json({ message: "No album find with this id" });
+      }
+      return res.status(200).json(album);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+  getUserAlbum: async (req, res) => {
+    console.log("couc");
+
+    const albumId = req.params.id;
+    const token = req.cookies.va_token;
+
+    if (!token) {
+      return res.status(401).json({ message: "Non authentifié" });
+    }
+
+    const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = tokenDecoded.userId;
+    try {
+      const userAlbum = await prisma.userAlbum.findUnique({
+        where: {
+          // On utilise la clé composite générée par Prisma
+          userId_albumId: {
+            userId: userId,
+            albumId: albumId,
+          },
+        },
+        // include: {
+        //   condition: true, // Pour récupérer le nom de l'état (Mint, etc.)
+        //   variants: true, // Pour récupérer les variantes (Couleur, etc.)
+        //   notes:true,
+        //   color:true
+        // },
+      });
+      if (!userAlbum) {
+        return res
+          .status(404)
+          .json({ message: `Détaisl de l'album introuvables` });
+      }
+      return res.status(201).json({ userAlbum, message: `Détails de l'album trvoués` });
+    } catch (error) {
+      console.log(error);
+    }
+  },
   getAllAlbums: async (req, res) => {
     try {
       const albums = await prisma.album.findMany();
@@ -11,34 +67,82 @@ const AlbumController = {
       res.status(500).json({ error: error.message });
     }
   },
-  create: async (req, res) =>{
-   
-    const token = req.cookies.va_token;
-    console.log(token);
-    const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(tokenDecoded);
-    const userId = tokenDecoded.userId;
-    const { title, artist, year, genre, price,condition } = req.body;
-
-    
+  create: async (req, res) => {
     try {
+      const token = req.cookies.va_token;
+      if (!token) {
+        return res.status(401).json({ message: "Non authentifié" });
+      }
+
+      const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = tokenDecoded.userId;
+
+      // On récupère les IDs envoyés par le front-end
+      const {
+        title,
+        artist,
+        year,
+        genreId,
+        conditionId,
+        variantId,
+        coverUrl,
+        color,
+        price,
+      } = req.body;
+      console.log(price);
       const newAlbum = await prisma.album.create({
         data: {
           title,
           artist,
-          //year,
-          genre,
-          //price: parseFloat(price),
-          condition,
-          userId
+          releaseDate: year ? parseInt(year) : null,
+          coverUrl,
+
+          user: {
+            connect: { id: userId },
+          },
+
+          genres: genreId
+            ? {
+                connect: { id: genreId },
+              }
+            : undefined,
+
+          variants: variantId
+            ? {
+                connect: { id: variantId },
+              }
+            : undefined,
+        },
+
+        include: {
+          genres: true,
+          variants: true,
         },
       });
-      return res.status(201).json({ message: "Album créé !", album: newAlbum });
-      
+      console.log(newAlbum);
+
+      const newUserAlbum = await prisma.userAlbum.create({
+        data: {
+          color,
+          userId: userId,
+          albumId: newAlbum.id,
+          price: price ? parseFloat(price) : null,
+          conditionId: conditionId ? conditionId : null,
+        },
+      });
+      return res.status(201).json({
+        message: "Album créé !",
+        album: newAlbum,
+        useralbum: newUserAlbum,
+      });
     } catch (error) {
-      console.log(error);      
+      console.error("Erreur Prisma Create:", error);
+      return res.status(500).json({
+        message: "Erreur lors de la création",
+        error: error.message,
+      });
     }
-  }
+  },
 };
 
 export default AlbumController;

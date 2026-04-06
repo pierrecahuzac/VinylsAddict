@@ -1,13 +1,15 @@
 import { useEffect, useState, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import Album from "../../components/album";
+
 import { useCollection } from "../../hooks/useCollection.ts";
-import Modale from "../../components/modale/index.tsx"; // Import de la modale typée
+import Album from "../../components/album/index.tsx";
+import { useUser } from "../../contexts/userContext.tsx";
+import Modale from "../../components/modale/index.tsx";
 
-import "../../styles/collection.scss";
+import "../../styles/albumsPage.scss";
 
-// Interface pour l'état de l'album
+// 1. Définition du type pour l'état local du formulaire
 interface AlbumState {
   artist: string;
   title: string;
@@ -33,19 +35,19 @@ const initialAlbumState: AlbumState = {
   price: "",
   coverUrl: "",
   color: "",
-  styleId: "",
+  styleId: ""
 };
 
-const Collection = () => {
-  const { albums, getAllAlbums, isLoading, getAllMetadata, allMetadata } =
-    useCollection();
+const AlbumsPage = () => {
+  const { albums, getAllAlbums, isLoading, getAllMetadata, allMetadata } = useCollection();
+  const { userIsLogged } = useUser();
   const navigate = useNavigate();
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
+  
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);
 
-  const changeDataAlbum = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
+  // 2. Typage explicite du ChangeEvent
+  const changeDataAlbum = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setAlbum({
       ...album,
       [e.target.name]: e.target.value,
@@ -60,26 +62,29 @@ const Collection = () => {
     getAllMetadata();
     setModaleAddNewAlbum(true);
   };
-
+  
+  // 3. Utilisation de FormEvent pour éviter la dépréciation
   const submitNewAlbum = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const payload = {
       ...album,
-      year: album.year ? parseInt(album.year) : null,
-      price: album.price ? parseFloat(album.price) : null,
+      // Conversion sécurisée pour PostgreSQL via Prisma
+      year: album.year ? Number(album.year) : null,
+      price: album.price ? Number(album.price) : null,
     };
 
     try {
       await axios.post(
         "http://192.168.1.181:33000/api/albums/create",
         payload,
-        { withCredentials: true },
+        { withCredentials: true }
       );
 
+      // Reset complet via la constante
       setAlbum(initialAlbumState);
       setModaleAddNewAlbum(false);
-      getAllAlbums();
+      getAllAlbums(); // Rafraîchir la liste après l'ajout
     } catch (error) {
       console.error("Erreur création album:", error);
     }
@@ -88,12 +93,12 @@ const Collection = () => {
   const openAlbumDetails = (albumId: string) => {
     navigate(`/album/${albumId}`);
   };
-
+  
   return (
-    <div className="collection">
-      <main className="collection_list">
+    <div className="albums_page_">
+      <main className="albums_page__list">
         {isLoading && (
-          <p className="status-msg">Chargement de la collection...</p>
+          <p className="status-msg">Chargement des albums...</p>
         )}
 
         {!isLoading && albums.length === 0 && (
@@ -113,21 +118,22 @@ const Collection = () => {
         ))}
       </main>
 
-      <button
-        className="add-button"
-        onClick={openModaleAddNewAlbum}
-        aria-label="Ajouter un album"
-      >
-        +
-      </button>
+      {userIsLogged && (
+        <button
+          className="add-button"
+          onClick={openModaleAddNewAlbum}
+          aria-label="Ajouter un album"
+        >
+          +
+        </button>
+      )}
 
-      {/* Utilisation du composant Modale mutualisé */}
       {modaleAddNewAlbum && (
-        <Modale
-          submitNewAlbum={submitNewAlbum}
-          album={album}
-          changeDataAlbum={changeDataAlbum}
-          allMetadata={allMetadata}
+        <Modale 
+          submitNewAlbum={submitNewAlbum} 
+          album={album} 
+          changeDataAlbum={changeDataAlbum} 
+          allMetadata={allMetadata} 
           setModaleAddNewAlbum={setModaleAddNewAlbum}
         />
       )}
@@ -135,4 +141,4 @@ const Collection = () => {
   );
 };
 
-export default Collection;
+export default AlbumsPage;

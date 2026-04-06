@@ -1,41 +1,50 @@
 import { Link } from "react-router";
+
+import {
+  IoLibraryOutline,
+  IoHome,
+  IoHeartOutline,
+  IoLogOutOutline,
+  IoPerson,
+} from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 
 import "../../styles/navBar.scss";
-import axios from "axios";
 
 const NavBar = () => {
-  const { user, userIsLogged, isLoading, setUser, setEmail, setPassword, setUserIslogged } = useUser();
-  const logout = async () => {
-    try {
-      const result = await axios.post(
-        `http://192.168.1.181:33000/api/user/logout`,
-        {},
-        {
-          withCredentials: true,
-        },
-      );
-      console.log(result);
-      if (result.status === 200 && !result.data.isLogged) {
-        setUser(null);
-        setUserIslogged(false);
-        setEmail("");
-        setPassword("");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const {
+    user,
+    userIsLogged,
+    isLoading,
+  
+    logout,
+  } = useUser();
+
   return (
     <nav className="nav-bar">
-      <Link to={`/collection/${user?.id}`}>Collection</Link>
-      <Link to={`/wishlist/${user?.id}`}>Wishlist</Link>
-      <Link to="/search">
-        {userIsLogged && user && !isLoading ? user.username : "Profil"}
+      <Link to={`/`}>
+        <IoHome />
       </Link>
-      
-        {(userIsLogged && user && !isLoading) && <button onClick={logout}>Déconnexion </button> }
-     
+      {userIsLogged && (
+        <>
+          <Link to={`/collection/${user?.id}`}>
+            <IoLibraryOutline />
+          </Link>
+          <Link to={`/wishlist/${user?.id}`}>
+            <IoHeartOutline />
+          </Link>
+        </>
+      )}
+
+      <Link to={`/profile/${user?.id}`}>
+        {userIsLogged && !isLoading && <IoPerson />}
+      </Link>
+
+      {userIsLogged && user && !isLoading && (
+        <button onClick={logout}>
+          <IoLogOutOutline />{" "}
+        </button>
+      )}
     </nav>
   );
 };

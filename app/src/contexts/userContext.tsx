@@ -3,41 +3,47 @@ import {
   useContext,
   useState,
   useEffect,
-  ReactNode,
+  type ReactNode,
+  type SyntheticEvent,
 } from "react";
-
 import axios from "axios";
+import useToast from "../hooks/useToast";
+import { useNavigate } from "react-router";
 
 const API_URL = "http://192.168.1.181:33000/api";
 
+interface User {
+  id: string;
+  email: string;
+  username: string;
+}
+
 interface UserContextType {
-  user: any; // Tu pourras remplacer 'any' par ton interface User plus tard
+  user: User | null;
   userIsLogged: boolean;
   isLoading: boolean;
   email: string;
   setEmail: (email: string) => void;
-  // ... ajoute ici toutes les variables et fonctions que tu veux partager
-  login: (e: React.FormEvent) => Promise<void>;
+  login: (e: React.SyntheticEvent<HTMLFormElement>) => Promise<void>;
+  logout: () => Promise<void>;
   checkToken: () => Promise<void>;
-  signup: (e: React.FormEvent) => Promise<void>;
-  setModaleSignup: (value: boolean) => void;
-
+  signup: (e: SyntheticEvent<HTMLFormElement>) => Promise<void>;
   modaleLogin: boolean;
   setModaleLogin: (value: boolean) => void;
+  modaleSignup: boolean;
+  setModaleSignup: (value: boolean) => void;
   password: string;
   setPassword: (password: string) => void;
   username: string;
   setUsername: (username: string) => void;
   passwordConfirmation: string;
   setPasswordConfirmation: (passwordConfirmation: string) => void;
-  modaleSignup: boolean;
-  setUser: (user: any) => void;
+  setUser: (user: User | null) => void;
   setUserIslogged: (isLogged: boolean) => void;
   setErrorMessage: (message: string) => void;
   errorMessage: string;
 }
 
-// 1. On crée le contexte vide au départ
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
@@ -47,12 +53,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [modaleLogin, setModaleLogin] = useState(false);
   const [modaleSignup, setModaleSignup] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [userIsLogged, setUserIslogged] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  // La fameuse fonction checkToken que tu avais dans App.tsx
-  // On la met ici pour qu'elle s'exécute une seule fois au démarrage de l'app
+  const [isLoading, setIsLoading] = useState(true); // Commencer à true pour le checkToken
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const navigate = useNavigate();
+  const { onError, onSuccess } = useToast();
+
   const checkToken = async () => {
     try {
       const response = await axios.get(`${API_URL}/user/checkToken`, {
@@ -63,10 +71,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setUserIslogged(true);
       }
     } catch (error) {
-      if (error.response?.status !== 401) {
-        console.error("Erreur technique :", error);
-      } else {
-        console.log("Visiteur anonyme (OK)");
+      // 401 est normal pour un visiteur, on ne logge pas d'erreur
+      if (axios.isAxiosError(error) && error.response?.status !== 401) {
+        console.error("Erreur technique checkToken");
       }
     } finally {
       setIsLoading(false);
@@ -77,39 +84,85 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     checkToken();
   }, []);
 
-  const login = async (e: React.SubmitEvent<HTMLFormElement>) => {
-    setIsLoading(true);
+  const login = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const result = await axios.post(
         `${API_URL}/user/login`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        },
+        { email, password },
+        { withCredentials: true }
       );
-      console.log(result);
-      if (result.status === 200 && result.data.isLogged === true) {
-        setPassword("");
-        setUser(result.data.user);
 
+      if (result.status === 200 && result.data.isLogged) {
+        onSuccess("Heureux de vous revoir !");
+        setUser(result.data.user);
         setUserIslogged(true);
-        //getUserCollection();
+        setPassword("");
+        setModaleLogin(false);
       }
     } catch (error) {
-      console.log(error.response.data.message);
-      if (error.response.data.message) {
-        setErrorMessage(error.response.data.message);
+      if (axios.isAxiosError(error)) {
+        onError(error.response?.data?.message || "Identifiants invalides.");
       }
     } finally {
-      setModaleLogin(false);
       setIsLoading(false);
     }
   };
-  // On expose tout ce qu'on veut rendre disponible
+
+  const signup = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    if (!password || !passwordConfirmation || !email || !username) {
+      setErrorMessage("Tous les champs sont obligatoires.");
+      return;
+    }
+
+    if (password !== passwordConfirmation) {
+      setErrorMessage("Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        `${API_URL}/user/signup`,
+        { email, password, passwordConfirmation, username },
+        { withCredentials: true }
+      );
+
+      if (response.status === 201 || response.status === 200) {
+        onSuccess("Compte créé avec succès !");
+        setModaleSignup(false);
+        // On peut soit connecter l'user direct, soit lui demander de se log
+        setModaleLogin(true); 
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const msg = error.response?.data?.message || "Erreur lors de l'inscription.";
+        onError(msg);
+        setErrorMessage(msg);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await axios.post(`${API_URL}/user/logout`, {}, { withCredentials: true });
+      setUser(null);
+      setUserIslogged(false);
+      setEmail("");
+      setPassword("");
+      onSuccess("Déconnexion réussie");
+      navigate("/");
+    } catch (error) {
+      onError("Erreur lors de la déconnexion.");
+    }
+  };
+
   const value = {
     user,
     userIsLogged,
@@ -132,6 +185,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUserIslogged,
     setErrorMessage,
     errorMessage,
+    signup,
+    logout,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
@@ -140,9 +195,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error(
-      "useUser doit être utilisé à l'intérieur d'un UserProvider",
-    );
+    throw new Error("useUser doit être utilisé à l'intérieur d'un UserProvider");
   }
   return context;
 };

@@ -1,16 +1,35 @@
-import "../../styles/album.scss";
+// src/components/album/index.tsx
 
-const Album = ({ title, artist, cover }: { title: string; artist: string; cover: string }) => {
+interface AlbumProps {
+  title: string;
+  artist: string;
+  cover?: string;
+  id:string;
+  year: string
+  onClick: () => void;
+}
+
+const Album = ({ id, title, artist, cover, year, onClick }: AlbumProps) => {
   return (
-    <div style={{ display: "flex", gap: "2rem", marginBottom: "3rem" }}>
-      <div className="album">
-        <img src={cover} alt="" className="album_image" />
-        <div className="album_infos">
-          <p className="album_artist">
-            {artist} -  {title}
-          </p> 
-          
-        </div>
+    <div
+      id={id}
+      className="album_card"
+      
+      onClick={() => {
+        
+        onClick();
+      }}
+      style={{ cursor: "pointer", position: "relative", zIndex: 10 }}
+    >
+      <img
+        src={cover || "/placeholder.jpg"}
+        alt={title}
+        style={{ pointerEvents: "none" }} 
+      />
+      <div style={{ pointerEvents: "none" }}>
+        <h3>{title}</h3>
+        <p>{artist}</p>
+        <p>{year}</p>
       </div>
     </div>
   );
