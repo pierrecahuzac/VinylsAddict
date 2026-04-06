@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import Header from "../../components/header";
 import Album from "../../components/album";
 import NavBar from "../../components/navBar/index.tsx";
 import { useCollection } from "../../hooks/useCollection.ts";
@@ -28,7 +27,6 @@ const Collection = () => {
     color: "",
   });
 
-  // Handler générique pour Input et Select
   const changeDataAlbum = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -50,7 +48,6 @@ const Collection = () => {
   const submitNewAlbum = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Lead Dev Tip: On convertit les strings en nombres avant l'envoi pour Prisma
     const payload = {
       ...album,
       year: album.year ? parseInt(album.year) : null,
@@ -66,7 +63,6 @@ const Collection = () => {
         },
       );
 
-      // Reset du formulaire et refresh
       setAlbum({
         artist: "",
         title: "",
@@ -93,8 +89,7 @@ const Collection = () => {
 
   return (
     <div className="collection">
-      <Header />
-
+     
       <main className="collection_list">
         {isLoading && (
           <p className="status-msg">Chargement de la collection...</p>
@@ -254,7 +249,7 @@ const Collection = () => {
         </div>
       )}
 
-      <NavBar />
+      
     </div>
   );
 };
