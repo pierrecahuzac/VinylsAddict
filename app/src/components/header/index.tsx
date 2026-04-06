@@ -21,21 +21,20 @@ const Header = () => {
     passwordConfirmation,
     setPasswordConfirmation,
     modaleSignup,
-    errorMessage, 
+    errorMessage,
   } = useUser();
 
   const openLogin = () => {
-    setModaleSignup(false); // Ferme la modale d'inscription si elle est ouverte
-    // Ici tu peux ouvrir une modale de connexion ou rediriger vers une page de connexion
+    console.log("coucou");
+
+    setModaleSignup(false);
     setModaleLogin(true);
   };
   const openSubmit = () => {
-    setModaleLogin(false); // Ferme la modale de connexion si elle est ouverte
-    // Ici tu peux ouvrir une modale de connexion ou rediriger vers une page de connexion
+    setModaleLogin(false);
     setModaleSignup(true);
   };
   const title = "Vinyles addict";
-
 
   return (
     <header className="header">
@@ -45,8 +44,8 @@ const Header = () => {
       ) : (
         <div className="auth-buttons">
           <div className="auth-buttons-login" onClick={openLogin}>
-            Connexion{" "}
-          </div>{" "}
+            Connexion
+          </div>
           /
           <div className="auth-buttons-signup" onClick={openSubmit}>
             Créer un compte
@@ -57,10 +56,12 @@ const Header = () => {
       {modaleLogin && (
         <div className="modale-login">
           <form onSubmit={login}>
+            <h2>Connexion</h2>
             <input
               type="email"
               placeholder="Email"
               value={email}
+              autoComplete="email"
               onChange={(e) => setEmail(e.target.value)}
             />
 
@@ -70,16 +71,20 @@ const Header = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <button type="submit">Se connecter</button>
-            <button type="button" onClick={() => setModaleLogin(false)}>
-              Annuler
-            </button>
+            <div className="buttons">
+              <button type="submit" className="btn-save">Se connecter</button>
+              <button type="button" className="btn-cancel" onClick={() => setModaleLogin(false)}>
+                Annuler
+              </button>
+            </div>
           </form>
         </div>
       )}
       {modaleSignup && (
         <div className="modale-signup">
           <form onSubmit={signup}>
+            {" "}
+            <h2>Créer un compte</h2>
             <input
               type="email"
               placeholder="Email"
@@ -104,12 +109,22 @@ const Header = () => {
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
             />
-            <button type="button" onClick={(e) => signup(e)}>
-              Créer un compte
-            </button>
-            <button type="button" onClick={() => setModaleSignup(false)}>
-              Annuler
-            </button>
+            <div className="buttons">
+              <button
+                className="btn-save"
+                type="button"
+                onClick={(e) => signup(e)}
+              >
+                Créer un compte
+              </button>
+              <button
+                className="btn-cancel"
+                type="button"
+                onClick={() => setModaleSignup(false)}
+              >
+                Annuler
+              </button>
+            </div>
             {errorMessage && errorMessage}
           </form>
         </div>

@@ -6,7 +6,7 @@ const SearchBar = () => {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    // Si la barre est vide, on ne fait rien
+  
     if (query.length < 3) return; 
 
     // On prépare le minuteur
@@ -20,11 +20,8 @@ const SearchBar = () => {
         console.error("Erreur recherche :", error);
       }
     }, 500);
-
-    // NETTOYAGE : Si l'utilisateur tape une autre lettre avant les 500ms, 
-    // on annule le minuteur précédent. C'est ça le vrai Debounce !
     return () => clearTimeout(delayDebounceFn);
-  }, [query]); // S'exécute à chaque fois que 'query' change
+  }, [query]); 
 
   return (
     <div className="searchBar-container">
