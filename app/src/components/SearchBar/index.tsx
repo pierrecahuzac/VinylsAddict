@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "../../styles/searchBar.scss";
+import "./SearchBar.scss";
 
 const SearchBar = () => {
   const [query, setQuery] = useState("");
@@ -9,7 +9,7 @@ const SearchBar = () => {
   
     if (query.length < 3) return; 
 
-    // On prépare le minuteur
+  
     const delayDebounceFn = setTimeout(async () => {
       try {
         const result = await axios.get(

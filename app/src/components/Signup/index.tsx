@@ -59,7 +59,7 @@ const Signup = ({
           required
         />
         <div className="buttons">
-          {/* Changement en type="submit" pour une meilleure UX (Validation via Entrée) */}
+          
           <button className="btn-save" type="submit">
             Créer un compte
           </button>

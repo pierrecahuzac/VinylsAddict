@@ -5,7 +5,7 @@ import App from "./App.tsx";
 
 import { UserProvider } from "./contexts/userContext.tsx";
 
-import "./index.scss";
+import "./styles/index.scss";
 
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>

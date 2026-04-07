@@ -53,7 +53,9 @@ const AlbumController = {
           .status(404)
           .json({ message: `Détaisl de l'album introuvables` });
       }
-      return res.status(201).json({ userAlbum, message: `Détails de l'album trvoués` });
+      return res
+        .status(201)
+        .json({ userAlbum, message: `Détails de l'album trouvés` });
     } catch (error) {
       console.log(error);
     }
@@ -93,6 +95,7 @@ const AlbumController = {
       const newAlbum = await prisma.album.create({
         data: {
           title,
+          color,
           artist,
           releaseDate: year ? parseInt(year) : null,
           coverUrl,
@@ -100,30 +103,27 @@ const AlbumController = {
           user: {
             connect: { id: userId },
           },
-
+          vinylVariant: variantId
+            ? {
+                connect: { id: variantId },
+              }
+            : undefined,
           genres: genreId
             ? {
                 connect: { id: genreId },
-              }
-            : undefined,
-
-          variants: variantId
-            ? {
-                connect: { id: variantId },
               }
             : undefined,
         },
 
         include: {
           genres: true,
-          variants: true,
+          // variants: true,
         },
       });
       console.log(newAlbum);
 
       const newUserAlbum = await prisma.userAlbum.create({
         data: {
-          color,
           userId: userId,
           albumId: newAlbum.id,
           price: price ? parseFloat(price) : null,

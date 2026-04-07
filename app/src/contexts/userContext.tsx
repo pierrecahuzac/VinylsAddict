@@ -10,7 +10,7 @@ import axios from "axios";
 import useToast from "../hooks/useToast";
 import { useNavigate } from "react-router";
 
-const API_URL = "http://192.168.1.181:33000/api";
+const API_URL = "${import.meta.env.VITE_BACKEND_URL_DEV}/api";
 
 interface User {
   id: string;
@@ -63,9 +63,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const checkToken = async () => {
     try {
-      const response = await axios.get(`${API_URL}/user/checkToken`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/checkToken`,
+        {
+          withCredentials: true,
+        },
+      );
       if (response.status === 200 && response.data.isLogged) {
         setUser(response.data.user);
         setUserIslogged(true);
@@ -89,9 +92,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const result = await axios.post(
-        `${API_URL}/user/login`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/login`,
         { email, password },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (result.status === 200 && result.data.isLogged) {
@@ -127,20 +130,21 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `${API_URL}/user/signup`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/signup`,
         { email, password, passwordConfirmation, username },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (response.status === 201 || response.status === 200) {
         onSuccess("Compte créé avec succès !");
         setModaleSignup(false);
         // On peut soit connecter l'user direct, soit lui demander de se log
-        setModaleLogin(true); 
+        setModaleLogin(true);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const msg = error.response?.data?.message || "Erreur lors de l'inscription.";
+        const msg =
+          error.response?.data?.message || "Erreur lors de l'inscription.";
         onError(msg);
         setErrorMessage(msg);
       }
@@ -151,7 +155,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.post(`${API_URL}/user/logout`, {}, { withCredentials: true });
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/logout`,
+        {},
+        { withCredentials: true },
+      );
       setUser(null);
       setUserIslogged(false);
       setEmail("");
@@ -195,7 +203,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error("useUser doit être utilisé à l'intérieur d'un UserProvider");
+    throw new Error(
+      "useUser doit être utilisé à l'intérieur d'un UserProvider",
+    );
   }
   return context;
 };

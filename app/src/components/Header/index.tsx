@@ -1,9 +1,11 @@
-import SearchBar from "../searchBar";
+import SearchBar from "../SearchBar";
 
 import { useUser } from "../../contexts/userContext";
-import "../../styles/header.scss";
-import Login from "../login";
-import Signup from "../signup";
+
+import Login from "../Login";
+import Signup from "../Signup";
+
+import "./Header.scss";
 
 const Header = () => {
   const {
@@ -41,7 +43,7 @@ const Header = () => {
     <header className="header">
       <h1 className="header__title">{title.toUpperCase()}</h1>
       {userIsLogged ? (
-        <div>Bienvenue, {user?.username}!</div>
+        <div>Salut, {user?.username}!</div>
       ) : (
         <div className="auth-buttons">
           <div className="auth-buttons-login" onClick={openLogin}>

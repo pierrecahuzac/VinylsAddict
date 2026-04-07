@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { IoHeartOutline } from "react-icons/io5";
+import { IoHeartOutline, IoLibrary } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 
-import "../../styles/albumDetails.scss";
+import "./MasterAlbum.scss";
 
 interface AlbumData {
   title: string;
@@ -20,7 +20,7 @@ interface UserAlbumData {
   notes?: string;
 }
 
-const AlbumDetails = () => {
+const MasterAlbum = () => {
   const { id } = useParams<{ id: string }>();
   const { userIsLogged } = useUser();
 
@@ -31,7 +31,7 @@ const AlbumDetails = () => {
     const fetchData = async () => {
       try {
         const albumRes = await axios.get(
-          `http://192.168.1.181:33000/api/albums/getOneAlbum/${id}`,
+          `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getOneAlbum/${id}`,
           {
             withCredentials: true,
           },
@@ -40,7 +40,7 @@ const AlbumDetails = () => {
 
         if (userIsLogged) {
           const userAlbumRes = await axios.get(
-            `http://192.168.1.181:33000/api/albums/getUserAlbum/${id}`,
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getUserAlbum/${id}`,
             {
               withCredentials: true,
             },
@@ -58,9 +58,9 @@ const AlbumDetails = () => {
   if (!album) return <div>Chargement...</div>;
 
   return (
-    <div className="albumDetails">
-      <div className="albumDetails-header">
-        <div className="albumDetails-cover">
+    <div className="master-album">
+      <div className="master-album-header">
+        <div className="master-album-cover">
           <img
             src={album.coverUrl || "https://via.placeholder.com/200"}
             alt={album.title}
@@ -68,32 +68,33 @@ const AlbumDetails = () => {
         </div>
       </div>
 
-      <div className="albumDetails__datas">
-        <div className="albumDetails__infos">
-          <div className="albumDetails__title-artist">
+      <div className="master-album__datas">
+        <div className="master-album__infos">
+          <div className="master-album__title-artist">
             {album.title} - {album.artist}
           </div>
           <div>Année: {album.releaseDate}</div>
 
-          {/* On affiche les détails persos UNIQUEMENT s'ils existent (table pivot) */}
           {userDetails && (
             <>
               <hr />
-              <div className="personal-section-title">Mon exemplaire :</div>
-              <div>Prix d'achat: {userDetails.price} €</div>
+
               <div>Couleur: {userDetails.color}</div>
-              <div>Condition: {userDetails.condition?.nameFR}</div>
-              {userDetails.notes && <div>Note: {userDetails.notes}</div>}
             </>
           )}
 
-          <div className="albumDetails__add-to-wishlist">
+          <div className="master-album__add-to-wishlist">
             <IoHeartOutline />
           </div>
+          {userIsLogged && (
+            <div className="album-card__owned-badge" title="Dans ma collection">
+              <IoLibrary />
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
 
-export default AlbumDetails;
+export default MasterAlbum;
