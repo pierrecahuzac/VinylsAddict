@@ -1,25 +1,27 @@
 import { Route, Routes } from "react-router-dom";
 
-import Collection from "./pages/collection";
-import Wishlist from "./pages/whislist";
-import ProfilePage from "./pages/user";
-import AlbumDetails from "./pages/albumDetails";
-import NavBar from "./components/navBar";
-import Layout from "./components/layout";
-import AlbumsPage from "./pages/albumsPage";
+import MyCollection from "./pages/MyCollection";
+import MyWishlist from "./pages/MyWishlist";
+import Profile from "./pages/Profile";
+import MasterAlbum from "./pages/MasterAlbum";
+import NavBar from "./components/NavBar";
+import Layout from "./components/Layout";
+import Catalog from "./pages/Catalog";
 
 import { ToastContainer } from "react-toastify";
+import UserDetailsAlbum from "./pages/MyAlbumDetails";
 const App = () => {
   return (
     <>
       <ToastContainer />
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route path="/" element={<AlbumsPage />} />
-          <Route path="/collection/:id" element={<Collection />} />
-          <Route path="/wishlist/:id" element={<Wishlist />} />
-          <Route path="/profile/:id" element={<ProfilePage />} />
-          <Route path="/album/:id" element={<AlbumDetails />} />
+          <Route path="/" element={<Catalog />} />
+          <Route path="/collection/:id" element={<MyCollection />} />
+          <Route path="/wishlist/:id" element={<MyWishlist />} />
+          <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/album/:id" element={<MasterAlbum />} />
+          <Route path="/collection/album/:albumId" element={<UserDetailsAlbum />} />
         </Route>
       </Routes>
       <NavBar />

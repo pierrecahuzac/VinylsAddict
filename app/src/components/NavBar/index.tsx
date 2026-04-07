@@ -7,9 +7,10 @@ import {
   IoLogOutOutline,
   IoPerson,
 } from "react-icons/io5";
+
 import { useUser } from "../../contexts/userContext";
 
-import "../../styles/navBar.scss";
+import "./NavBar.scss";
 
 const NavBar = () => {
   const {

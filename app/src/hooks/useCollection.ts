@@ -1,18 +1,18 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API_URL = "http://192.168.1.181:33000/api";
+const API_URL = "${import.meta.env.VITE_BACKEND_URL_DEV}/api";
 
 export const useCollection = () => {
   const [genres, setGenres] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [allMetadata, setAllMetadata] = useState(null); // Si tu veux stocker les métadonnées
+  const [allMetadata, setAllMetadata] = useState(null); 
 
   const getAllMetadata = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(`${API_URL}/metadata/getAllMetadatas`);
+      const result = await axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/metadata/getAllMetadatas`);
      
       setAllMetadata(result.data);
   
@@ -27,7 +27,7 @@ export const useCollection = () => {
   const getAllGenres = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(`${API_URL}/genres/getAll`);
+      const result = await axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/genres/getAll`);
       setGenres(result.data);
     } catch (error) {
       console.error("Erreur Genres:", error);
@@ -39,7 +39,7 @@ export const useCollection = () => {
   const getAllAlbums = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(`${API_URL}/albums/getAll`);
+      const result = await axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getAll`);
       setAlbums(result.data);
     } catch (error) {
       console.error("Erreur Albums:", error);
