@@ -3,6 +3,9 @@ $primary-yellow: rgb(255, 255, 73);
 $bg-dark: #121212;
 $modale-bg: rgba(0, 0, 0, 0.95);
 
+.status-msg {
+  text-align: center;
+}
 .catalog {
   display: flex;
   flex-direction: column;

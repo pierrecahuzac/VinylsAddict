@@ -1,33 +1,25 @@
-import type { SyntheticEvent } from "react";
+import { Link } from "react-router";
+import { useUser } from "../../contexts/userContext";
 
+import "./Signup.scss";
 
-interface SignupProps {
-  signup: (e: SyntheticEvent<HTMLFormElement>) => void | Promise<void>;
-  email: string;
-  setEmail: (value: string) => void;
-  username: string;
-  setUsername: (value: string) => void;
-  password: string;
-  setPassword: (value: string) => void;
-  passwordConfirmation: string;
-  setPasswordConfirmation: (value: string) => void;
-  setModaleSignup: (value: boolean) => void;
-}
-
-const Signup = ({
-  signup,
-  email,
-  setEmail,
-  username,
-  setUsername,
-  password,
-  setPassword,
-  passwordConfirmation,
-  setPasswordConfirmation,
-  setModaleSignup,
-}: SignupProps) => {
+const Signup = () => {
+  const {
+    email,
+    setEmail,
+    user,
+    userIsLogged,
+    login,
+    signup,
+    password,
+    setPassword,
+    username,
+    setUsername,
+    passwordConfirmation,
+    setPasswordConfirmation,
+  } = useUser();
   return (
-    <div className="modale-signup">
+    <div className="signup">
       <form onSubmit={signup}>
         <h2>Créer un compte</h2>
         <input
@@ -59,17 +51,12 @@ const Signup = ({
           required
         />
         <div className="buttons">
-          
           <button className="btn-save" type="submit">
             Créer un compte
           </button>
-          <button
-            className="btn-cancel"
-            type="button"
-            onClick={() => setModaleSignup(false)}
-          >
+          <Link to={"/"} className="btn-cancel" type="button">
             Annuler
-          </button>
+          </Link>
         </div>
       </form>
     </div>
