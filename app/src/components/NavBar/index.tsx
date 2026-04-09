@@ -5,7 +5,14 @@ import {
   IoHome,
   IoHeartOutline,
   IoLogOutOutline,
+  IoLogOut,
   IoPerson,
+  IoExitOutline,
+  IoExit,
+  IoLogInOutline,
+  IoLogIn,
+  IoPersonAddSharp,
+  IoPersonAddOutline,
 } from "react-icons/io5";
 
 import { useUser } from "../../contexts/userContext";
@@ -17,15 +24,26 @@ const NavBar = () => {
     user,
     userIsLogged,
     isLoading,
-  
+
     logout,
   } = useUser();
 
   return (
     <nav className="nav-bar">
-      <Link to={`/`}>
-        <IoHome />
-      </Link>
+      <>
+        <Link to={`/`}>
+          <IoHome />
+        </Link>
+        <Link to={`/login`}>
+          <IoLogIn />
+        </Link>
+        <Link to={`/signup`}>
+          <IoPersonAddOutline 
+          // style={{color:"white"}}
+          />
+        </Link>
+      </>
+
       {userIsLogged && (
         <>
           <Link to={`/collection/${user?.id}`}>
@@ -36,15 +54,14 @@ const NavBar = () => {
           </Link>
         </>
       )}
-
-      <Link to={`/profile/${user?.id}`}>
-        {userIsLogged && !isLoading && <IoPerson />}
-      </Link>
+      {userIsLogged && !isLoading && (
+        <Link to={`/profile/${user?.id}`}>
+          <IoPerson />
+        </Link>
+      )}
 
       {userIsLogged && user && !isLoading && (
-        <button onClick={logout}>
-          <IoLogOutOutline />{" "}
-        </button>
+        <IoLogOutOutline onClick={logout} />
       )}
     </nav>
   );

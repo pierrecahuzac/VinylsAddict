@@ -10,6 +10,8 @@ import Catalog from "./pages/Catalog";
 
 import { ToastContainer } from "react-toastify";
 import UserDetailsAlbum from "./pages/MyAlbumDetails";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 const App = () => {
   return (
     <>
@@ -20,6 +22,8 @@ const App = () => {
           <Route path="/collection/:id" element={<MyCollection />} />
           <Route path="/wishlist/:id" element={<MyWishlist />} />
           <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/album/:id" element={<MasterAlbum />} />
           <Route path="/collection/album/:albumId" element={<UserDetailsAlbum />} />
         </Route>

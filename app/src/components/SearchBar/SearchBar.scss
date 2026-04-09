@@ -1,6 +1,13 @@
+.searchBar-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+}
 .searchBar {
 border-radius: 10px;
 height: 30px;
 width: 80%;
 margin: 0 20px 0 20px;
+padding-left: 1rem;
 }

@@ -1,25 +1,28 @@
-import {   type SyntheticEvent } from "react";
+import { Link } from "react-router-dom";
+import { useUser } from "../../contexts/userContext";
 
-interface LoginProps {
-  
-  login: (e: SyntheticEvent<HTMLFormElement>) => void | Promise<void>;
-  email: string;
-  setEmail: (value: string) => void; 
-  password: string;
-  setPassword: (value: string) => void; 
-  setModaleLogin: (value: boolean) => void;
-}
-
-const Login = ({
-  login,
-  email,
-  setEmail,
-  password,
-  setPassword,
-  setModaleLogin,
-}: LoginProps) => {
-  return (
-    <div className="modale-login">
+import './Login.scss'
+const Login = () =>{
+    const {
+        email,
+        setEmail,
+        user,
+        userIsLogged,
+        login,
+        signup,
+        setModaleSignup,
+      
+        setModaleLogin,
+        password,
+        setPassword,
+        username,
+        setUsername,
+        passwordConfirmation,
+        setPasswordConfirmation,
+   
+      } = useUser();
+   return(
+    <div className="login">
       <form onSubmit={login}>
         <h2>Connexion</h2>
         <input
@@ -40,17 +43,17 @@ const Login = ({
           <button type="submit" className="btn-save">
             Se connecter
           </button>
-          <button
-            type="button"
+          <Link
+            to={"/"}
             className="btn-cancel"
-            onClick={() => setModaleLogin(false)}
+           
           >
             Annuler
-          </button>
+          </Link>
         </div>
       </form>
     </div>
-  );
-};
+   ) 
+}
 
-export default Login;
+export default Login
