@@ -1,17 +1,26 @@
+
 import prisma from "../database/prismaClient.js";
 import jwt from "jsonwebtoken";
 const AlbumController = {
   getOneAlbum: async (req, res) => {
     try {
       const albumId = req.params.id;
-      console.log(albumId);
-
+   
+      
       const album = await prisma.album.findUnique({
         where: {
           id: albumId,
         },
+        include: {
+          
+        format: true,
+        genres: true,
+        styles: true, 
+        vinylVariant: true, 
+     
+        },
       });
-      console.log(album);
+
       if (!album) {
         return res.status(200).json({ message: "No album find with this id" });
       }
@@ -21,33 +30,26 @@ const AlbumController = {
     }
   },
   getUserAlbum: async (req, res) => {
-    console.log("couc");
-
     const albumId = req.params.id;
     const token = req.cookies.va_token;
-
     if (!token) {
       return res.status(401).json({ message: "Non authentifié" });
     }
-
     const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = tokenDecoded.userId;
     try {
       const userAlbum = await prisma.userAlbum.findUnique({
         where: {
-          // On utilise la clé composite générée par Prisma
           userId_albumId: {
             userId: userId,
             albumId: albumId,
           },
         },
-        // include: {
-        //   condition: true, // Pour récupérer le nom de l'état (Mint, etc.)
-        //   variants: true, // Pour récupérer les variantes (Couleur, etc.)
-        //   notes:true,
-        //   color:true
-        // },
+        include: {
+          condition: true,
+        },
       });
+
       if (!userAlbum) {
         return res
           .status(404)
@@ -72,6 +74,8 @@ const AlbumController = {
   create: async (req, res) => {
     try {
       const token = req.cookies.va_token;
+      console.log(token);
+
       if (!token) {
         return res.status(401).json({ message: "Non authentifié" });
       }

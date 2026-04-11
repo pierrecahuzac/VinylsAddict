@@ -7,6 +7,9 @@ services:
     volumes:
       - ./app:/app
       - /app/node_modules
+    restart: always
+    depends_on:
+      - api
   api:
     container_name: api
     build: ./api
@@ -21,6 +24,9 @@ services:
     volumes:
       - ./api:/api
       - /api/node_modules
+    restart: always
+    depends_on:
+      - db
   db:
     container_name: db
     image: postgres:18.3-alpine
@@ -34,6 +40,7 @@ services:
       - "55432:5432"
     volumes:
       - db_data:/var/lib/postgresql
+    restart: always
   prisma-studio:
     container_name: prisma-studio
     build: ./api 
@@ -45,6 +52,9 @@ services:
     volumes:
       - ./api:/api
     working_dir: /api
+    restart: always
+    depends_on:
+      - db
 volumes:
   db_data:    
       

@@ -1,27 +1,10 @@
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
 
-import './Login.scss'
-const Login = () =>{
-    const {
-        email,
-        setEmail,
-        user,
-        userIsLogged,
-        login,
-        signup,
-        setModaleSignup,
-      
-        setModaleLogin,
-        password,
-        setPassword,
-        username,
-        setUsername,
-        passwordConfirmation,
-        setPasswordConfirmation,
-   
-      } = useUser();
-   return(
+import "./Login.scss";
+const Login = () => {
+  const { email, setEmail, login, password, setPassword } = useUser();
+  return (
     <div className="login">
       <form onSubmit={login}>
         <h2>Connexion</h2>
@@ -43,17 +26,13 @@ const Login = () =>{
           <button type="submit" className="btn-save">
             Se connecter
           </button>
-          <Link
-            to={"/"}
-            className="btn-cancel"
-           
-          >
+          <Link to={"/"} className="btn-cancel">
             Annuler
           </Link>
         </div>
       </form>
     </div>
-   ) 
-}
+  );
+};
 
-export default Login
+export default Login;

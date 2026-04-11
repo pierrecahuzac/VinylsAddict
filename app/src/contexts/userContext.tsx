@@ -10,8 +10,6 @@ import axios from "axios";
 import useToast from "../hooks/useToast";
 import { useNavigate } from "react-router";
 
-const API_URL = "${import.meta.env.VITE_BACKEND_URL_DEV}/api";
-
 interface User {
   id: string;
   email: string;
@@ -28,10 +26,8 @@ interface UserContextType {
   logout: () => Promise<void>;
   checkToken: () => Promise<void>;
   signup: (e: SyntheticEvent<HTMLFormElement>) => Promise<void>;
-  modaleLogin: boolean;
-  setModaleLogin: (value: boolean) => void;
-  modaleSignup: boolean;
-  setModaleSignup: (value: boolean) => void;
+  
+
   password: string;
   setPassword: (password: string) => void;
   username: string;
@@ -51,11 +47,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [modaleLogin, setModaleLogin] = useState(false);
-  const [modaleSignup, setModaleSignup] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [userIsLogged, setUserIslogged] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // Commencer à true pour le checkToken
+  const [isLoading, setIsLoading] = useState(true); 
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
@@ -91,18 +85,22 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      if(!email || !password){
+        onError("Email ou mot de passe absent.")
+        return
+      }
       const result = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/user/login`,
         { email, password },
         { withCredentials: true },
       );
-
       if (result.status === 200 && result.data.isLogged) {
-        onSuccess("Heureux de vous revoir !");
         setUser(result.data.user);
         setUserIslogged(true);
-        setPassword("");
-        setModaleLogin(false);
+        setPassword("");        
+        setEmail("");        
+        navigate(`/collection/${user?.id}`)
+        onSuccess("Heureux de vous revoir !");
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -137,9 +135,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.status === 201 || response.status === 200) {
         onSuccess("Compte créé avec succès !");
-        setModaleSignup(false);
-        // On peut soit connecter l'user direct, soit lui demander de se log
-        setModaleLogin(true);
+       
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -179,10 +175,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setEmail,
     login,
     checkToken,
-    setModaleLogin,
-    setModaleSignup,
-    modaleLogin,
-    modaleSignup,
+
+
     username,
     setUsername,
     password,
