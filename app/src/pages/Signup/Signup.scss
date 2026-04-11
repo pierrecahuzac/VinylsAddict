@@ -56,7 +56,7 @@ height: 100%;
           background-color: $primary;
           color: black;
           &:hover {
-            background-color: darken(#f1c40f, 10%);
+            background-color: $dark;
           }
         }
 
