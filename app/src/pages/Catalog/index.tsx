@@ -1,4 +1,9 @@
-import { useEffect, useState, type ChangeEvent, type SyntheticEvent } from "react";
+import {
+  useEffect,
+  useState,
+  type ChangeEvent,
+  type SyntheticEvent,
+} from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 
@@ -6,23 +11,11 @@ import { useCollection } from "../../hooks/useCollection.ts";
 import Album from "../../components/Album/index.tsx";
 import { useUser } from "../../contexts/userContext.tsx";
 import Modale from "../../components/Modale/index.tsx";
+import type { AlbumState } from "../../types/album.ts";
 
 import "./Catalog.scss";
 
-// 1. Définition du type pour l'état local du formulaire
-interface AlbumState {
-  artist: string;
-  title: string;
-  year: string;
-  genreId: string;
-  conditionId: string;
-  variantId: string;
-  formatId: string;
-  price: string;
-  coverUrl: string;
-  color: string;
-  styleId: string;
-}
+
 
 const initialAlbumState: AlbumState = {
   artist: "",
@@ -35,19 +28,23 @@ const initialAlbumState: AlbumState = {
   price: "",
   coverUrl: "",
   color: "",
-  styleId: ""
+  styleId: "",
 };
 
 const Catalog = () => {
-  const { albums, getAllAlbums, isLoading, getAllMetadata, allMetadata } = useCollection();
+  const { albums, isLoading, getAllAlbums, getAllMetadata, allMetadata } =
+    useCollection();
   const { userIsLogged } = useUser();
+
   const navigate = useNavigate();
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
-  
+
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);
+  const [addAlbumToCollection, setAddAlbumToCollection] = useState(false);
 
-
-  const changeDataAlbum = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const changeDataAlbum = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     setAlbum({
       ...album,
       [e.target.name]: e.target.value,
@@ -62,28 +59,28 @@ const Catalog = () => {
     getAllMetadata();
     setModaleAddNewAlbum(true);
   };
-  
 
   const submitNewAlbum = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
 
     const payload = {
       ...album,
       year: album.year ? Number(album.year) : null,
       price: album.price ? Number(album.price) : null,
+      addAlbumToCollection
     };
-
+    console.log(payload);
+    
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/create`,
         payload,
-        { withCredentials: true }
+        { withCredentials: true },
       );
-
-    
       setAlbum(initialAlbumState);
       setModaleAddNewAlbum(false);
-      getAllAlbums(); 
+      getAllAlbums();
     } catch (error) {
       console.error("Erreur création album:", error);
     }
@@ -92,30 +89,29 @@ const Catalog = () => {
   const openAlbumDetails = (albumId: string) => {
     navigate(`/album/${albumId}`);
   };
-  
+
   return (
     <div className="catalog_">
-      <main className="catalog___list">
+      <main className="catalog__list">
         <h1>Derniers ajouts</h1>
-        {isLoading && (
-          <p className="status-msg">Chargement des albums...</p>
-        )}
+        {isLoading && <p className="status-msg">Chargement des albums...</p>}
 
         {!isLoading && albums.length === 0 && (
           <p className="status-msg">Aucun album dans votre collection.</p>
         )}
 
-        {albums.length > 0 && albums?.map((item: any) => (
-          <Album
-            id={item.id}
-            key={item.id}
-            title={item.title}
-            artist={item.artist}
-            cover={item.coverUrl}
-            year={item.releaseDate}
-            onClick={() => openAlbumDetails(item.id)}
-          />
-        ))}
+        {albums.length > 0 &&
+          albums?.map((item: any) => (
+            <Album
+              id={item.id}
+              key={item.id}
+              title={item.title}
+              artist={item.artist}
+              cover={item.coverUrl}
+              year={String(item.releaseDate)}
+              onClick={() => openAlbumDetails(item.id)}
+            />
+          ))}
       </main>
 
       {userIsLogged && (
@@ -129,12 +125,14 @@ const Catalog = () => {
       )}
 
       {modaleAddNewAlbum && (
-        <Modale 
-          submitNewAlbum={submitNewAlbum} 
-          album={album} 
-          changeDataAlbum={changeDataAlbum} 
-          allMetadata={allMetadata} 
+        <Modale
+          submitNewAlbum={submitNewAlbum}
+          album={album}
+          changeDataAlbum={changeDataAlbum}
+          allMetadata={allMetadata}
           setModaleAddNewAlbum={setModaleAddNewAlbum}
+          addAlbumToCollection={addAlbumToCollection}
+          setAddAlbumToCollection={setAddAlbumToCollection}
         />
       )}
     </div>

@@ -13,15 +13,22 @@ interface AlbumData {
   coverUrl: string;
   releaseDate?: number;
   color?: string;
+  trackCount?: number;
+  diskNumber?: number;
+  barCode?: string;
+  format: {
+    speed: string;
+    name: string;
+  };
 }
 
 interface UserAlbumData {
   userAlbum: {
     price: number | null;
     notes?: string;
-  };
-  condition?: {
-    nameFR: string;
+    condition?: {
+      nameFR?: string;
+    };
   };
 }
 
@@ -31,18 +38,14 @@ interface FullAlbumState {
 }
 
 const MyAlbumDetails = () => {
-
   const { albumId } = useParams<{ albumId: string }>();
   const { userIsLogged } = useUser();
-
 
   const [data, setData] = useState<FullAlbumState | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-   
-    
     const fetchFullDetails = async () => {
       if (!albumId) return;
 
@@ -51,15 +54,20 @@ const MyAlbumDetails = () => {
         setError(null);
 
         const [albumRes, userRes] = await Promise.all([
-          axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/albums/getOneAlbum/${albumId}`, {
-            withCredentials: true,
-          }),
-          axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/api/albums/getUserAlbum/${albumId}`, {
-            withCredentials: true,
-          }),
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getOneAlbum/${albumId}`,
+            {
+              withCredentials: true,
+            },
+          ),
+          axios.get(
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getUserAlbum/${albumId}`,
+            {
+              withCredentials: true,
+            },
+          ),
         ]);
 
-       
         setData({
           album: albumRes.data,
           userDatas: userRes.data,
@@ -75,11 +83,13 @@ const MyAlbumDetails = () => {
     fetchFullDetails();
   }, [albumId, userIsLogged]);
 
+  if (loading)
+    return <div className="status-msg">Chargement des détails...</div>;
+  if (error || !data)
+    return (
+      <div className="status-msg error">{error || "Album introuvable"}</div>
+    );
 
-  if (loading) return <div className="status-msg">Chargement des détails...</div>;
-  if (error || !data) return <div className="status-msg error">{error || "Album introuvable"}</div>;
-
- 
   const { album, userDatas } = data;
   const { userAlbum, condition } = userDatas;
 
@@ -100,23 +110,30 @@ const MyAlbumDetails = () => {
             <h1 className="myAlbumDetails__title-artist">
               {album.title} <span className="separator">—</span> {album.artist}
             </h1>
-            <p className="metadata">Presse : {album.releaseDate || "Année inconnue"}</p>
+            <p className="metadata">
+              Année de sortie : {album.releaseDate || "Année inconnue"}
+            </p>
           </header>
 
-          {/* Section propre à l'utilisateur (exemplaire possédé) */}
           <section className="personal-section">
             <hr />
-            <h2 className="personal-section-title">Mon exemplaire</h2>
-            
+
             <div className="details-grid">
               <div className="detail-item">
                 <span className="label">Prix d'achat :</span>
-                <span className="value">{userAlbum?.price ? `${userAlbum.price} €` : "—"}</span>
+                <span className="value">
+                  {userAlbum?.price ? `${userAlbum.price} €` : "—"}
+                </span>
               </div>
 
               <div className="detail-item">
                 <span className="label">État du disque :</span>
-                <span className="value">{condition?.nameFR || "Non renseigné"}</span>
+                <span className="condition">
+                  {userDatas?.userAlbum?.condition.nameFR || "Non renseigné"}
+                </span>
+                <span className="value">
+                  {userDatas?.userAlbum?.notes || ""}
+                </span>
               </div>
 
               <div className="detail-item">
@@ -124,6 +141,17 @@ const MyAlbumDetails = () => {
                 <span className="value">{album.color || "Standard"}</span>
               </div>
             </div>
+            <span className="value">
+              {album?.format?.name || "Format non renseigné"} -{" "}
+              {album?.format?.speed || "Format non renseigné"}
+            </span>
+            <span className="value">{album.barCode || "Code bar inconnu"}</span>
+            <span className="value">
+              {album.diskNumber || "Nombre de disques inconnu"}
+            </span>
+            <span className="value">
+              {album.trackCount || "Nombre de pistes inconnu"}
+            </span>
 
             {userAlbum?.notes && (
               <div className="detail-notes">
@@ -133,11 +161,11 @@ const MyAlbumDetails = () => {
             )}
           </section>
 
-          <div className="myAlbumDetails__actions">
+          {/* <div className="myAlbumDetails__actions">
             <button className="wishlist-btn" title="Ajouter aux favoris">
               <IoHeartOutline size={28} />
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

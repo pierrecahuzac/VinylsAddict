@@ -34,14 +34,18 @@ const NavBar = () => {
         <Link to={`/`}>
           <IoHome />
         </Link>
-        <Link to={`/login`}>
-          <IoLogIn />
-        </Link>
-        <Link to={`/signup`}>
-          <IoPersonAddOutline 
-          // style={{color:"white"}}
-          />
-        </Link>
+        {!userIsLogged && (
+          <>
+            <Link to={`/login`}>
+              <IoLogIn />
+            </Link>
+            <Link to={`/signup`}>
+              <IoPersonAddOutline
+              // style={{color:"white"}}
+              />
+            </Link>
+          </>
+        )}
       </>
 
       {userIsLogged && (
