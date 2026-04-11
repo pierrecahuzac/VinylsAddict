@@ -4,21 +4,11 @@ import { useParams } from "react-router-dom";
 import { IoHeartOutline, IoLibrary } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 
+import useToast from "../../hooks/useToast";
+import type { AlbumData, UserAlbumData } from "../../types/album";
+
+
 import "./MasterAlbum.scss";
-
-interface AlbumData {
-  title: string;
-  artist: string;
-  coverUrl: string;
-  releaseDate?: number;
-}
-
-interface UserAlbumData {
-  price?: number;
-  color?: string;
-  condition?: { nameFR: string };
-  notes?: string;
-}
 
 const MasterAlbum = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +16,7 @@ const MasterAlbum = () => {
 
   const [album, setAlbum] = useState<AlbumData | null>(null);
   const [userDetails, setUserDetails] = useState<UserAlbumData | null>(null);
+  const { onError } = useToast();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,6 +48,29 @@ const MasterAlbum = () => {
 
   if (!album) return <div>Chargement...</div>;
 
+  const addToUserWishlist = async () => {
+    console.log(userIsLogged);
+    if (!userIsLogged) {
+      onError(
+        `Vous devez être connecté à l'application pour utiliser cette fonctionnalité`,
+      );
+    }
+    
+    console.log(id);
+    
+    try {
+      const result = await axios.get(
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/addAlbumToUserWishlist/${id}`,
+            {
+              withCredentials: true,
+            },
+          );
+          console.log(result);
+          
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="master-album">
       <div className="master-album-header">
@@ -84,7 +98,7 @@ const MasterAlbum = () => {
           )}
 
           <div className="master-album__add-to-wishlist">
-            <IoHeartOutline />
+            <IoHeartOutline onClick={addToUserWishlist} />
           </div>
           {userIsLogged && (
             <div className="album-card__owned-badge" title="Dans ma collection">

@@ -1,22 +1,20 @@
 import { useState } from "react";
 import axios from "axios";
 
-const API_URL = "${import.meta.env.VITE_BACKEND_URL_DEV}/api";
-
 export const useCollection = () => {
   const [genres, setGenres] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [allMetadata, setAllMetadata] = useState(null); 
+  const [allMetadata, setAllMetadata] = useState(null);
 
   const getAllMetadata = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/metadata/getAllMetadatas`);
-     
+      const result = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/metadata/getAllMetadatas`,
+      );
+
       setAllMetadata(result.data);
-  
-      
     } catch (error) {
       console.error("Erreur Métadonnées:", error);
     } finally {
@@ -27,7 +25,9 @@ export const useCollection = () => {
   const getAllGenres = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/genres/getAll`);
+      const result = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/genres/getAll`,
+      );
       setGenres(result.data);
     } catch (error) {
       console.error("Erreur Genres:", error);
@@ -39,15 +39,38 @@ export const useCollection = () => {
   const getAllAlbums = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(`${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getAll`);
+      const result = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getAllAlbums`,
+      );
       setAlbums(result.data);
     } catch (error) {
       console.error("Erreur Albums:", error);
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   };
 
-  return { genres, albums, getAllGenres, getAllAlbums , isLoading, getAllMetadata, allMetadata };
+  const getAllUserAlbums = async () => {
+    try {
+      const result = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getAllUserAlbums`,
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(result.data);
+      setAlbums(result.data);
+    } catch (error) {}
+  };
+
+  return {
+    genres,
+    albums,
+    getAllGenres,
+    getAllAlbums,
+    getAllUserAlbums,
+    isLoading,
+    getAllMetadata,
+    allMetadata,
+  };
 };

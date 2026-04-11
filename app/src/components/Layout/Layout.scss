@@ -1,10 +1,21 @@
-.app-content {
+.app-layout {
   display: flex;
   flex-direction: column;
-  height: 100vh; 
+  height: 100vh;      
   width: 100%;
-  overflow: hidden; 
+  overflow: hidden;  
+  background-color: #121212;
 }
 
 
+.app-content {
+  flex: 1;           
+  width: 100%;
+  overflow-y: auto; 
+  -webkit-overflow-scrolling: touch;
+}
 
+// Optionnel : s'assurer que ton Header et ta Nav ne s'écrasent pas
+.header, .nav-bar {
+  flex-shrink: 0;
+}

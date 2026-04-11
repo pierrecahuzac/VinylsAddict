@@ -38,7 +38,7 @@ const initialAlbumState: AlbumState = {
 };
 
 const MyCollection = () => {
-  const { albums, getAllAlbums, isLoading, getAllMetadata, allMetadata } =
+  const { albums, getAllAlbums, getAllUserAlbums,isLoading, getAllMetadata, allMetadata } =
     useCollection();
   const navigate = useNavigate();
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
@@ -54,7 +54,7 @@ const MyCollection = () => {
   };
 
   useEffect(() => {
-    getAllAlbums();
+    getAllUserAlbums();
   }, []);
 
   const openModaleAddNewAlbum = () => {
@@ -101,7 +101,7 @@ const MyCollection = () => {
           <p className="status-msg">Aucun album dans votre collection.</p>
         )}
         
-        {albums.map((item: any) => (
+        {albums.length > 0 && albums.map((item: any) => (
           <Album
             id={item.id}
             key={item.id}

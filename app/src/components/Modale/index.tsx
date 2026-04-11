@@ -1,48 +1,25 @@
-import { type ChangeEvent,  type Dispatch, type SetStateAction, type SyntheticEvent } from "react";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type SetStateAction,
+  type SyntheticEvent,
+} from "react";
 
-
-interface AlbumFormState {
-  title: string;
-  artist: string;
-  coverUrl: string;
-  year: string | number;
-  price: string | number;
-  formatId: string;
-  conditionId: string;
-  variantId: string;
-  color: string;
-  genreId: string;
-  styleId: string;
-}
-
-
-interface MetadataItem {
-  id: string;
-  name?: string;
-  nameEN?: string;
-}
-
-interface AllMetadata {
-  formats?: MetadataItem[];
-  conditions?: MetadataItem[];
-  variants?: MetadataItem[];
-  genres?: MetadataItem[];
-  style?: MetadataItem[];
-}
-
+import type { AlbumFormState, AllMetadata } from "../../types/album";
 
 interface ModaleProps {
-  
   submitNewAlbum: (e: SyntheticEvent<HTMLFormElement>) => void | Promise<void>;
-  
   album: AlbumFormState;
-  changeDataAlbum: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  
- 
-  allMetadata: AllMetadata | null; 
-  
+  changeDataAlbum: (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => void;
+  allMetadata: AllMetadata | null;
   setModaleAddNewAlbum: Dispatch<SetStateAction<boolean>>;
+  addAlbumToCollection: boolean;
+  setAddAlbumToCollection: Dispatch<SetStateAction<boolean>>;
 }
+
+import "./Modale.scss";
 
 const Modale = ({
   submitNewAlbum,
@@ -50,6 +27,8 @@ const Modale = ({
   changeDataAlbum,
   allMetadata,
   setModaleAddNewAlbum,
+  addAlbumToCollection,
+  setAddAlbumToCollection,
 }: ModaleProps) => {
   return (
     <div className="modale_add_new_album">
@@ -91,17 +70,13 @@ const Modale = ({
               value={album.year}
               onChange={changeDataAlbum}
             />
-            <input
-              type="number"
-              step="0.01"
-              placeholder="Prix"
-              name="price"
-              value={album.price}
-              onChange={changeDataAlbum}
-            />
           </div>
 
-          <select name="formatId" value={album.formatId} onChange={changeDataAlbum}>
+          <select
+            name="formatId"
+            value={album.formatId}
+            onChange={changeDataAlbum}
+          >
             <option value="">-- Format --</option>
             {allMetadata?.formats?.map((f) => (
               <option key={f.id} value={f.id}>
@@ -110,16 +85,11 @@ const Modale = ({
             ))}
           </select>
 
-          <select name="conditionId" value={album.conditionId} onChange={changeDataAlbum}>
-            <option value="">-- État du disque --</option>
-            {allMetadata?.conditions?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.nameEN}
-              </option>
-            ))}
-          </select>
-
-          <select name="variantId" value={album.variantId} onChange={changeDataAlbum}>
+          <select
+            name="variantId"
+            value={album.variantId}
+            onChange={changeDataAlbum}
+          >
             <option value="">-- Variante --</option>
             {allMetadata?.variants?.map((v) => (
               <option key={v.id} value={v.id}>
@@ -136,7 +106,11 @@ const Modale = ({
             onChange={changeDataAlbum}
           />
 
-          <select name="genreId" value={album.genreId} onChange={changeDataAlbum}>
+          <select
+            name="genreId"
+            value={album.genreId}
+            onChange={changeDataAlbum}
+          >
             <option value="">-- Genre --</option>
             {allMetadata?.genres?.map((g) => (
               <option key={g.id} value={g.id}>
@@ -145,7 +119,11 @@ const Modale = ({
             ))}
           </select>
 
-          <select name="styleId" value={album.styleId} onChange={changeDataAlbum}>
+          <select
+            name="styleId"
+            value={album.styleId}
+            onChange={changeDataAlbum}
+          >
             <option value="">-- Style --</option>
             {allMetadata?.style?.map((s) => (
               <option key={s.id} value={s.id}>
@@ -153,7 +131,39 @@ const Modale = ({
               </option>
             ))}
           </select>
-
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              name="addToCollection"
+              checked={addAlbumToCollection}
+              onChange={() => setAddAlbumToCollection(!addAlbumToCollection)}
+            />
+            Je possède cet album
+          </label>
+          {addAlbumToCollection && (
+            <>
+              <input
+                type="number"
+                step="0.01"
+                placeholder="Prix"
+                name="price"
+                value={album.price}
+                onChange={changeDataAlbum}
+              />
+              <select
+                name="conditionId"
+                value={album.conditionId}
+                onChange={changeDataAlbum}
+              >
+                <option value="">-- État du disque --</option>
+                {allMetadata?.conditions?.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.nameEN}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
           <div className="buttons">
             <button type="submit" className="btn-save">
               Enregistrer

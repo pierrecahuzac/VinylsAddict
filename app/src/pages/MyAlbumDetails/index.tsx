@@ -142,8 +142,8 @@ const MyAlbumDetails = () => {
               </div>
             </div>
             <span className="value">
-              {album.format.name || "Format non renseigné"} -{" "}
-              {album.format.speed || "Format non renseigné"}
+              {album?.format?.name || "Format non renseigné"} -{" "}
+              {album?.format?.speed || "Format non renseigné"}
             </span>
             <span className="value">{album.barCode || "Code bar inconnu"}</span>
             <span className="value">
