@@ -41,6 +41,20 @@ services:
     volumes:
       - db_data:/var/lib/postgresql
     restart: always
+  db_test:
+    container_name: db_test
+    image: postgres:18.3-alpine
+    environment:
+      POSTGRES_USER: postgres_test
+      POSTGRES_PASSWORD: password_test
+      POSTGRES_DB: vinyls_addict_test
+      DATABASE_URL: postgresql://postgres:password@db:5432/vinyls_addict_test
+      
+    ports:
+      - "55433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql
+    restart: always
   prisma-studio:
     container_name: prisma-studio
     build: ./api 

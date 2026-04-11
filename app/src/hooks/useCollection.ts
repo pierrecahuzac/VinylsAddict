@@ -58,8 +58,9 @@ export const useCollection = () => {
           withCredentials: true,
         },
       );
+      
       console.log(result.data);
-      setAlbums(result.data);
+      setAlbums(result.data.allUserAlbums);
     } catch (error) {}
   };
 

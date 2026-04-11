@@ -113,6 +113,12 @@ const MyAlbumDetails = () => {
             <p className="metadata">
               Année de sortie : {album.releaseDate || "Année inconnue"}
             </p>
+            <div>
+              Genre:{" "}
+              {album?.genres.map((genre) => (
+                <>{genre?.name}</>
+              ))}
+            </div>
           </header>
 
           <section className="personal-section">
@@ -120,45 +126,47 @@ const MyAlbumDetails = () => {
 
             <div className="details-grid">
               <div className="detail-item">
-                <span className="label">Prix d'achat :</span>
-                <span className="value">
+                <div className="label">Prix d'achat :</div>
+                <div className="value">
                   {userAlbum?.price ? `${userAlbum.price} €` : "—"}
-                </span>
-              </div>
+                </div>
 
-              <div className="detail-item">
-                <span className="label">État du disque :</span>
-                <span className="condition">
-                  {userDatas?.userAlbum?.condition.nameFR || "Non renseigné"}
-                </span>
-                <span className="value">
+                <div className="label">État du disque :<span className="condition">
+                  {userDatas?.userAlbum?.condition?.nameFR || "Non renseigné"}
+                </span></div>
+                
+                <div className="vinylVariant">
+                  Variante: {album?.vinylVariant?.nameFR || "Non renseigné"}
+                </div>
+                <div className="value">
                   {userDatas?.userAlbum?.notes || ""}
-                </span>
-              </div>
+                </div>
+                <div className="label">Couleur :{album.color || "Standard"}</div>
+               
+                <div className="value">
+                  {album?.format?.name || "Format non renseigné"} -{" "}
+                  {album?.format?.speed || "Format non renseigné"}
+                </div>
+                <div className="value">
+                  {album.barCode || "Code bar inconnu"}
+                </div>
+                <div className="value">
+                  {userDatas?.userAlbum?.diskNumber ||
+                    "Nombre de disques inconnu"}
+                </div>
+                <div className="value">
+                  {userDatas?.userAlbum?.trackCount ||
+                    "Nombre de pistes inconnu"}
+                </div>
 
-              <div className="detail-item">
-                <span className="label">Couleur :</span>
-                <span className="value">{album.color || "Standard"}</span>
+                {userDatas?.userAlbum?.notes && (
+                  <div className="detail-notes">
+                    <div className="label">Notes personnelles :</div>
+                    <p>{userAlbum.notes}</p>
+                  </div>
+                )}
               </div>
             </div>
-            <span className="value">
-              {album?.format?.name || "Format non renseigné"} -{" "}
-              {album?.format?.speed || "Format non renseigné"}
-            </span>
-            <span className="value">{album.barCode || "Code bar inconnu"}</span>
-            <span className="value">
-              {album.diskNumber || "Nombre de disques inconnu"}
-            </span>
-            <span className="value">
-              {album.trackCount || "Nombre de pistes inconnu"}
-            </span>
-
-            {userAlbum?.notes && (
-              <div className="detail-notes">
-                <span className="label">Notes personnelles :</span>
-                <p>{userAlbum.notes}</p>
-              </div>
-            )}
           </section>
 
           {/* <div className="myAlbumDetails__actions">

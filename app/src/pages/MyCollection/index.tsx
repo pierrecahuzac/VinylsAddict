@@ -44,6 +44,7 @@ const MyCollection = () => {
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);
 
+
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
@@ -101,17 +102,18 @@ const MyCollection = () => {
           <p className="status-msg">Aucun album dans votre collection.</p>
         )}
         
-        {albums.length > 0 && albums.map((item: any) => (
-          <Album
-            id={item.id}
-            key={item.id}
-            title={item.title}
-            artist={item.artist}
-            cover={item.coverUrl}
-            year={item.releaseDate}
-            onClick={() => openAlbumDetails(item.id)}
-          />
-        ))}
+        {albums.length > 0 &&
+          albums.map((item: any) => (
+            <Album
+              id={item.album.id}
+              key={item.id}
+              title={item.album.title}
+              artist={item.album.artist}
+              cover={item.album.coverUrl}
+              year={item.album.releaseDate}
+              onClick={() => openAlbumDetails(item.album.id)}
+            />
+          ))}
       </main>
 
       <button

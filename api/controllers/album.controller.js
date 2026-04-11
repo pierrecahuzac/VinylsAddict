@@ -60,29 +60,41 @@ const AlbumController = {
   },
   getAllUserAlbums: async (req, res) => {
     const token = req.cookies.va_token;
-
     if (!token) {
       return res.status(401).json({ message: "Non authentifié" });
     }
-    const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = tokenDecoded.userId;
     try {
-      const allUserAlbums = await prisma.album.findMany({
+      const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = tokenDecoded.userId;
+      const allUserAlbums = await prisma.userAlbum.findMany({
         where: {
           userId,
         },
+        include: {
+          album: {
+            include: {
+              vinylVariant: true,
+              format: true,
+              styles: true,
+              genres: true,
+            },
+          },
+          images: true,
+          condition: true,
+        },
       });
-      console.log(allUserAlbums);
+      console.log("allUserAlbums", allUserAlbums);
 
       if (allUserAlbums.length < 1) {
         return res.status(404).json({ message: `Collection vide` });
       }
-      return res.status(201).json({
+      return res.status(200).json({
         allUserAlbums,
         message: `Liste des albums dans la collection`,
       });
     } catch (error) {
       console.log(error);
+      return res.status(500).json({ error: error.message });
     }
   },
   getAllAlbums: async (req, res) => {
@@ -165,7 +177,11 @@ const AlbumController = {
         color,
         price,
         addAlbumToCollection,
+        diskNumber,
+        trackCount,
+        formatId,
       } = req.body;
+      console.log(req.body);
 
       // Utilisation d'une transaction pour garantir l'intégrité des données
       const result = await prisma.$transaction(async (tx) => {
@@ -178,10 +194,13 @@ const AlbumController = {
             releaseDate: year ? parseInt(year) : null,
             coverUrl,
             creator: { connect: { id: userId } },
+            diskNumber: diskNumber ? parseInt(diskNumber) : null,
+            trackCount: trackCount ? parseInt(trackCount) : null,
             vinylVariant: variantId
               ? { connect: { id: variantId } }
               : undefined,
             genres: genreId ? { connect: { id: genreId } } : undefined,
+            format: formatId ? { connect: { id: formatId } } : undefined,
           },
           include: { genres: true },
         });
@@ -196,9 +215,7 @@ const AlbumController = {
               albumId: album.id,
               price: price ? parseFloat(price) : null,
               // Si conditionId est vide, on ne connecte rien
-              condition: conditionId
-                ? { connect: { id: conditionId } }
-                : undefined,
+              conditionId: conditionId ? conditionId : null,
             },
           });
         }
