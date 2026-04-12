@@ -1,5 +1,5 @@
 .env
 .vite
 GEMINI.md
-
+.env.test
 RAPPORT.md

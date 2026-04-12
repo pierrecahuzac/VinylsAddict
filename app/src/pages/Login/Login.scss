@@ -1,16 +1,12 @@
 @use "../../styles/variables" as *;
 
-
 .login {
   width: 100%;
-  height: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-    width: 100%;
-
-  padding: 2rem;
-
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
   h2 {
     margin-top: 0;
@@ -38,45 +34,25 @@
         outline: none;
       }
     }
-
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-
-      button {
-        flex: 1;
-        padding: 12px;
-        border-radius: 8px;
-        border: none;
-        font-weight: bold;
-        cursor: pointer;
-      }
-
-      .btn-save {
-        background-color: $primary;
-        color: black;
-      }
-
-      .btn-cancel {
-        background-color: #333;
-        color: white;
-      }
-    }
   }
-  .buttons {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  button {
-    flex: 1;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-  }
+}
+.btns_CTA {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.btn-save,
+.btn-cancel {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;  
+  margin-top: 1rem;
+  cursor: pointer;
+}
 
   .btn-save {
     background-color: $primary;
@@ -87,4 +63,3 @@
     background-color: #333;
     color: white;
   }
-}

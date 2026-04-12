@@ -1,5 +1,6 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
+import { log } from "console";
 import jwt from "jsonwebtoken";
 
 const Usercontroller = {
@@ -13,10 +14,16 @@ const Usercontroller = {
           email,
         },
       });
+      console.log(foundUser);
+      
       if (foundUser) {
-        console.log("user exists");
-        return res.status(400).json({ message:`Une erreur est survenue lors de l'inscription. Veuillez vérifier vos informations ou essayer de vous connecter.` });
+        return res
+          .status(400)
+          .json({
+            message: `Une erreur est survenue lors de l'inscription. Veuillez vérifier vos informations ou essayer de vous connecter.`,
+          });
       }
+      
       if (password !== passwordConfirmation) {
         return res.status(400).json({ message: "Passwords do not match" });
       }
@@ -26,6 +33,7 @@ const Usercontroller = {
           email,
           password: hashedPassword,
           username,
+          canConnect:true
         },
       });
 
@@ -35,7 +43,6 @@ const Usercontroller = {
     }
   },
   login: async (req, res) => {
-    
     try {
       const { email, password } = req.body;
       const user = await prisma.user.findUnique({
@@ -46,8 +53,15 @@ const Usercontroller = {
 
       if (!user) {
         return res
-          .status(404)
+          .status(400)
           .json({ message: "Combinaison email / password not work" });
+      }
+      if (!user.canConnect) {              
+        return res
+          .status(400)
+          .json({
+            message: `Impossible de se connecter avec cet utilisateur.`,
+          });
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
       if (!comparePassword) {
