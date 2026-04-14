@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { IoHeartOutline } from "react-icons/io5";
+
 
 import { useUser } from "../../contexts/userContext";
 
@@ -55,13 +55,13 @@ const MyAlbumDetails = () => {
 
         const [albumRes, userRes] = await Promise.all([
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getOneAlbum/${albumId}`,
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${albumId}`,
             {
               withCredentials: true,
             },
           ),
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getUserAlbum/${albumId}`,
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${albumId}`,
             {
               withCredentials: true,
             },
@@ -113,6 +113,12 @@ const MyAlbumDetails = () => {
             <p className="metadata">
               Année de sortie : {album.releaseDate || "Année inconnue"}
             </p>
+            <div>
+              Genre:{" "}
+              {album?.genres.map((genre) => (
+                <span key={genre.id}>{genre?.name}</span>
+              ))}
+            </div>
           </header>
 
           <section className="personal-section">
@@ -120,52 +126,49 @@ const MyAlbumDetails = () => {
 
             <div className="details-grid">
               <div className="detail-item">
-                <span className="label">Prix d'achat :</span>
-                <span className="value">
+                <div className="label">Prix d'achat :</div>
+                <div className="value">
                   {userAlbum?.price ? `${userAlbum.price} €` : "—"}
-                </span>
-              </div>
+                </div>
 
-              <div className="detail-item">
-                <span className="label">État du disque :</span>
-                <span className="condition">
-                  {userDatas?.userAlbum?.condition.nameFR || "Non renseigné"}
-                </span>
-                <span className="value">
-                  {userDatas?.userAlbum?.notes || ""}
-                </span>
-              </div>
+                <div className="label">
+                  État du disque :
+                  <span className="condition">
+                    {userDatas?.userAlbum?.condition?.nameFR || "Non renseigné"}
+                  </span>
+                </div>
 
-              <div className="detail-item">
-                <span className="label">Couleur :</span>
-                <span className="value">{album.color || "Standard"}</span>
+                <div className="vinylVariant">
+                  Variante: {album?.vinylVariant?.nameFR || "Non renseigné"}
+                </div>
+                <div className="value">{userDatas?.userAlbum?.notes || ""}</div>
+                <div className="label">
+                  Couleur :{album.color || "Standard"}
+                </div>
+
+                <div className="value">
+                  {album?.format?.name || "Format non renseigné"} -{" "}
+                  {album?.format?.speed || "Format non renseigné"}
+                </div>
+                <div className="value">
+                  {album.barCode || "Code bar inconnu"}
+                </div>
+                <div className="value">
+                  {album?.diskNumber || "Nombre de disques inconnu"}
+                </div>
+                <div className="value">
+                  {album?.trackCount || "Nombre de pistes inconnu"}
+                </div>
+
+                {userDatas?.userAlbum?.notes && (
+                  <div className="detail-notes">
+                    <div className="label">Notes personnelles :</div>
+                    <p>{userAlbum.notes}</p>
+                  </div>
+                )}
               </div>
             </div>
-            <span className="value">
-              {album?.format?.name || "Format non renseigné"} -{" "}
-              {album?.format?.speed || "Format non renseigné"}
-            </span>
-            <span className="value">{album.barCode || "Code bar inconnu"}</span>
-            <span className="value">
-              {album.diskNumber || "Nombre de disques inconnu"}
-            </span>
-            <span className="value">
-              {album.trackCount || "Nombre de pistes inconnu"}
-            </span>
-
-            {userAlbum?.notes && (
-              <div className="detail-notes">
-                <span className="label">Notes personnelles :</span>
-                <p>{userAlbum.notes}</p>
-              </div>
-            )}
           </section>
-
-          {/* <div className="myAlbumDetails__actions">
-            <button className="wishlist-btn" title="Ajouter aux favoris">
-              <IoHeartOutline size={28} />
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

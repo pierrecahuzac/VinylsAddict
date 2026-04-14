@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
 
 import "./Login.scss";
+
 const Login = () => {
   const { email, setEmail, login, password, setPassword } = useUser();
   return (
@@ -22,11 +23,17 @@ const Login = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <div className="buttons">
+        <div className="btns_CTA">
           <button type="submit" className="btn-save">
             Se connecter
           </button>
-          <Link to={"/"} className="btn-cancel">
+          <Link
+            to={"/"}
+            className="btn-cancel"
+            onClick={() => {
+              (setEmail(""), setPassword(""));
+            }}
+          >
             Annuler
           </Link>
         </div>

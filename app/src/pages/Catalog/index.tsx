@@ -74,7 +74,7 @@ const Catalog = () => {
     
     try {
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/create`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums`,
         payload,
         { withCredentials: true },
       );
@@ -91,7 +91,7 @@ const Catalog = () => {
   };
 
   return (
-    <div className="catalog_">
+    <div className="catalog">
       <main className="catalog__list">
         <h1>Derniers ajouts</h1>
         {isLoading && <p className="status-msg">Chargement des albums...</p>}

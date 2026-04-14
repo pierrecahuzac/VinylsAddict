@@ -26,8 +26,6 @@ interface UserContextType {
   logout: () => Promise<void>;
   checkToken: () => Promise<void>;
   signup: (e: SyntheticEvent<HTMLFormElement>) => Promise<void>;
-  
-
   password: string;
   setPassword: (password: string) => void;
   username: string;
@@ -58,7 +56,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const checkToken = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/checkToken`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/checkToken`,
         {
           withCredentials: true,
         },
@@ -90,7 +88,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         return
       }
       const result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/login`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/login`,
         { email, password },
         { withCredentials: true },
       );
@@ -128,14 +126,17 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/signup`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`,
         { email, password, passwordConfirmation, username },
         { withCredentials: true },
       );
 
-      if (response.status === 201 || response.status === 200) {
-        onSuccess("Compte créé avec succès !");
+      if (response.status === 409) {
+        onError("Email existant, merci de vous connecter");
        
+      }
+      if (response.status === 201 || response.status === 200) {
+        onSuccess("Compte créé avec succès !");       
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -152,7 +153,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/user/logout`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/logout`,
         {},
         { withCredentials: true },
       );
@@ -175,8 +176,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setEmail,
     login,
     checkToken,
-
-
     username,
     setUsername,
     password,

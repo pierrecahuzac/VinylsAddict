@@ -13,58 +13,58 @@ enum Role {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  username String?
-  password String
-  role     Role    @default(USER)
-  createdAlbums Album[] @relation("UserCreatedAlbums")  
-  userAlbums UserAlbum[] 
-  wishlists Wishlist[]
+  id            String      @id @default(uuid())
+  email         String      @unique
+  username      String?
+  password      String
+  role          Role        @default(USER)
+  createdAlbums Album[]     @relation("UserCreatedAlbums")
+  userAlbums    UserAlbum[]
+  wishlists     Wishlist[]
+  canConnect    Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Album {
-  id          String   @id @default(uuid())
-  title       String
-  artist      String
-  releaseDate Int?
-  coverUrl    String?
-  barCode     String?
-  color       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  userId  String
-  creator User   @relation("UserCreatedAlbums", fields: [userId], references: [id])
-  diskNumber Int?
-  trackCount Int?
-  genres Genre[] @relation("AlbumGenres")
-  styles Style[] @relation("AlbumStyles")
-
+  id             String        @id @default(uuid())
+  title          String
+  artist         String
+  releaseDate    Int?
+  coverUrl       String?
+  barCode        String?
+  color          String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  userId         String
+  creator        User          @relation("UserCreatedAlbums", fields: [userId], references: [id])
+  diskNumber     Int?
+  trackCount     Int?
+  genres         Genre[]       @relation("AlbumGenres")
+  styles         Style[]       @relation("AlbumStyles")
   vinylVariantId String?
   vinylVariant   VinylVariant? @relation(fields: [vinylVariantId], references: [id])
-
-  formatId String?
-  format   Format? @relation(fields: [formatId], references: [id])
-
-  userAlbums UserAlbum[]
-
-  wishlistedBy Wishlist[]
+  formatId       String
+  format         Format        @relation(fields: [formatId], references: [id])
+  userAlbums     UserAlbum[]
+  wishlistedBy   Wishlist[]
 }
 
 model UserAlbum {
-  id      String @id @default(uuid())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id])
-  albumId String
-  album   Album  @relation(fields: [albumId], references: [id])
-
-  price      Float?
-  boughtAt   DateTime?
-  notes      String?
-  copyNumber String?
-
+  id          String            @id @default(uuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id])
+  albumId     String
+  album       Album             @relation(fields: [albumId], references: [id])
+  price       Float?
+  boughtAt    DateTime?
+  notes       String?
+  copyNumber  String?
   conditionId String?
-  condition   Condition? @relation(fields: [conditionId], references: [id])
+  condition   Condition?        @relation(fields: [conditionId], references: [id])
+  images      CollectionImage[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   @@unique([userId, albumId])
 }
@@ -72,6 +72,7 @@ model UserAlbum {
 model Wishlist {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
   userId String
@@ -83,25 +84,31 @@ model Wishlist {
 }
 
 model VinylVariant {
-  id     String  @id @default(uuid())
-  nameEN String  @unique
-  nameFR String?
-  albums Album[]
+  id        String   @id @default(uuid())
+  nameEN    String   @unique
+  nameFR    String?
+  albums    Album[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Genre {
-  id     String  @id @default(uuid())
-  name   String  @unique
-  albums Album[] @relation("AlbumGenres")
-  styles Style[]
+  id        String   @id @default(uuid())
+  name      String   @unique
+  albums    Album[]  @relation("AlbumGenres")
+  styles    Style[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Style {
-  id      String  @id @default(uuid())
-  name    String  @unique
-  genreId String
-  genre   Genre   @relation(fields: [genreId], references: [id])
-  albums  Album[] @relation("AlbumStyles")
+  id        String   @id @default(uuid())
+  name      String   @unique
+  genreId   String
+  genre     Genre    @relation(fields: [genreId], references: [id])
+  albums    Album[]  @relation("AlbumStyles")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Condition {
@@ -109,12 +116,26 @@ model Condition {
   nameEN     String      @unique
   nameFR     String?
   userAlbums UserAlbum[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 model Format {
-  id          String  @id @default(uuid())
-  name        String  @unique
+  id          String   @id @default(uuid())
+  name        String   @unique
   speed       String?
   description String?
   albums      Album[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CollectionImage {
+  id               String    @id @default(uuid())
+  url              String
+  description      String?
+  userCollectionId String
+  userCollection   UserAlbum @relation(fields: [userCollectionId], references: [id])
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }

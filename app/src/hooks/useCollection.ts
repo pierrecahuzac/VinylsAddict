@@ -11,7 +11,7 @@ export const useCollection = () => {
     setIsLoading(true);
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/metadata/getAllMetadatas`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/metadatas`,
       );
 
       setAllMetadata(result.data);
@@ -26,7 +26,7 @@ export const useCollection = () => {
     setIsLoading(true);
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/genres/getAll`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/genres`,
       );
       setGenres(result.data);
     } catch (error) {
@@ -40,7 +40,7 @@ export const useCollection = () => {
     setIsLoading(true);
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getAllAlbums`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums`,
       );
       setAlbums(result.data);
     } catch (error) {
@@ -53,13 +53,14 @@ export const useCollection = () => {
   const getAllUserAlbums = async () => {
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getAllUserAlbums`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums`,
         {
           withCredentials: true,
         },
       );
+      
       console.log(result.data);
-      setAlbums(result.data);
+      setAlbums(result.data.allUserAlbums);
     } catch (error) {}
   };
 
