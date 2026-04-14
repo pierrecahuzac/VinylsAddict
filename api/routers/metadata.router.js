@@ -4,7 +4,7 @@ const MetadataRouter = Router();
 
 
 
-MetadataRouter.get('/getAllMetadatas', MetadataController.getAllMetadatas);
+MetadataRouter.get('/', MetadataController.getAllMetadatas);
 
 
 

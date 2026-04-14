@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { IoHeartOutline } from "react-icons/io5";
+
 
 import { useUser } from "../../contexts/userContext";
 
@@ -55,13 +55,13 @@ const MyAlbumDetails = () => {
 
         const [albumRes, userRes] = await Promise.all([
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getOneAlbum/${albumId}`,
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${albumId}`,
             {
               withCredentials: true,
             },
           ),
           axios.get(
-            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getUserAlbum/${albumId}`,
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${albumId}`,
             {
               withCredentials: true,
             },
@@ -116,7 +116,7 @@ const MyAlbumDetails = () => {
             <div>
               Genre:{" "}
               {album?.genres.map((genre) => (
-                <>{genre?.name}</>
+                <span key={genre.id}>{genre?.name}</span>
               ))}
             </div>
           </header>
@@ -131,18 +131,21 @@ const MyAlbumDetails = () => {
                   {userAlbum?.price ? `${userAlbum.price} €` : "—"}
                 </div>
 
-                <div className="label">État du disque :<span className="condition">
-                  {userDatas?.userAlbum?.condition?.nameFR || "Non renseigné"}
-                </span></div>
-                
+                <div className="label">
+                  État du disque :
+                  <span className="condition">
+                    {userDatas?.userAlbum?.condition?.nameFR || "Non renseigné"}
+                  </span>
+                </div>
+
                 <div className="vinylVariant">
                   Variante: {album?.vinylVariant?.nameFR || "Non renseigné"}
                 </div>
-                <div className="value">
-                  {userDatas?.userAlbum?.notes || ""}
+                <div className="value">{userDatas?.userAlbum?.notes || ""}</div>
+                <div className="label">
+                  Couleur :{album.color || "Standard"}
                 </div>
-                <div className="label">Couleur :{album.color || "Standard"}</div>
-               
+
                 <div className="value">
                   {album?.format?.name || "Format non renseigné"} -{" "}
                   {album?.format?.speed || "Format non renseigné"}
@@ -151,12 +154,10 @@ const MyAlbumDetails = () => {
                   {album.barCode || "Code bar inconnu"}
                 </div>
                 <div className="value">
-                  {userDatas?.userAlbum?.diskNumber ||
-                    "Nombre de disques inconnu"}
+                  {album?.diskNumber || "Nombre de disques inconnu"}
                 </div>
                 <div className="value">
-                  {userDatas?.userAlbum?.trackCount ||
-                    "Nombre de pistes inconnu"}
+                  {album?.trackCount || "Nombre de pistes inconnu"}
                 </div>
 
                 {userDatas?.userAlbum?.notes && (
@@ -168,12 +169,6 @@ const MyAlbumDetails = () => {
               </div>
             </div>
           </section>
-
-          {/* <div className="myAlbumDetails__actions">
-            <button className="wishlist-btn" title="Ajouter aux favoris">
-              <IoHeartOutline size={28} />
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

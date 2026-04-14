@@ -1,29 +1,23 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
-import { log } from "console";
 import jwt from "jsonwebtoken";
-
 const Usercontroller = {
   signup: async (req, res) => {
     try {
       const { email, password, passwordConfirmation, username } = req.body;
-      console.log(email, password, passwordConfirmation, username);
 
       const foundUser = await prisma.user.findUnique({
         where: {
           email,
         },
       });
-      console.log(foundUser);
-      
+
       if (foundUser) {
-        return res
-          .status(400)
-          .json({
-            message: `Une erreur est survenue lors de l'inscription. Veuillez vérifier vos informations ou essayer de vous connecter.`,
-          });
+        return res.status(409).json({
+          message: `Une erreur est survenue lors de l'inscription. Veuillez vérifier vos informations ou essayer de vous connecter.`,
+        });
       }
-      
+
       if (password !== passwordConfirmation) {
         return res.status(400).json({ message: "Passwords do not match" });
       }
@@ -33,13 +27,13 @@ const Usercontroller = {
           email,
           password: hashedPassword,
           username,
-          canConnect:true
+          canConnect: true,
         },
       });
 
       return res.status(201).json({ message: "User créé !", user: newUser });
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   },
   login: async (req, res) => {
@@ -53,15 +47,13 @@ const Usercontroller = {
 
       if (!user) {
         return res
-          .status(400)
+          .status(401)
           .json({ message: "Combinaison email / password not work" });
       }
-      if (!user.canConnect) {              
-        return res
-          .status(400)
-          .json({
-            message: `Impossible de se connecter avec cet utilisateur.`,
-          });
+      if (!user.canConnect) {
+        return res.status(401).json({
+          message: `Impossible de se connecter avec cet utilisateur.`,
+        });
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
       if (!comparePassword) {
@@ -81,7 +73,6 @@ const Usercontroller = {
         .status(200)
         .json({ message: "Login successful", user, isLogged: true });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: error.message });
     }
   },
@@ -96,14 +87,17 @@ const Usercontroller = {
       .json({ message: "Logout successful", isLogged: false });
   },
   checkToken: async (req, res) => {
-    const token = req.cookies.va_token;
-    if (!token) return res.status(401).json({ isLogged: false });
-
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+      
     try {
       const user = await prisma.user.findUnique({
         where: {
-          id: decodedToken.userId,
+          id: userId,
         },
       });
       if (!user) {
@@ -123,6 +117,80 @@ const Usercontroller = {
       } else {
         console.log("Visiteur anonyme (OK)");
       }
+    }
+  },
+  getUserAlbums: async (req, res) => {
+    const albumId = req.params.id;
+   const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+    try {
+      const userAlbum = await prisma.userAlbum.findUnique({
+        where: {
+          userId_albumId: {
+            userId,
+            albumId: albumId,
+          },
+        },
+        include: {
+          condition: true,
+        },
+      });
+
+      if (!userAlbum) {
+        return res
+          .status(404)
+          .json({ message: `Détails de l'album introuvables` });
+      }
+      return res
+        .status(200)
+        .json({ userAlbum, message: `Détails de l'album trouvés` });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
+  getAllUserAlbums: async (req, res) => {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+    try {
+      const allUserAlbums = await prisma.userAlbum.findMany({
+        where: {
+          userId,
+        },
+        include: {
+          album: {
+            include: {
+              vinylVariant: true,
+              format: true,
+              styles: true,
+              genres: true,
+            },
+          },
+          images: true,
+          condition: true,
+        },
+      });
+      console.log("allUserAlbums", allUserAlbums);
+
+      if (allUserAlbums.length < 1) {
+        return res
+          .status(200)
+          .json({ message: `Collection vide`, allUserAlbums });
+      }
+      return res.status(200).json({
+        allUserAlbums,
+        message: `Liste des albums dans la collection`,
+      });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
     }
   },
 };

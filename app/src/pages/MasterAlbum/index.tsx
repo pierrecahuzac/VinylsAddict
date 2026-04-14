@@ -22,7 +22,7 @@ const MasterAlbum = () => {
     const fetchData = async () => {
       try {
         const albumRes = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getOneAlbum/${id}`,
+          `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${id}`,
           {
             withCredentials: true,
           },
@@ -31,7 +31,7 @@ const MasterAlbum = () => {
 
         if (userIsLogged) {
           const userAlbumRes = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/getUserAlbum/${id}`,
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${id}`,
             {
               withCredentials: true,
             },
@@ -59,8 +59,8 @@ const MasterAlbum = () => {
     console.log(id);
     
     try {
-      const result = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/addAlbumToUserWishlist/${id}`,
+      const result = await axios.post(
+            `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,{},
             {
               withCredentials: true,
             },

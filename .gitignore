@@ -3,3 +3,4 @@
 GEMINI.md
 .env.test
 RAPPORT.md
+Pour un email déjà pris à l'inscription, tu renvoies 400. On préfère 409 Conflictincoherence.md
