@@ -5,13 +5,13 @@ import {
   IoHome,
   IoHeartOutline,
   IoLogOutOutline,
-  IoLogOut,
+  // IoLogOut,
   IoPerson,
-  IoExitOutline,
-  IoExit,
-  IoLogInOutline,
+  // IoExitOutline,
+  // IoExit,
+  // IoLogInOutline,
   IoLogIn,
-  IoPersonAddSharp,
+  // IoPersonAddSharp,
   IoPersonAddOutline,
 } from "react-icons/io5";
 
