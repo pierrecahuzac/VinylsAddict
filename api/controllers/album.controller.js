@@ -17,7 +17,7 @@ const AlbumController = {
         },
       });
       delete album.userId;
-      console.log(album);
+
 
       if (!album) {
         return res.status(404).json({ message: "No album find with this id" });
@@ -38,7 +38,7 @@ const AlbumController = {
           createdAt: "desc",
         },
       });
-      console.log(albums);
+
       return res.status(200).json(albums);
     } catch (error) {
       return res.status(500).json({ error: error.message });

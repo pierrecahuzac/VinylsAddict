@@ -111,7 +111,7 @@ const MyCollection = () => {
               artist={item.album.artist}
               cover={item.album.coverUrl}
               year={item.album.releaseDate}
-              onClick={() => openAlbumDetails(item.album.id)}
+              onClick={() => openAlbumDetails(item.id)}
             />
           ))}
       </main>
