@@ -70,7 +70,7 @@ const Catalog = () => {
       price: album.price ? Number(album.price) : null,
       addAlbumToCollection
     };
-    console.log(payload);
+    
     
     try {
       await axios.post(

@@ -16,6 +16,8 @@ const AlbumController = {
           vinylVariant: true,
         },
       });
+      delete album.userId;
+      console.log(album);
 
       if (!album) {
         return res.status(404).json({ message: "No album find with this id" });
@@ -39,7 +41,7 @@ const AlbumController = {
       console.log(albums);
       return res.status(200).json(albums);
     } catch (error) {
-     return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   },
 
@@ -116,12 +118,45 @@ const AlbumController = {
         userAlbum: result.userAlbum,
       });
     } catch (error) {
-     
       return res.status(500).json({
         message: "Erreur lors de la création",
         error: error.message,
       });
     }
+  },
+
+  addAlbumToCollection: async (req, res) => {
+    const userId = req.userId;
+    try {
+      const { albumId } = req.params;
+      const { price, conditionId } = req.body;
+
+      // Vérifier que l'album existe
+      const albumExists = await prisma.userAlbum.findFirst({
+        where: {
+          userId,
+          albumId,
+        },
+      });
+      if (albumExists) {
+        return res
+          .status(400)
+          .json({ message: "Album déjà dans la collection" });
+      }
+
+      const userAlbum = await prisma.userAlbum.create({
+        data: {
+          userId,
+          albumId,
+          price: price ? parseFloat(price) : null,
+          conditionId: conditionId ? conditionId : null,
+        },
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Album ajouté à la collection !", userAlbum });
+    } catch (error) {}
   },
 };
 
