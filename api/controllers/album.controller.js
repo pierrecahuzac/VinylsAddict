@@ -125,39 +125,7 @@ const AlbumController = {
     }
   },
 
-  addAlbumToCollection: async (req, res) => {
-    const userId = req.userId;
-    try {
-      const { albumId } = req.params;
-      const { price, conditionId } = req.body;
-
-      // Vérifier que l'album existe
-      const albumExists = await prisma.userAlbum.findFirst({
-        where: {
-          userId,
-          albumId,
-        },
-      });
-      if (albumExists) {
-        return res
-          .status(400)
-          .json({ message: "Album déjà dans la collection" });
-      }
-
-      const userAlbum = await prisma.userAlbum.create({
-        data: {
-          userId,
-          albumId,
-          price: price ? parseFloat(price) : null,
-          conditionId: conditionId ? conditionId : null,
-        },
-      });
-
-      return res
-        .status(201)
-        .json({ message: "Album ajouté à la collection !", userAlbum });
-    } catch (error) {}
-  },
+  
 };
 
 export default AlbumController;

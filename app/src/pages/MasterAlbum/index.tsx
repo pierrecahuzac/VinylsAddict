@@ -13,7 +13,7 @@ import { useCollection } from "../../hooks/useCollection";
 const MasterAlbum = () => {
   const { id } = useParams<{ id: string }>();
   const { userIsLogged } = useUser();
-  const { allMetadata } = useCollection();
+  const { allMetadata, getAllMetadata } = useCollection();
   const [album, setAlbum] = useState<AlbumData | null>(null);
   const [userDetails, setUserDetails] = useState<UserAlbumData | null>(null);
   const { onError } = useToast();
@@ -24,6 +24,10 @@ const MasterAlbum = () => {
     variantId: "",
     conditionId: "",
   });
+  const [albumAddedToCollection, setAlbumAddedToCollection] = useState({
+    price: "",
+    conditionId: "",
+  });
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,7 +36,7 @@ const MasterAlbum = () => {
           {
             withCredentials: true,
           },
-        );  
+        );
 
         setAlbum(albumRes.data);
 
@@ -49,7 +53,7 @@ const MasterAlbum = () => {
         console.error("Erreur lors de la récupération des données", error);
       }
     };
-
+    getAllMetadata();
     fetchData();
   }, [id, userIsLogged]);
 
@@ -87,11 +91,17 @@ const MasterAlbum = () => {
     }
     setModalAddAlbumToUserCollection(true);
   };
-  const addAlbumToUserCollection = async () => {
+  const addAlbumToUserCollection = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
     try {
       const result = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${id}`,
-        {},
+        {
+          price: albumAddedToCollection.price,
+          conditionId: albumAddedToCollection.conditionId,
+        },
         {
           withCredentials: true,
         },
@@ -99,15 +109,16 @@ const MasterAlbum = () => {
       console.log(result);
       setModalAddAlbumToUserCollection(false);
     } catch (error) {
-      console.log(error);
+      onError(error.response.data.message);
+      //console.log(error.response.data.message);
     }
   };
 
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setAlbum({
-      ...album,
+    setAlbumAddedToCollection({
+      ...albumAddedToCollection,
       [e.target.name]: e.target.value,
     });
   };
@@ -157,34 +168,25 @@ const MasterAlbum = () => {
                   step="0.01"
                   placeholder="Prix"
                   name="price"
-                  value={album.price}
+                  value={albumAddedToCollection.price}
                   onChange={changeDataAlbum}
                 />
+
                 <select
-                  name="variantId"
-                  value={album.variantId}
+                  name="conditionId"
+                  value={albumAddedToCollection.conditionId}
                   onChange={changeDataAlbum}
                 >
-                  <option value="">-- Variante --</option>
-                  {allMetadata?.variants?.map((v) => (
-                    <option key={v.id} value={v.id}>
-                      {v.nameEN}
+                  <option value="">-- État --</option>
+                  {allMetadata?.conditions?.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nameFR}
                     </option>
                   ))}
                 </select>
-                <select
-                  name="formatId"
-                  value={album.formatId}
-                  onChange={changeDataAlbum}
-                >
-                  <option value="">-- Format --</option>
-                  {allMetadata?.formats?.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.name}
-                    </option>
-                  ))}
-                </select>
-                <button onClick={addAlbumToUserCollection}>Ajouter</button>
+                <button onClick={(e) => addAlbumToUserCollection(e)}>
+                  Ajouter
+                </button>
                 <button onClick={() => setModalAddAlbumToUserCollection(false)}>
                   Annuler
                 </button>
