@@ -16,6 +16,8 @@ const AlbumController = {
           vinylVariant: true,
         },
       });
+      delete album.userId;
+      console.log(album);
 
       if (!album) {
         return res.status(404).json({ message: "No album find with this id" });
@@ -39,7 +41,7 @@ const AlbumController = {
       console.log(albums);
       return res.status(200).json(albums);
     } catch (error) {
-     return res.status(500).json({ error: error.message });
+      return res.status(500).json({ error: error.message });
     }
   },
 
@@ -116,13 +118,14 @@ const AlbumController = {
         userAlbum: result.userAlbum,
       });
     } catch (error) {
-     
       return res.status(500).json({
         message: "Erreur lors de la création",
         error: error.message,
       });
     }
   },
+
+  
 };
 
 export default AlbumController;
