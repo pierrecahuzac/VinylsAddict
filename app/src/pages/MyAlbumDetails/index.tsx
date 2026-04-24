@@ -47,20 +47,17 @@ const MyAlbumDetails = () => {
   useEffect(() => {
     const fetchFullDetails = async () => {
       if (!albumId) return;
-
       try {
         setLoading(true);
         setError(null);
-
         const userRes = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${albumId}`,
           {
             withCredentials: true,
           },
         );
-        console.log(userRes.data);
-        
         setData(userRes.data);
+        
       } catch (err) {
         console.error("Erreur lors du chargement :", err);
         setError("Impossible de charger les détails de cet album.");
@@ -71,84 +68,86 @@ const MyAlbumDetails = () => {
 
     fetchFullDetails();
   }, [albumId, userIsLogged]);
-
   if (loading)
     return <div className="status-msg">Chargement des détails...</div>;
   if (error || !data)
     return (
       <div className="status-msg error">{error || "Album introuvable"}</div>
     );
-
-  
- 
-
   return (
     <div className="myAlbumDetails">
       <div className="myAlbumDetails-header">
         <div className="myAlbumDetails-cover">
           <img
-            src={data?.userAlbum?.album?.coverUrl || "https://via.placeholder.com/400"}
-            alt={`${data.userAlbum?.album?.title} cover`}
+            src={
+              data?.userAlbum?.album?.coverUrl ||
+              "https://via.placeholder.com/400"
+            }
+            alt={`${data?.userAlbum?.album?.title} cover`}
           />
         </div>
       </div>
-
       <div className="myAlbumDetails__datas">
         <div className="myAlbumDetails__infos">
           <header className="title-section">
             <h1 className="myAlbumDetails__title-artist">
-              {data?.album?.title} <span className="separator">—</span> {data?.album?.artist}
+              {data?.userAlbum?.album?.title}{" "}
+              <span className="separator">—</span>{" "}
+              {data?.userAlbum?.album?.artist}
             </h1>
             <p className="metadata">
-              Année de sortie : {data?.userAlbum?.releaseDate || "Année inconnue"}
+              Année de sortie :
+              {data?.userAlbum?.releaseDate || "Année inconnue"}
             </p>
             <div>
-              Genre:{" "}
-              {data?.album?.genres.map((genre) => (
+              Genre :{" "}
+              {data?.userAlbum?.album?.genres.map((genre) => (
                 <span key={genre.id}>{genre?.name}</span>
               ))}
             </div>
           </header>
-
           <section className="personal-section">
-            <hr />
-
             <div className="details-grid">
               <div className="detail-item">
-                <div className="label">Prix d'achat :</div>
-                <div className="value">
+                <div className="label">
+                  Prix d'achat :{" "}
                   {data?.userAlbum?.price ? `${data.userAlbum.price} €` : "—"}
                 </div>
+                <div className="label">
+                  État du disque :{" "}
+                  {data?.userAlbum?.condition?.nameFR || "Non renseigné"}
+                </div>
+                <div className="label">
+                  Variante :
+                  {data?.userAlbum?.album?.vinylVariant?.nameFR ||
+                    "Non renseigné"}
+                </div>
+                <div className="label">{data?.userAlbum?.notes || ""}</div>
+                <div className="label">
+                  Couleur : {data?.userAlbum?.color || "Standard"}
+                </div>
 
                 <div className="label">
-                  État du disque :
-                  <span className="condition">
-                    {data?.userAlbum?.condition?.nameFR || "Non renseigné"}
-                  </span>
+                  {data?.userAlbum?.album?.format?.name ||
+                    "Format non renseigné"}{" "}
+                  -
+                  {data?.userAlbum?.album?.format?.speed ||
+                    "Format non renseigné"}
                 </div>
-
-                <div className="vinylVariant">
-                  Variante: {data?.userAlbum?.vinylVariant?.nameFR || "Non renseigné"}
-                </div>
-                <div className="value">{data?.userAlbum?.notes || ""}</div>
                 <div className="label">
-                  Couleur :{data?.userAlbum?.color || "Standard"}
+                  {data?.userAlbum?.album?.barCode || "Code bar inconnu"}
                 </div>
-
-                <div className="value">
-                  {data?.album?.format?.name || "Format non renseigné"} -{" "}
-                  {data?.album?.format?.speed || "Format non renseigné"}
+                <div className="label">
+                  Condition :
+                  {data?.userAlbum?.condition.nameFR || "Condition inconnue"}
                 </div>
-                <div className="value">
-                  {data?.album?.barCode || "Code bar inconnu"}
+                <div className="label"></div>
+                <div className="label">
+                  Nombre de disques : {data?.album?.diskNumber || "inconnu"}
                 </div>
-                <div className="value">
-                  {data?.album?.diskNumber || "Nombre de disques inconnu"}
-                </div>
-                <div className="value">
+                <div className="label">
                   {data?.album?.trackCount || "Nombre de pistes inconnu"}
                 </div>
-
                 {data?.userAlbum?.notes && (
                   <div className="detail-notes">
                     <div className="label">Notes personnelles :</div>

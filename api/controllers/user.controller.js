@@ -136,8 +136,16 @@ const Usercontroller = {
           id: albumId,
         },
         include: {
-          album: true,
+          album: {
+            include: {
+              vinylVariant: true,
+              format: true,
+              styles: true,
+              genres: true,
+            },
+          },
           condition: true,
+          
          
         },
       });
