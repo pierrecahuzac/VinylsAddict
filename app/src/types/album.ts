@@ -12,6 +12,15 @@ export interface AlbumFormState {
   styleId: string;
 }
 
+export interface AlbumProps {
+  title: string;
+  artist: string;
+  cover?: string;
+  id: string;
+  year: string;
+  onClick: () => void;
+}
+
 export interface MetadataItem {
   id: string;
   name?: string;

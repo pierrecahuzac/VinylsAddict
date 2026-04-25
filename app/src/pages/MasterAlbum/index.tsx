@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
-import { IoHeartOutline, IoLibrary } from "react-icons/io5";
+import { IoHeartOutline, IoLibrary, IoLibraryOutline  } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 
 import useToast from "../../hooks/useToast";
-import type { AlbumData, UserAlbumData } from "../../types/album";
+import type { AlbumData } from "../../types/album";
 
 import "./MasterAlbum.scss";
 import { useCollection } from "../../hooks/useCollection";
@@ -14,9 +14,10 @@ const MasterAlbum = () => {
   const { id } = useParams<{ id: string }>();
   const { userIsLogged } = useUser();
   const { allMetadata, getAllMetadata } = useCollection();
-  const [album, setAlbum] = useState<AlbumData | null>(null);
-  const [userDetails, setUserDetails] = useState<UserAlbumData | null>(null);
+  const [masterAlbumDetails, setMasterAlbumDetails] =
+    useState<AlbumData | null>(null);
   const { onError } = useToast();
+  const [isOwned, setIsOwned] = useState(false);
   const [modalAddAlbumToUserCollection, setModalAddAlbumToUserCollection] =
     useState(false);
   const [addAlbumToCollection, setAddAlbumToCollection] = useState({
@@ -28,27 +29,37 @@ const MasterAlbum = () => {
     price: "",
     conditionId: "",
   });
+
+  const albumIsInUserCollection = async () => {
+    if (!userIsLogged) return false;
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
+      if (response.data.userAlbum) {
+        setIsOwned(true);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      setIsOwned(false);
+      return false;
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const albumRes = await axios.get(
+        const masterAlbumDetails = await axios.get(
           `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${id}`,
           {
             withCredentials: true,
           },
         );
-
-        setAlbum(albumRes.data);
-
-        if (userIsLogged) {
-          const userAlbumRes = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${id}`,
-            {
-              withCredentials: true,
-            },
-          );
-          setUserDetails(userAlbumRes.data);
-        }
+        setMasterAlbumDetails(masterAlbumDetails.data);
+        await albumIsInUserCollection();
       } catch (error) {
         console.error("Erreur lors de la récupération des données", error);
       }
@@ -57,18 +68,14 @@ const MasterAlbum = () => {
     fetchData();
   }, [id, userIsLogged]);
 
-  if (!album) return <div>Chargement...</div>;
+  if (!masterAlbumDetails) return <div>Chargement...</div>;
 
   const addToUserWishlist = async () => {
-    console.log(userIsLogged);
     if (!userIsLogged) {
       onError(
         `Vous devez être connecté à l'application pour utiliser cette fonctionnalité`,
       );
     }
-
-    console.log(id);
-
     try {
       const result = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
@@ -108,6 +115,7 @@ const MasterAlbum = () => {
       );
       console.log(result);
       setModalAddAlbumToUserCollection(false);
+      await albumIsInUserCollection();
     } catch (error) {
       onError(error.response.data.message);
       //console.log(error.response.data.message);
@@ -128,35 +136,58 @@ const MasterAlbum = () => {
       <div className="master-album-header">
         <div className="master-album-cover">
           <img
-            src={album.coverUrl || "https://via.placeholder.com/200"}
-            alt={album.title}
+            src={
+              masterAlbumDetails?.coverUrl || "https://via.placeholder.com/200"
+            }
+            alt={masterAlbumDetails?.title}
           />
         </div>
       </div>
-
       <div className="master-album__datas">
         <div className="master-album__infos">
           <div className="master-album__title-artist">
-            {album.title} - {album.artist}
+            {masterAlbumDetails?.title} - {masterAlbumDetails?.artist}
           </div>
-          <div>Année: {album.releaseDate}</div>
-
-          {userDetails && (
-            <>
-              <hr />
-
-              <div>Couleur: {userDetails.color}</div>
-            </>
-          )}
-
-          <div className="master-album__add-to-wishlist">
-            <IoHeartOutline onClick={addToUserWishlist} />
+          <div>Année: {masterAlbumDetails?.releaseDate}</div>
+          <div>Couleur: {masterAlbumDetails?.color}</div>
+          <div>Code-barres: {masterAlbumDetails?.barCode}</div>
+          <div>Nombre de disques: {masterAlbumDetails?.diskNumber}</div>
+          <div>Nombre de pistes: {masterAlbumDetails?.trackCount}</div>
+          <div>Format: {masterAlbumDetails?.format?.name}</div>
+          <div>Vitesse: {masterAlbumDetails?.format?.speed}</div>
+          {/* <div>Description: {masterAlbumDetails?.format?.description}</div> */}
+          <div>
+            Genres:{" "}
+            {masterAlbumDetails?.genres?.map((g) => g.nameFR).join(", ")}
           </div>
-          {userIsLogged && (
-            <div className="album-card__owned-badge" title="Dans ma collection">
-              <IoLibrary onClick={openModalAddAlbumToUserCollection} />
+          <div>
+            Styles:{" "}
+            {masterAlbumDetails?.styles?.map((s) => s.nameFR).join(", ")}
+          </div>
+          <div>
+            Variante:{" "}
+            {masterAlbumDetails?.vinylVariants
+              ?.map((vv) => vv.nameFR)
+              .join(", ")}
+          </div>
+
+          <div className="master-album__actions">
+            <div className="master-album__add-to-wishlist">
+              <IoHeartOutline onClick={addToUserWishlist} />
             </div>
-          )}
+            {userIsLogged && (
+              <div
+                className="album-card__owned-badge"
+                title={isOwned ? "Dans ma collection" : "Ajouter à ma collection"}
+              >
+                {isOwned ? (
+                  <IoLibrary onClick={openModalAddAlbumToUserCollection} />
+                ) : (
+                  <IoLibraryOutline onClick={openModalAddAlbumToUserCollection} />
+                )}
+              </div>
+            )}
+          </div>
         </div>
         {modalAddAlbumToUserCollection && (
           <div className="modal">
