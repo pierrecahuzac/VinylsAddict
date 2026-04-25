@@ -131,6 +131,21 @@ const Modale = ({
               </option>
             ))}
           </select>
+          <input
+            type="number"            
+            placeholder="Nombre de pistes"
+            name="trackCount"
+            value={album.trackCount}
+            onChange={changeDataAlbum}
+          />
+          <input
+            type="number"            
+            placeholder="Nombre de disques"
+            name="diskCount"
+            value={album.diskCount}
+            onChange={changeDataAlbum}
+          />
+
           <label className="checkbox-label">
             <input
               type="checkbox"
