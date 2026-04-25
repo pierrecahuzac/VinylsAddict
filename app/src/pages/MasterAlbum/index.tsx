@@ -127,7 +127,7 @@ const MasterAlbum = () => {
   };
 
   const addAlbumToUserCollection = async (
-    e: React.FormEvent<HTMLFormElement>,
+    e: React.SyntheticEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     try {
@@ -223,9 +223,7 @@ const MasterAlbum = () => {
             <button
               className="action-btn"
               onClick={
-                isOwned
-                  ? deleteAlbumFromCollection
-                  : () => setModalAddAlbumToUserCollection(true)
+                 () => setModalAddAlbumToUserCollection(true)
               }
             >
               {isOwned ? (
