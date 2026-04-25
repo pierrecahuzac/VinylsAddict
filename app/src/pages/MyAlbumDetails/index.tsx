@@ -45,7 +45,7 @@ const MyAlbumDetails = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchFullDetails = async () => {
+    const fetchFullDetails = async () => {      
       if (!albumId) return;
       try {
         setLoading(true);
@@ -56,10 +56,14 @@ const MyAlbumDetails = () => {
             withCredentials: true,
           },
         );
+        console.log(userRes);
+        
         setData(userRes.data);
         
       } catch (err) {
-        console.error("Erreur lors du chargement :", err);
+        console.log(err.response.data.message);
+        
+        console.log("Erreur lors du chargement :", err);
         setError("Impossible de charger les détails de cet album.");
       } finally {
         setLoading(false);

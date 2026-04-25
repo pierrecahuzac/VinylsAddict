@@ -7,8 +7,9 @@ import { useUser } from "../../contexts/userContext";
 import useToast from "../../hooks/useToast";
 import type { AlbumData } from "../../types/album";
 
-import "./MasterAlbum.scss";
 import { useCollection } from "../../hooks/useCollection";
+
+import "./MasterAlbum.scss";
 
 const MasterAlbum = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,7 +35,7 @@ const MasterAlbum = () => {
     if (!userIsLogged) return false;
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/check/${id}`,
         {
           withCredentials: true,
         },
