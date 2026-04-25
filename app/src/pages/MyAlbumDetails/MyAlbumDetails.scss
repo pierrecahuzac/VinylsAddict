@@ -10,10 +10,11 @@
     
   }
   &__datas{
+    width: 100%;
     height: 100vh;
   }
   &__infos{
-    width: 80%;
+    width: 100%;
     margin: auto;
   }
   &-cover {
@@ -23,7 +24,9 @@
      // border-radius: 15px;
     }
   }
-  &__title-artist {
+  &__artist-title {
+  
+    display: block;
     font-size: 1.2rem;
     color: rgb(225, 223, 223);
     margin-top: 0.5rem;

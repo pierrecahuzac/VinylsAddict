@@ -21,6 +21,8 @@ interface AlbumState {
   coverUrl: string;
   color: string;
   styleId: string;
+  trackCount: string;
+  diskCount: string;
 }
 
 const initialAlbumState: AlbumState = {
@@ -35,14 +37,17 @@ const initialAlbumState: AlbumState = {
   coverUrl: "",
   color: "",
   styleId: "",
+  trackCount: "",
+  diskCount: "",
 };
 
 const MyCollection = () => {
-  const { albums, getAllAlbums, getAllUserAlbums,isLoading, getAllMetadata, allMetadata } =
+  const { albums,  getAllUserAlbums,isLoading, getAllMetadata, allMetadata } =
     useCollection();
   const navigate = useNavigate();
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);
+  const [addAlbumToCollection, setAddAlbumToCollection] = useState(true);
 
 
   const changeDataAlbum = (
@@ -70,6 +75,9 @@ const MyCollection = () => {
       ...album,
       year: album.year ? parseInt(album.year) : null,
       price: album.price ? parseFloat(album.price) : null,
+      trackCount: album.trackCount ? parseInt(album.trackCount) : null,
+      diskCount: album.diskCount ? parseInt(album.diskCount) : null,
+      addAlbumToCollection: true,
     };
 
     try {
@@ -81,7 +89,7 @@ const MyCollection = () => {
 
       setAlbum(initialAlbumState);
       setModaleAddNewAlbum(false);
-      getAllAlbums();
+      getAllUserAlbums();
     } catch (error) {
       console.error("Erreur création album:", error);
     }
@@ -101,16 +109,18 @@ const MyCollection = () => {
         {!isLoading && albums.length === 0 && (
           <p className="status-msg">Aucun album dans votre collection.</p>
         )}
-        
+        {!isLoading && albums.length > 0 && (
+          <div>Tu as {albums.length} album{albums.length >1 && "s"} dans ta collection.</div>
+        )}
         {albums.length > 0 &&
           albums.map((item: any) => (
             <Album
-              id={item.album.id}
+              id={item?.album?.id}
               key={item.id}
-              title={item.album.title}
-              artist={item.album.artist}
-              cover={item.album.coverUrl}
-              year={item.album.releaseDate}
+              title={item?.album?.title}
+              artist={item?.album?.artist}
+              cover={item?.album?.coverUrl}
+              year={item?.album?.releaseDate}
               onClick={() => openAlbumDetails(item.id)}
             />
           ))}
@@ -131,6 +141,9 @@ const MyCollection = () => {
           changeDataAlbum={changeDataAlbum}
           allMetadata={allMetadata}
           setModaleAddNewAlbum={setModaleAddNewAlbum}
+          addAlbumToCollection={addAlbumToCollection}
+          setAddAlbumToCollection={setAddAlbumToCollection}
+          isCollectionContext={true}
         />
       )}
     </div>

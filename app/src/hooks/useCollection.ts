@@ -1,11 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 
+
 export const useCollection = () => {
   const [genres, setGenres] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [allMetadata, setAllMetadata] = useState(null);
+  const [allMetadata, setAllMetadata] = useState<any>(null);
 
   const getAllMetadata = async () => {
     setIsLoading(true);
@@ -59,7 +60,7 @@ export const useCollection = () => {
         },
       );
       
-      console.log(result.data);
+     
       setAlbums(result.data.allUserAlbums);
     } catch (error) {}
   };
