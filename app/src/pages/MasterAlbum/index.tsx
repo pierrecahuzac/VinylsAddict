@@ -1,7 +1,12 @@
 import axios from "axios";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
-import { IoHeartOutline, IoLibrary, IoLibraryOutline  } from "react-icons/io5";
+import {
+  IoHeart,
+  IoHeartOutline,
+  IoLibrary,
+  IoLibraryOutline,
+} from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 
 import useToast from "../../hooks/useToast";
@@ -19,6 +24,7 @@ const MasterAlbum = () => {
     useState<AlbumData | null>(null);
   const { onError } = useToast();
   const [isOwned, setIsOwned] = useState(false);
+  const [isWishlisted, setIsWishlisted] = useState(false);
   const [modalAddAlbumToUserCollection, setModalAddAlbumToUserCollection] =
     useState(false);
   const [addAlbumToCollection, setAddAlbumToCollection] = useState({
@@ -50,22 +56,45 @@ const MasterAlbum = () => {
       return false;
     }
   };
+  const albumIsInUserWishlist = async () => {
+    if (!userIsLogged) return false;
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/albums/check/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
+      if (response.data.message === "Album présent dans la wishlist") {
+        setIsWishlisted(true);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      setIsWishlisted(false);
+      return false;
+    }
+  };
+  const getCatalog = async () => {
+    try {
+      const masterAlbumDetails = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
+      setMasterAlbumDetails(masterAlbumDetails.data);
+      await albumIsInUserCollection();
+      await albumIsInUserWishlist();
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données", error);
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const masterAlbumDetails = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${id}`,
-          {
-            withCredentials: true,
-          },
-        );
-        setMasterAlbumDetails(masterAlbumDetails.data);
-        await albumIsInUserCollection();
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données", error);
-      }
+      getCatalog();
+      getAllMetadata();
     };
-    getAllMetadata();
     fetchData();
   }, [id, userIsLogged]);
 
@@ -78,16 +107,16 @@ const MasterAlbum = () => {
       );
     }
     try {
-      const result = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
         {},
         {
           withCredentials: true,
         },
       );
-      console.log(result);
+      await getCatalog();
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data.message);
     }
   };
 
@@ -100,7 +129,7 @@ const MasterAlbum = () => {
     setModalAddAlbumToUserCollection(true);
   };
   const addAlbumToUserCollection = async (
-    e: React.FormEvent<HTMLFormElement>,
+    e: React.SyntheticEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     try {
@@ -116,7 +145,7 @@ const MasterAlbum = () => {
       );
       console.log(result);
       setModalAddAlbumToUserCollection(false);
-      await albumIsInUserCollection();
+      await getCatalog();
     } catch (error) {
       onError(error.response.data.message);
       //console.log(error.response.data.message);
@@ -130,6 +159,25 @@ const MasterAlbum = () => {
       ...albumAddedToCollection,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const removeFromUserWishlist = async () => {
+    if (!userIsLogged) {
+      onError(
+        `Vous devez être connecté à l'application pour utiliser cette fonctionnalité`,
+      );
+    }
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
+        {
+          withCredentials: true,
+        },
+      );
+      await getCatalog();
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
   };
 
   return (
@@ -174,17 +222,26 @@ const MasterAlbum = () => {
 
           <div className="master-album__actions">
             <div className="master-album__add-to-wishlist">
-              <IoHeartOutline onClick={addToUserWishlist} />
+              {userIsLogged && isWishlisted && (
+                <IoHeart onClick={removeFromUserWishlist} />
+              )}
+              {userIsLogged && !isWishlisted && (
+                <IoHeartOutline onClick={addToUserWishlist} />
+              )}
             </div>
             {userIsLogged && (
               <div
                 className="album-card__owned-badge"
-                title={isOwned ? "Dans ma collection" : "Ajouter à ma collection"}
+                title={
+                  isOwned ? "Dans ma collection" : "Ajouter à ma collection"
+                }
               >
                 {isOwned ? (
                   <IoLibrary onClick={openModalAddAlbumToUserCollection} />
                 ) : (
-                  <IoLibraryOutline onClick={openModalAddAlbumToUserCollection} />
+                  <IoLibraryOutline
+                    onClick={openModalAddAlbumToUserCollection}
+                  />
                 )}
               </div>
             )}
