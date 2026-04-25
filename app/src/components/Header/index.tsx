@@ -20,7 +20,7 @@ const Header = () => {
       </h1>
       {user?.username ? <h4>Salut {user?.username}</h4> : ""}
       
-      <SearchBar />
+      {/* <SearchBar /> */}
     </header>
   );
 };

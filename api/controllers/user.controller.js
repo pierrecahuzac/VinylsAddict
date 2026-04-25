@@ -1,6 +1,7 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { log } from "node:console";
 import { format } from "node:path";
 const Usercontroller = {
   signup: async (req, res) => {
@@ -120,20 +121,23 @@ const Usercontroller = {
       }
     }
   },
-  getUserAlbums: async (req, res) => {
+  getOneUserAlbum: async (req, res) => {
     const albumId = req.params.id;
-    console.log(albumId);
+    
 
     const userId = req.userId;
+    console.log(userId);
+    
     if (!userId) {
       return res.status(401).json({
         message: "Unauthorized",
       });
     }
     try {
-      const userAlbum = await prisma.userAlbum.findUnique({
+      const userAlbum = await prisma.userAlbum.findFirst({
         where: {
-          id: albumId,
+          albumId: albumId,
+          userId: userId,
         },
         include: {
           album: {
@@ -145,13 +149,14 @@ const Usercontroller = {
               
             },
           },
-          condition: true,
-          
+          condition: true,       
          
         },
       });
-
+     
+      
       if (!userAlbum) {
+        
         return res
           .status(404)
           .json({ message: `Détails de l'album introuvables` });
