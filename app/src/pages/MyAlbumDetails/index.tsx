@@ -97,12 +97,18 @@ const MyAlbumDetails = () => {
             </h1>
             <p className="metadata">
               Année de sortie :
-              {data?.userAlbum?.releaseDate || "Année inconnue"}
+              {data?.userAlbum?.album?.releaseDate || "Année inconnue"}
             </p>
             <div>
               Genre :{" "}
               {data?.userAlbum?.album?.genres.map((genre) => (
                 <span key={genre.id}>{genre?.name}</span>
+              ))}
+            </div>
+            <div>
+              {data?.userAlbum?.album?.styles > 1 ? "Styles" : "Style"} :
+              {data?.userAlbum?.album?.styles.map((style) => (
+                <span key={style.id}>{style?.name}</span>
               ))}
             </div>
           </header>
@@ -124,7 +130,7 @@ const MyAlbumDetails = () => {
                 </div>
                 <div className="label">{data?.userAlbum?.notes || ""}</div>
                 <div className="label">
-                  Couleur : {data?.userAlbum?.color || "Standard"}
+                  Couleur : {data?.userAlbum?.album?.color || "Standard"}
                 </div>
 
                 <div className="label">

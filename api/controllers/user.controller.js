@@ -142,6 +142,7 @@ const Usercontroller = {
               format: true,
               styles: true,
               genres: true,
+              
             },
           },
           condition: true,
