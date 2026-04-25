@@ -122,12 +122,50 @@ const Usercontroller = {
     }
   },
   getOneUserAlbum: async (req, res) => {
-    const albumId = req.params.id;
-    
-
+    const id = req.params.id;
     const userId = req.userId;
-    console.log(userId);
-    
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+    try {
+      const userAlbum = await prisma.userAlbum.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          album: {
+            include: {
+              vinylVariant: true,
+              format: true,
+              styles: true,
+              genres: true,
+            },
+          },
+          condition: true,       
+        },
+      });
+
+      if (!userAlbum) {
+        return res
+          .status(404)
+          .json({ message: `Détails de l'album introuvables` });
+      }
+      return res
+        .status(200)
+        .json({ userAlbum, message: `Détails de l'album trouvés` });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ error: error.message });
+    }
+  },
+
+  checkAlbumInCollection: async (req, res) => {
+    const albumId = req.params.id;
+    const userId = req.userId;
+
     if (!userId) {
       return res.status(401).json({
         message: "Unauthorized",
@@ -139,38 +177,20 @@ const Usercontroller = {
           albumId: albumId,
           userId: userId,
         },
-        include: {
-          album: {
-            include: {
-              vinylVariant: true,
-              format: true,
-              styles: true,
-              genres: true,
-              
-            },
-          },
-          condition: true,       
-         
-        },
       });
-     
-      
+
       if (!userAlbum) {
-        
         return res
           .status(404)
-          .json({ message: `Détails de l'album introuvables` });
+          .json({ message: `Album non présent dans la collection` });
       }
       return res
         .status(200)
-        .json({ userAlbum, message: `Détails de l'album trouvés` });
+        .json({ userAlbum, message: `Album présent dans la collection` });
     } catch (error) {
-      console.log(error);
-
       return res.status(500).json({ error: error.message });
     }
   },
-
   getAllUserAlbums: async (req, res) => {
     const userId = req.userId;
     if (!userId) {
