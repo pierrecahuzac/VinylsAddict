@@ -2,14 +2,14 @@ import { Link } from "react-router";
 
 import {
   IoLibraryOutline,
- // IoHome,
+  IoHome,
   IoHeartOutline,
   IoLogOutOutline,
  
   IoPerson,
  
   IoLogIn,
- 
+  // IoPersonAddSharp,
   IoPersonAddOutline,
 } from "react-icons/io5";
 
@@ -29,9 +29,9 @@ const NavBar = () => {
   return (
     <nav className="nav-bar">
       <>
-        {/* <Link to={`/`}>
+        <Link to={`/`}>
           <IoHome />
-        </Link> */}
+        </Link>
         {!userIsLogged && (
           <>
             <Link to={`/login`}>

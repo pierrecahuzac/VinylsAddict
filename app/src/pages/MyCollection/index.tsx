@@ -109,7 +109,9 @@ const MyCollection = () => {
         {!isLoading && albums.length === 0 && (
           <p className="status-msg">Aucun album dans votre collection.</p>
         )}
-        
+        {!isLoading && albums.length > 0 && (
+          <div>Tu as {albums.length} album{albums.length >1 && "s"} dans ta collection.</div>
+        )}
         {albums.length > 0 &&
           albums.map((item: any) => (
             <Album

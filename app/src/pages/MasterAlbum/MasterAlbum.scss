@@ -1,4 +1,4 @@
-.master-album {
+.masterAlbum {
   padding-top: 2rem;
   width: 100%;
   display: flex;
@@ -6,7 +6,7 @@
   align-items: center;
   
   &-cover {
-    width: 200px;
+    width: 100%;
     img {
       width: 100%;
       border-radius: 15px;

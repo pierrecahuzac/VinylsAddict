@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { IoTrash } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 
 import type { FullAlbumState } from "../../types/album";
@@ -15,7 +15,8 @@ const MyAlbumDetails = () => {
   const [data, setData] = useState<FullAlbumState | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [modaleDeleteAlbum, setModaleDeleteAlbum] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchFullDetails = async () => {
       if (!albumId) return;
@@ -54,6 +55,21 @@ const MyAlbumDetails = () => {
   const album = data.userAlbum?.album || data.album;
   const userAlbum = data.userAlbum;
 
+  const submitDeleteUserAlbum = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!userAlbum) return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${userAlbum.id}`,
+        { withCredentials: true },
+      );
+      navigate(`/collection/${data.userAlbum?.userId}`);
+      // Optionnel : rediriger ou afficher un message de succès
+    } catch (err) {
+      console.error("Erreur lors de la suppression de l'album :", err);
+    }
+  };
   return (
     <div className="myAlbumDetails">
       <div className="myAlbumDetails-header">
@@ -92,10 +108,12 @@ const MyAlbumDetails = () => {
             <div className="details-grid">
               <div className="detail-item">
                 <div className="label">
-                  Prix d'achat : {userAlbum?.price ? `${userAlbum.price} €` : "—"}
+                  Prix d'achat :{" "}
+                  {userAlbum?.price ? `${userAlbum.price} €` : "—"}
                 </div>
                 <div className="label">
-                  État du disque : {userAlbum?.condition?.nameFR || "Non renseigné"}
+                  État du disque :{" "}
+                  {userAlbum?.condition?.nameFR || "Non renseigné"}
                 </div>
                 <div className="label">
                   Variante : {album?.vinylVariant?.nameFR || "Non renseigné"}
@@ -117,7 +135,20 @@ const MyAlbumDetails = () => {
                 </div>
               </div>
             </div>
+            <IoTrash onClick={() => setModaleDeleteAlbum(true)} />
           </section>
+          {modaleDeleteAlbum && (
+            <div className="modale-delete">
+              <p>
+                Êtes-vous sûr de vouloir supprimer cet album de votre collection
+                ?
+              </p>
+              <button onClick={submitDeleteUserAlbum}>Supprimer</button>
+              <button onClick={() => setModaleDeleteAlbum(false)}>
+                Annuler
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

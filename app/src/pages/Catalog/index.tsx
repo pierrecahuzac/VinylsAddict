@@ -98,7 +98,7 @@ const Catalog = () => {
   return (
     <div className="catalog">
       <main className="catalog__list">
-        <h1>Derniers ajouts</h1>
+        <div>Il y'a {albums.length} album{albums.length > 1 ? "s" : ""} dans les derniers ajouts</div>
         {isLoading && <p className="status-msg">Chargement des albums...</p>}
 
         {!isLoading && albums.length === 0 && (
