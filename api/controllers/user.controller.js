@@ -1,6 +1,7 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { format } from "node:path";
 const Usercontroller = {
   signup: async (req, res) => {
     try {
@@ -93,7 +94,7 @@ const Usercontroller = {
         message: "Unauthorized",
       });
     }
-      
+
     try {
       const user = await prisma.user.findUnique({
         where: {
@@ -121,7 +122,9 @@ const Usercontroller = {
   },
   getUserAlbums: async (req, res) => {
     const albumId = req.params.id;
-   const userId = req.userId;
+    console.log(albumId);
+
+    const userId = req.userId;
     if (!userId) {
       return res.status(401).json({
         message: "Unauthorized",
@@ -130,13 +133,21 @@ const Usercontroller = {
     try {
       const userAlbum = await prisma.userAlbum.findUnique({
         where: {
-          userId_albumId: {
-            userId,
-            albumId: albumId,
-          },
+          id: albumId,
         },
         include: {
+          album: {
+            include: {
+              vinylVariant: true,
+              format: true,
+              styles: true,
+              genres: true,
+              
+            },
+          },
           condition: true,
+          
+         
         },
       });
 
@@ -149,6 +160,8 @@ const Usercontroller = {
         .status(200)
         .json({ userAlbum, message: `Détails de l'album trouvés` });
     } catch (error) {
+      console.log(error);
+
       return res.status(500).json({ error: error.message });
     }
   },

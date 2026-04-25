@@ -11,22 +11,6 @@ const CollectionController = {
       const { albumId } = req.params;
       const { price, conditionId } = req.body;
 
-      // Vérifier que l'album existe
-      // const albumExists = await prisma.userAlbum.findFirst({
-      //   where: {
-      //     userId,
-      //     albumId,
-      //   },
-      // });
-      // console.log(albumExists);
-
-      // if (albumExists) {
-
-      //   return res
-      //     .status(400)
-      //     .json({ message: "Album déjà dans la collection" });
-      // }
-
       const userAlbum = await prisma.userAlbum.create({
         data: {
           user: { connect: { id: userId } },
