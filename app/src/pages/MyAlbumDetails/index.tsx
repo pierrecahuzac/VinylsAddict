@@ -60,13 +60,19 @@ const MyAlbumDetails = () => {
     if (!userAlbum) return;
 
     try {
-      await axios.delete(
+      
+      
+     const result =  await axios.delete(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${userAlbum.id}`,
         { withCredentials: true },
       );
+      console.log(result);
+      
       navigate(`/collection/${data.userAlbum?.userId}`);
-      // Optionnel : rediriger ou afficher un message de succès
+      setModaleDeleteAlbum(false);
     } catch (err) {
+      console.log(err.response);
+      
       console.error("Erreur lors de la suppression de l'album :", err);
     }
   };
