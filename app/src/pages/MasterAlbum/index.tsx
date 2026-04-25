@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, type ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   IoHeart,
@@ -27,11 +27,6 @@ const MasterAlbum = () => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [modalAddAlbumToUserCollection, setModalAddAlbumToUserCollection] =
     useState(false);
-  const [addAlbumToCollection, setAddAlbumToCollection] = useState({
-    price: "",
-    variantId: "",
-    conditionId: "",
-  });
   const [albumAddedToCollection, setAlbumAddedToCollection] = useState({
     price: "",
     conditionId: "",
@@ -77,13 +72,13 @@ const MasterAlbum = () => {
   };
   const getCatalog = async () => {
     try {
-      const masterAlbumDetails = await axios.get(
+      const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${id}`,
         {
           withCredentials: true,
         },
       );
-      setMasterAlbumDetails(masterAlbumDetails.data);
+      setMasterAlbumDetails(response.data);
       await albumIsInUserCollection();
       await albumIsInUserWishlist();
     } catch (error) {
@@ -98,14 +93,7 @@ const MasterAlbum = () => {
     fetchData();
   }, [id, userIsLogged]);
 
-  if (!masterAlbumDetails) return <div>Chargement...</div>;
-
-  const addToUserWishlist = async () => {
-    if (!userIsLogged) {
-      onError(
-        `Vous devez être connecté à l'application pour utiliser cette fonctionnalité`,
-      );
-    }
+  const addAlbumToWishlist = async () => {
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
@@ -114,26 +102,36 @@ const MasterAlbum = () => {
           withCredentials: true,
         },
       );
-      await getCatalog();
+      setIsWishlisted(true);
     } catch (error) {
-      console.log(error.response.data.message);
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data?.message);
+      }
     }
   };
 
-  const openModalAddAlbumToUserCollection = async () => {
-    if (!userIsLogged) {
-      onError(
-        `Vous devez être connecté à l'application pour utiliser cette fonctionnalité`,
+  const deleteAlbumFromWishlist = async () => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
+        {
+          withCredentials: true,
+        },
       );
+      setIsWishlisted(false);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data?.message);
+      }
     }
-    setModalAddAlbumToUserCollection(true);
   };
+
   const addAlbumToUserCollection = async (
-    e: React.SyntheticEvent<HTMLFormElement>,
+    e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     try {
-      const result = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${id}`,
         {
           price: albumAddedToCollection.price,
@@ -143,47 +141,46 @@ const MasterAlbum = () => {
           withCredentials: true,
         },
       );
-      console.log(result);
       setModalAddAlbumToUserCollection(false);
       await getCatalog();
     } catch (error) {
-      onError(error.response.data.message);
-      //console.log(error.response.data.message);
+      if (axios.isAxiosError(error)) {
+        onError(error.response?.data?.message || "Une erreur est survenue");
+      }
     }
   };
 
-  const changeDataAlbum = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    setAlbumAddedToCollection({
-      ...albumAddedToCollection,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const removeFromUserWishlist = async () => {
-    if (!userIsLogged) {
-      onError(
-        `Vous devez être connecté à l'application pour utiliser cette fonctionnalité`,
-      );
-    }
+  const deleteAlbumFromCollection = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${id}`,
         {
           withCredentials: true,
         },
       );
+      setIsOwned(false);
       await getCatalog();
     } catch (error) {
-      console.log(error.response.data.message);
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data?.message);
+      }
     }
   };
 
+  const changeDataAlbum = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setAlbumAddedToCollection((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   return (
-    <div className="master-album">
-      <div className="master-album-header">
-        <div className="master-album-cover">
+    <div className="masterAlbum-container">
+      <div className="masterAlbum-content">
+        <div className="masterAlbum-cover">
           <img
             src={
               masterAlbumDetails?.coverUrl || "https://via.placeholder.com/200"
@@ -191,99 +188,126 @@ const MasterAlbum = () => {
             alt={masterAlbumDetails?.title}
           />
         </div>
-      </div>
-      <div className="master-album__datas">
-        <div className="master-album__infos">
-          <div className="master-album__title-artist">
+        <div className="masterAlbum-infos">
+          <h1 className="masterAlbum-title">
             {masterAlbumDetails?.title} - {masterAlbumDetails?.artist}
-          </div>
+          </h1>
           <div>Année: {masterAlbumDetails?.releaseDate}</div>
-          <div>Couleur: {masterAlbumDetails?.color}</div>
-          <div>Code-barres: {masterAlbumDetails?.barCode}</div>
-          <div>Nombre de disques: {masterAlbumDetails?.diskNumber}</div>
-          <div>Nombre de pistes: {masterAlbumDetails?.trackCount}</div>
-          <div>Format: {masterAlbumDetails?.format?.name}</div>
-          <div>Vitesse: {masterAlbumDetails?.format?.speed}</div>
-          {/* <div>Description: {masterAlbumDetails?.format?.description}</div> */}
           <div>
-            Genres:{" "}
-            {masterAlbumDetails?.genres?.map((g) => g.nameFR).join(", ")}
+            Format: {masterAlbumDetails?.format?.name} (
+            {masterAlbumDetails?.format?.speed})
           </div>
+          <div>Code barre: {masterAlbumDetails?.barCode}</div>
           <div>
-            Styles:{" "}
-            {masterAlbumDetails?.styles?.map((s) => s.nameFR).join(", ")}
-          </div>
-          <div>
-            Variante:{" "}
-            {masterAlbumDetails?.vinylVariants
-              ?.map((vv) => vv.nameFR)
+            Genre(s):{" "}
+            {masterAlbumDetails?.genres
+              ?.map((g) => g.nameFR || g.name)
               .join(", ")}
           </div>
-
-          <div className="master-album__actions">
-            <div className="master-album__add-to-wishlist">
-              {userIsLogged && isWishlisted && (
-                <IoHeart onClick={removeFromUserWishlist} />
-              )}
-              {userIsLogged && !isWishlisted && (
-                <IoHeartOutline onClick={addToUserWishlist} />
-              )}
-            </div>
-            {userIsLogged && (
-              <div
-                className="album-card__owned-badge"
-                title={
-                  isOwned ? "Dans ma collection" : "Ajouter à ma collection"
-                }
-              >
-                {isOwned ? (
-                  <IoLibrary onClick={openModalAddAlbumToUserCollection} />
-                ) : (
-                  <IoLibraryOutline
-                    onClick={openModalAddAlbumToUserCollection}
-                  />
-                )}
-              </div>
-            )}
+          <div>
+            Style(s):{" "}
+            {masterAlbumDetails?.styles
+              ?.map((s) => s.nameFR || s.name)
+              .join(", ")}
+          </div>
+          <div>
+            Variante(s):{" "}
+            {masterAlbumDetails?.vinylVariants
+              ?.map((vv) => vv.nameFR || vv.name)
+              .join(", ")}
           </div>
         </div>
-        {modalAddAlbumToUserCollection && (
-          <div className="modal">
-            <div className="modal-content">
-              <h2>Ajouter à ma collection</h2>
-              <form action="submit">
+
+        {userIsLogged && (
+          <div className="masterAlbum-actions">
+            <button
+              className="action-btn"
+              onClick={
+                isOwned
+                  ? deleteAlbumFromCollection
+                  : () => setModalAddAlbumToUserCollection(true)
+              }
+            >
+              {isOwned ? (
+                <>
+                  <IoLibrary className="icon owned" /> Dans ma collection
+                </>
+              ) : (
+                <>
+                  <IoLibraryOutline className="icon" /> Ajouter à ma collection
+                </>
+              )}
+            </button>
+
+            <button
+              className="action-btn"
+              onClick={
+                isWishlisted ? deleteAlbumFromWishlist : addAlbumToWishlist
+              }
+            >
+              {isWishlisted ? (
+                <>
+                  <IoHeart className="icon wishlisted" /> Dans ma wishlist
+                </>
+              ) : (
+                <>
+                  <IoHeartOutline className="icon" /> Ajouter à ma wishlist
+                </>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {modalAddAlbumToUserCollection && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>Ajouter à ma collection</h2>
+            <form onSubmit={addAlbumToUserCollection}>
+              <div className="form-group">
+                <label>Prix d'achat</label>
                 <input
                   type="number"
-                  step="0.01"
-                  placeholder="Prix"
                   name="price"
                   value={albumAddedToCollection.price}
                   onChange={changeDataAlbum}
+                  placeholder="Prix"
                 />
-
+              </div>
+              <div className="form-group">
+                <label>État du disque</label>
                 <select
                   name="conditionId"
                   value={albumAddedToCollection.conditionId}
                   onChange={changeDataAlbum}
+                  required
                 >
-                  <option value="">-- État --</option>
-                  {allMetadata?.conditions?.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.nameFR}
-                    </option>
-                  ))}
+                  <option value="">-- Choisir un état --</option>
+                  {allMetadata?.conditions?.map(
+                    (c: { id: number; name: string; nameFR?: string }) => (
+                      <option key={c.id} value={c.id}>
+                        {c.nameFR || c.name}
+                      </option>
+                    ),
+                  )}
                 </select>
-                <button onClick={(e) => addAlbumToUserCollection(e)}>
+              </div>
+              <div className="modal-actions">
+                <button type="submit" className="submit-btn">
                   Ajouter
                 </button>
-                <button onClick={() => setModalAddAlbumToUserCollection(false)}>
+                <button
+                  type="button"
+                  className="cancel-btn"
+                  onClick={() => setModalAddAlbumToUserCollection(false)}
+                >
                   Annuler
                 </button>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

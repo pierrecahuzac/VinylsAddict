@@ -4,37 +4,9 @@ import { useParams } from "react-router-dom";
 
 import { useUser } from "../../contexts/userContext";
 
+import type { FullAlbumState } from "../../types/album";
+
 import "./MyAlbumDetails.scss";
-
-interface AlbumData {
-  title: string;
-  artist: string;
-  coverUrl: string;
-  releaseDate?: number;
-  color?: string;
-  trackCount?: number;
-  diskNumber?: number;
-  barCode?: string;
-  format: {
-    speed: string;
-    name: string;
-  };
-}
-
-interface UserAlbumData {
-  userAlbum: {
-    price: number | null;
-    notes?: string;
-    condition?: {
-      nameFR?: string;
-    };
-  };
-}
-
-interface FullAlbumState {
-  album: AlbumData;
-  userDatas: UserAlbumData;
-}
 
 const MyAlbumDetails = () => {
   const { albumId } = useParams<{ albumId: string }>();
@@ -45,7 +17,7 @@ const MyAlbumDetails = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchFullDetails = async () => {      
+    const fetchFullDetails = async () => {
       if (!albumId) return;
       try {
         setLoading(true);
@@ -56,13 +28,12 @@ const MyAlbumDetails = () => {
             withCredentials: true,
           },
         );
-        console.log(userRes);
-        
+
         setData(userRes.data);
-        
       } catch (err) {
-        console.log(err.response.data.message);
-        
+        if (axios.isAxiosError(err)) {
+          console.log(err.response?.data?.message);
+        }
         console.log("Erreur lors du chargement :", err);
         setError("Impossible de charger les détails de cet album.");
       } finally {
@@ -72,47 +43,48 @@ const MyAlbumDetails = () => {
 
     fetchFullDetails();
   }, [albumId, userIsLogged]);
+
   if (loading)
     return <div className="status-msg">Chargement des détails...</div>;
   if (error || !data)
     return (
       <div className="status-msg error">{error || "Album introuvable"}</div>
     );
+
+  const album = data.userAlbum?.album || data.album;
+  const userAlbum = data.userAlbum;
+
   return (
     <div className="myAlbumDetails">
       <div className="myAlbumDetails-header">
         <div className="myAlbumDetails-cover">
           <img
-            src={
-              data?.userAlbum?.album?.coverUrl ||
-              "https://via.placeholder.com/400"
-            }
-            alt={`${data?.userAlbum?.album?.title} cover`}
+            src={album?.coverUrl || "https://via.placeholder.com/400"}
+            alt={`${album?.title} cover`}
           />
         </div>
       </div>
       <div className="myAlbumDetails__datas">
         <div className="myAlbumDetails__infos">
           <header className="title-section">
-            <h1 className="myAlbumDetails__title-artist">
-              {data?.userAlbum?.album?.title}{" "}
-              <span className="separator">—</span>{" "}
-              {data?.userAlbum?.album?.artist}
+            <h1 className="myAlbumDetails__artist-title">
+              {album?.artist}
+              <span className="separator">—</span>
+              {album?.title}
             </h1>
             <p className="metadata">
-              Année de sortie :
-              {data?.userAlbum?.album?.releaseDate || "Année inconnue"}
+              Année de sortie : {album?.releaseDate || "Année inconnue"}
             </p>
             <div>
               Genre :{" "}
-              {data?.userAlbum?.album?.genres.map((genre) => (
-                <span key={genre.id}>{genre?.name}</span>
+              {album?.genres?.map((genre) => (
+                <span key={genre.id}>{genre?.nameFR || genre?.name}</span>
               ))}
             </div>
             <div>
-              {data?.userAlbum?.album?.styles > 1 ? "Styles" : "Style"} :
-              {data?.userAlbum?.album?.styles.map((style) => (
-                <span key={style.id}>{style?.name}</span>
+              {(album?.styles?.length ?? 0) > 1 ? "Styles" : "Style"} :{" "}
+              {album?.styles?.map((style) => (
+                <span key={style.id}>{style?.nameFR || style?.name}</span>
               ))}
             </div>
           </header>
@@ -120,50 +92,29 @@ const MyAlbumDetails = () => {
             <div className="details-grid">
               <div className="detail-item">
                 <div className="label">
-                  Prix d'achat :{" "}
-                  {data?.userAlbum?.price ? `${data.userAlbum.price} €` : "—"}
+                  Prix d'achat : {userAlbum?.price ? `${userAlbum.price} €` : "—"}
                 </div>
                 <div className="label">
-                  État du disque :{" "}
-                  {data?.userAlbum?.condition?.nameFR || "Non renseigné"}
+                  État du disque : {userAlbum?.condition?.nameFR || "Non renseigné"}
                 </div>
                 <div className="label">
-                  Variante :
-                  {data?.userAlbum?.album?.vinylVariant?.nameFR ||
-                    "Non renseigné"}
+                  Variante : {album?.vinylVariant?.nameFR || "Non renseigné"}
                 </div>
-                <div className="label">{data?.userAlbum?.notes || ""}</div>
-                <div className="label">
-                  Couleur : {data?.userAlbum?.album?.color || "Standard"}
-                </div>
-
-                <div className="label">
-                  {data?.userAlbum?.album?.format?.name ||
-                    "Format non renseigné"}{" "}
-                  -
-                  {data?.userAlbum?.album?.format?.speed ||
-                    "Format non renseigné"}
-                </div>
-                <div className="label">
-                  {data?.userAlbum?.album?.barCode || "Code bar inconnu"}
-                </div>
-                <div className="label">
-                  Condition :
-                  {data?.userAlbum?.condition.nameFR || "Condition inconnue"}
-                </div>
-                <div className="label"></div>
-                <div className="label">
-                  Nombre de disques : {data?.album?.diskNumber || "inconnu"}
-                </div>
-                <div className="label">
-                  {data?.album?.trackCount || "Nombre de pistes inconnu"}
-                </div>
-                {data?.userAlbum?.notes && (
-                  <div className="detail-notes">
-                    <div className="label">Notes personnelles :</div>
-                    <p>{data.userAlbum.notes}</p>
-                  </div>
+                {userAlbum?.notes && (
+                  <div className="label">Notes : {userAlbum.notes}</div>
                 )}
+                <div className="label">
+                  Couleur : {album?.color || "Standard"}
+                </div>
+                <div className="label">
+                  Format : {album?.format?.name || "Format non renseigné"}
+                </div>
+                <div className="label">
+                  Nombre de disques : {album?.diskNumber || "inconnu"}
+                </div>
+                <div className="label">
+                  Nombre de pistes : {album?.trackCount || "inconnu"}
+                </div>
               </div>
             </div>
           </section>

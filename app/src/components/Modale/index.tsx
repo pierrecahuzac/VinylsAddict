@@ -1,23 +1,4 @@
-import {
-  type ChangeEvent,
-  type Dispatch,
-  type SetStateAction,
-  type SyntheticEvent,
-} from "react";
-
-import type { AlbumFormState, AllMetadata } from "../../types/album";
-
-interface ModaleProps {
-  submitNewAlbum: (e: SyntheticEvent<HTMLFormElement>) => void | Promise<void>;
-  album: AlbumFormState;
-  changeDataAlbum: (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => void;
-  allMetadata: AllMetadata | null;
-  setModaleAddNewAlbum: Dispatch<SetStateAction<boolean>>;
-  addAlbumToCollection: boolean;
-  setAddAlbumToCollection: Dispatch<SetStateAction<boolean>>;
-}
+import type { ModaleProps } from "../../types/modale";
 
 import "./Modale.scss";
 
@@ -29,7 +10,10 @@ const Modale = ({
   setModaleAddNewAlbum,
   addAlbumToCollection,
   setAddAlbumToCollection,
+  isCollectionContext = false,
 }: ModaleProps) => {
+ 
+  
   return (
     <div className="modale_add_new_album">
       <div className="modale_content">
@@ -125,7 +109,7 @@ const Modale = ({
             onChange={changeDataAlbum}
           >
             <option value="">-- Style --</option>
-            {allMetadata?.style?.map((s) => (
+            {allMetadata?.styles?.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
               </option>
@@ -146,16 +130,19 @@ const Modale = ({
             onChange={changeDataAlbum}
           />
 
-          <label className="checkbox-label">
-            <input
-              type="checkbox"
-              name="addToCollection"
-              checked={addAlbumToCollection}
-              onChange={() => setAddAlbumToCollection(!addAlbumToCollection)}
-            />
-            Je possède cet album
-          </label>
-          {addAlbumToCollection && (
+          {!isCollectionContext && (
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="addToCollection"
+                checked={addAlbumToCollection}
+                onChange={() => setAddAlbumToCollection(!addAlbumToCollection)}
+              />
+              Je possède cet album
+            </label>
+          )}
+
+          {(addAlbumToCollection || isCollectionContext) && (
             <>
               <input
                 type="number"
