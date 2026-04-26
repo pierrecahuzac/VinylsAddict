@@ -28,7 +28,7 @@ const App = () => {
           <Route path="/collection/album/:albumId" element={<UserDetailsAlbum />} />
         </Route>
       </Routes>
-      <NavBar />
+     
     </>
   );
 };

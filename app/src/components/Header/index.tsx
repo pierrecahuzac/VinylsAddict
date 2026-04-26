@@ -1,17 +1,13 @@
 import { useNavigate } from "react-router";
-//import SearchBar from "../SearchBar";
-
-import "./Header.scss";
-//import { useUser } from "../../contexts/userContext";
 
 const Header = () => {
-  //const  {user} = useUser()
+  
   const title = "Vinyles addict";
   const navigate = useNavigate();
   return (
-    <header className="header">
+    <header className="w-full h-16" >
       <h1
-        className="header__title"
+        className="w-80 m-auto h-16 text-yellow-300 text-3xl justify-center items-center flex cursor-pointer"
         onClick={() => {
           navigate("/");
         }}

@@ -97,18 +97,19 @@ const Catalog = () => {
   };
   
   return (
-    <div className="catalog">
-      <main className="catalog__list">
-        <div>Il y'a {albums.length} album{albums.length > 1 ? "s" : ""} dans les derniers ajouts</div>
+    <div className="sm:w-full">
+      <main className="flex flex-col flex-wrap h-auto">
+        <div className="w-full text-center text-gray-200 ">Il y'a {albums.length} album{albums.length > 1 ? "s" : ""} dans les derniers ajouts</div>
         {isLoading && <p className="status-msg">Chargement des albums...</p>}
 
         {!isLoading && albums.length === 0 && (
           <p className="status-msg">Aucun album dans votre collection.</p>
         )}
-
+      <div className="w-100 flex flex-wrap m-auto justify-evenly gap-4 mt-4">
         {albums.length > 0 &&
           albums?.map((item: any) => (
             <Album
+              
               id={item.id}
               key={item.id}
               title={item.title}
@@ -117,7 +118,8 @@ const Catalog = () => {
               year={String(item.releaseDate)}
               onClick={() => openAlbumDetails(item.id)}
             />
-          ))}
+          ))}</div>
+        
       </main>
 
       {userIsLogged && (

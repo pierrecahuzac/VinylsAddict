@@ -15,8 +15,6 @@ import {
 
 import { useUser } from "../../contexts/userContext";
 
-import "./NavBar.scss";
-
 const NavBar = () => {
   const {
     user,
@@ -27,19 +25,19 @@ const NavBar = () => {
   } = useUser();
 
   return (
-    <nav className="nav-bar">
+    <nav className="w-100 h-16 bg-black-800 flex items-center justify-around text-2xl align-middle z-10  bg-gray-950">
       <>
-        <Link to={`/`}>
+        <Link to={`/`} className="decoration-none text-gray-200">
           <IoHome />
         </Link>
         {!userIsLogged && (
           <>
-            <Link to={`/login`}>
+            <Link to={`/login`} className="decoration-none text-gray-200">
               <IoLogIn />
             </Link>
-            <Link to={`/signup`}>
+            <Link to={`/signup`} className="decoration-none text-gray-200">
               <IoPersonAddOutline
-              // style={{color:"white"}}
+              
               />
             </Link>
           </>

@@ -1,14 +1,14 @@
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
 
-import "./Login.scss";
+
 
 const Login = () => {
   const { email, setEmail, login, password, setPassword } = useUser();
   return (
-    <div className="login">
-      <form onSubmit={login}>
-        <h2>Connexion</h2>
+    <div className="w-100 h-100 flex flex-col items-center justify-center">
+      <form onSubmit={login} className="flex flex-col">
+        <h2 className="mt-0 mb-1.5 text-center">Connexion</h2>
         <input
           type="email"
           placeholder="Email"
