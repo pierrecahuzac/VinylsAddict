@@ -17,7 +17,6 @@ import type { AlbumState } from "../../types/album.ts";
 
 import "./Catalog.scss";
 
-
 const initialAlbumState: AlbumState = {
   artist: "",
   title: "",
@@ -58,10 +57,7 @@ const Catalog = () => {
     getAllAlbums();
   }, []);
 
-  const openModaleAddNewAlbum = () => {
-    getAllMetadata();
-    setModaleAddNewAlbum(true);
-  };
+  
 
   const submitNewAlbum = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,6 +91,11 @@ const Catalog = () => {
     navigate(`/album/${albumId}`);
   };
 
+  const openModaleAddNewAlbum = () => {
+    getAllMetadata();
+    setModaleAddNewAlbum(true);
+  };
+  
   return (
     <div className="catalog">
       <main className="catalog__list">
