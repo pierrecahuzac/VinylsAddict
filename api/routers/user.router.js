@@ -10,7 +10,8 @@ UserRouter.post('/logout', AuthMiddleWare.checkToken,UserController.logout);
 UserRouter.post('/signup', UserController.signup);
 UserRouter.get('/checkToken', AuthMiddleWare.checkToken, UserController.checkToken);
 UserRouter.get('/albums', AuthMiddleWare.checkToken, UserController.getAllUserAlbums);
-UserRouter.get('/albums/:id', AuthMiddleWare.checkToken, UserController.getUserAlbums);
+UserRouter.get('/albums/:id', AuthMiddleWare.checkToken, UserController.getOneUserAlbum);
+UserRouter.get('/albums/check/:id', AuthMiddleWare.checkToken, UserController.checkAlbumInCollection);
 
 
 

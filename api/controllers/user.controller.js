@@ -1,6 +1,8 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { log } from "node:console";
+import { format } from "node:path";
 const Usercontroller = {
   signup: async (req, res) => {
     try {
@@ -93,7 +95,7 @@ const Usercontroller = {
         message: "Unauthorized",
       });
     }
-      
+
     try {
       const user = await prisma.user.findUnique({
         where: {
@@ -119,9 +121,10 @@ const Usercontroller = {
       }
     }
   },
-  getUserAlbums: async (req, res) => {
-    const albumId = req.params.id;
-   const userId = req.userId;
+  getOneUserAlbum: async (req, res) => {
+    const id = req.params.id;
+    const userId = req.userId;
+
     if (!userId) {
       return res.status(401).json({
         message: "Unauthorized",
@@ -130,13 +133,18 @@ const Usercontroller = {
     try {
       const userAlbum = await prisma.userAlbum.findUnique({
         where: {
-          userId_albumId: {
-            userId,
-            albumId: albumId,
-          },
+          id: id,
         },
         include: {
-          condition: true,
+          album: {
+            include: {
+              vinylVariant: true,
+              format: true,
+              styles: true,
+              genres: true,
+            },
+          },
+          condition: true,       
         },
       });
 
@@ -149,10 +157,40 @@ const Usercontroller = {
         .status(200)
         .json({ userAlbum, message: `Détails de l'album trouvés` });
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: error.message });
     }
   },
 
+  checkAlbumInCollection: async (req, res) => {
+    const albumId = req.params.id;
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+    try {
+      const userAlbum = await prisma.userAlbum.findFirst({
+        where: {
+          albumId: albumId,
+          userId: userId,
+        },
+      });
+
+      if (!userAlbum) {
+        return res
+          .status(404)
+          .json({ message: `Album non présent dans la collection` });
+      }
+      return res
+        .status(200)
+        .json({ userAlbum, message: `Album présent dans la collection` });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
   getAllUserAlbums: async (req, res) => {
     const userId = req.userId;
     if (!userId) {

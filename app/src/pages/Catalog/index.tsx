@@ -8,14 +8,14 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 
 import { useCollection } from "../../hooks/useCollection.ts";
-import Album from "../../components/Album/index.tsx";
 import { useUser } from "../../contexts/userContext.tsx";
+
+import Album from "../../components/Album/index.tsx";
 import Modale from "../../components/Modale/index.tsx";
+
 import type { AlbumState } from "../../types/album.ts";
 
 import "./Catalog.scss";
-
-
 
 const initialAlbumState: AlbumState = {
   artist: "",
@@ -29,6 +29,8 @@ const initialAlbumState: AlbumState = {
   coverUrl: "",
   color: "",
   styleId: "",
+  trackCount: "",
+  diskCount: "",
 };
 
 const Catalog = () => {
@@ -55,10 +57,7 @@ const Catalog = () => {
     getAllAlbums();
   }, []);
 
-  const openModaleAddNewAlbum = () => {
-    getAllMetadata();
-    setModaleAddNewAlbum(true);
-  };
+  
 
   const submitNewAlbum = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,9 +67,11 @@ const Catalog = () => {
       ...album,
       year: album.year ? Number(album.year) : null,
       price: album.price ? Number(album.price) : null,
+      trackCount: album.trackCount ? Number(album.trackCount) : null,
+      diskCount: album.diskCount ? Number(album.diskCount) : null,
       addAlbumToCollection
     };
-    console.log(payload);
+    
     
     try {
       await axios.post(
@@ -90,10 +91,15 @@ const Catalog = () => {
     navigate(`/album/${albumId}`);
   };
 
+  const openModaleAddNewAlbum = () => {
+    getAllMetadata();
+    setModaleAddNewAlbum(true);
+  };
+  
   return (
     <div className="catalog">
       <main className="catalog__list">
-        <h1>Derniers ajouts</h1>
+        <div>Il y'a {albums.length} album{albums.length > 1 ? "s" : ""} dans les derniers ajouts</div>
         {isLoading && <p className="status-msg">Chargement des albums...</p>}
 
         {!isLoading && albums.length === 0 && (

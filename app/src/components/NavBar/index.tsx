@@ -5,11 +5,9 @@ import {
   IoHome,
   IoHeartOutline,
   IoLogOutOutline,
-  // IoLogOut,
+ 
   IoPerson,
-  // IoExitOutline,
-  // IoExit,
-  // IoLogInOutline,
+ 
   IoLogIn,
   // IoPersonAddSharp,
   IoPersonAddOutline,

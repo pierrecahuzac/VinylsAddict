@@ -10,20 +10,32 @@ export interface AlbumFormState {
   color: string;
   genreId: string;
   styleId: string;
+  trackCount?: string | number;
+  diskCount?: string | number;
+}
+
+export interface AlbumProps {
+  title: string;
+  artist: string;
+  cover?: string;
+  id: string;
+  year: string;
+  onClick: () => void;
 }
 
 export interface MetadataItem {
   id: string;
   name?: string;
   nameEN?: string;
+  nameFR?: string;
 }
 
 export interface AllMetadata {
-  formats?: MetadataItem[];
-  conditions?: MetadataItem[];
-  variants?: MetadataItem[];
-  genres?: MetadataItem[];
-  style?: MetadataItem[];
+  formats?: MetadataItem[] | [] | null;
+  conditions?: MetadataItem[]| [] | null;
+  variants?: MetadataItem[] | [] | null;
+  genres?: MetadataItem[] | [] | null;
+  styles?: MetadataItem[] | [] | null;
 }
 
 export interface AlbumState {
@@ -38,18 +50,39 @@ export interface AlbumState {
   coverUrl: string;
   color: string;
   styleId: string;
+  trackCount?: string;
+  diskCount?: string;
 }
 
 export interface AlbumData {
+  id: string;
   title: string;
   artist: string;
-  coverUrl: string;
-  releaseDate?: number;
+  coverUrl?: string;
+  releaseDate?: string | number;
+  color?: string;
+  trackCount?: number;
+  diskNumber?: number;
+  barCode?: string;
+  format?: {
+    speed?: string;
+    name: string;
+  };
+  genres?: MetadataItem[];
+  styles?: MetadataItem[];
+  vinylVariants?: MetadataItem[];
+  vinylVariant?: MetadataItem;
 }
 
 export interface UserAlbumData {
+  id: string;
   price?: number;
-  color?: string;
-  condition?: { nameFR: string };
   notes?: string;
+  condition?: MetadataItem;
+  album: AlbumData;
+}
+
+export interface FullAlbumState {
+  album: AlbumData;
+  userAlbum?: UserAlbumData;
 }

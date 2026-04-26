@@ -12,10 +12,10 @@ const SearchBar = () => {
   
     const delayDebounceFn = setTimeout(async () => {
       try {
-        const result = await axios.get(
+        await axios.get(
           `https://api.discogs.com/database/search?q=${query}&token=TON_TOKEN_DISCOGS`
         );
-        console.log("Résultats Discogs :", result.data.results);
+       
       } catch (error) {
         console.error("Erreur recherche :", error);
       }
