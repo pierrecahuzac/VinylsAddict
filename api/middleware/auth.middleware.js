@@ -1,8 +1,15 @@
 import jwt from "jsonwebtoken";
 
 export const AuthMiddleWare = {
+
   checkToken: (req, res, next) => {
+    
+    
+    
     const token = req.cookies.va_token;
+    console.log(token);
+    
+    
     if (!token) {
       return res.status(401).json({
         message: "Unauthorized",

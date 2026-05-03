@@ -15,8 +15,6 @@ import Modale from "../../components/Modale/index.tsx";
 
 import type { AlbumState } from "../../types/album.ts";
 
-import "./Catalog.scss";
-
 const initialAlbumState: AlbumState = {
   artist: "",
   title: "",
@@ -57,12 +55,9 @@ const Catalog = () => {
     getAllAlbums();
   }, []);
 
-  
-
   const submitNewAlbum = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-
     const payload = {
       ...album,
       year: album.year ? Number(album.year) : null,
@@ -71,7 +66,6 @@ const Catalog = () => {
       diskCount: album.diskCount ? Number(album.diskCount) : null,
       addAlbumToCollection
     };
-    
     
     try {
       await axios.post(
@@ -97,34 +91,45 @@ const Catalog = () => {
   };
   
   return (
-    <div className="sm:w-full">
-      <main className="flex flex-col flex-wrap h-auto">
-        <div className="w-full text-center text-gray-200 ">Il y'a {albums.length} album{albums.length > 1 ? "s" : ""} dans les derniers ajouts</div>
-        {isLoading && <p className="status-msg">Chargement des albums...</p>}
+    <div className="p-4 flex flex-col gap-6">
+      <header className="text-center space-y-2">
+        <h1 className="text-3xl font-bold text-white">Catalogue</h1>
+        <div className="text-gray-400 text-sm">
+          Il y a <span className="text-[#f1c40f] font-bold">{albums.length}</span> album{albums.length > 1 ? "s" : ""} dans les derniers ajouts.
+        </div>
+      </header>
+
+      <main className="w-full">
+        {isLoading && (
+          <div className="flex justify-center py-10">
+            <p className="text-[#f1c40f] animate-pulse">Chargement des albums...</p>
+          </div>
+        )}
 
         {!isLoading && albums.length === 0 && (
-          <p className="status-msg">Aucun album dans votre collection.</p>
+          <p className="text-center text-gray-500 py-10 italic">Aucun album dans les derniers ajouts.</p>
         )}
-      <div className="w-100 flex flex-wrap m-auto justify-evenly gap-4 mt-4">
-        {albums.length > 0 &&
-          albums?.map((item: any) => (
-            <Album
-              
-              id={item.id}
-              key={item.id}
-              title={item.title}
-              artist={item.artist}
-              cover={item.coverUrl}
-              year={String(item.releaseDate)}
-              onClick={() => openAlbumDetails(item.id)}
-            />
-          ))}</div>
-        
+
+        <div className="flex flex-col gap-3">
+          {albums.length > 0 &&
+            albums?.map((item: any) => (
+              <Album              
+                id={item.id}
+                key={item.id}
+                title={item.title}
+                artist={item.artist}
+                cover={item.coverUrl}
+                year={String(item.releaseDate)}
+                onClick={() => openAlbumDetails(item.id)}
+                className="w-full"
+              />
+            ))}
+        </div>
       </main>
 
       {userIsLogged && (
         <button
-          className="add-button"
+          className="fixed bottom-24 right-6 w-14 h-14 bg-[#f1c40f] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
           onClick={openModaleAddNewAlbum}
           aria-label="Ajouter un album"
         >

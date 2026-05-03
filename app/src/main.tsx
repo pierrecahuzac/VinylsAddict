@@ -10,7 +10,7 @@ import "./styles/index.css";
 createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <UserProvider>
-      <App />
+      <App  />
     </UserProvider>
   </BrowserRouter>,
 );
