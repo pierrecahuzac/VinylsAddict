@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 const CollectionController = {
   addAlbumToCollection: async (req, res) => {
     const userId = req.userId;
+    
+    
     console.log(userId, "userid");
 
     try {

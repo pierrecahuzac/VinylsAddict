@@ -144,7 +144,7 @@ const Usercontroller = {
               genres: true,
             },
           },
-          condition: true,       
+          condition: true,
         },
       });
 
@@ -228,6 +228,69 @@ const Usercontroller = {
         message: `Liste des albums dans la collection`,
       });
     } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  },
+  changePassword: async (req, res) => {
+    console.log("--- DEBUG CHANGE PASSWORD ---");
+    console.log("BODY REÇU :", req.body); 
+    console.log("TYPE DE currentPassword :", typeof req.body.currentPassword);
+    const userId = req.userId;
+    const { currentPassword, newPassword, newPasswordConfirmation } = req.body;
+  
+    
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+  
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      const decryptedPassword = await bcryptjs.compare(currentPassword, user.password);
+      console.log(decryptedPassword);
+      
+      const isCurrentPasswordValid = await bcryptjs.compare(
+        currentPassword,
+        user.password,
+      );
+
+      console.log(isCurrentPasswordValid);
+      
+      if (!isCurrentPasswordValid) {
+        return res
+          .status(400)
+          .json({ message: "Current password is incorrect" });
+      }
+
+      if (newPassword !== newPasswordConfirmation) {
+        return res.status(400).json({ message: "New passwords do not match" });
+      }
+
+      const hashedNewPassword = await bcryptjs.hash(newPassword, 10);
+
+      const userUpdated = await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          password: hashedNewPassword,
+        },
+      });
+
+      console.log(userUpdated);
+      return res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+      console.log(error);
       return res.status(500).json({ error: error.message });
     }
   },

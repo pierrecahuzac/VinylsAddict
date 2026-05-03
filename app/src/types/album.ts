@@ -21,6 +21,7 @@ export interface AlbumProps {
   id: string;
   year: string;
   onClick: () => void;
+  className?: string;
 }
 
 export interface MetadataItem {
@@ -32,7 +33,7 @@ export interface MetadataItem {
 
 export interface AllMetadata {
   formats?: MetadataItem[] | [] | null;
-  conditions?: MetadataItem[]| [] | null;
+  conditions?: MetadataItem[] | [] | null;
   variants?: MetadataItem[] | [] | null;
   genres?: MetadataItem[] | [] | null;
   styles?: MetadataItem[] | [] | null;
