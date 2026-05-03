@@ -7,8 +7,6 @@ import { useCollection } from "../../hooks/useCollection.ts";
 import Modale from "../../components/Modale/index.tsx"; 
 import Album from "../../components/Album/index.tsx";
 
-import "./MyCollection.scss";
-
 interface AlbumState {
   artist: string;
   title: string;
@@ -42,13 +40,12 @@ const initialAlbumState: AlbumState = {
 };
 
 const MyCollection = () => {
-  const { albums,  getAllUserAlbums,isLoading, getAllMetadata, allMetadata } =
+  const { albums, getAllUserAlbums, isLoading, getAllMetadata, allMetadata } =
     useCollection();
   const navigate = useNavigate();
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);
   const [addAlbumToCollection, setAddAlbumToCollection] = useState(true);
-
 
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -100,34 +97,54 @@ const MyCollection = () => {
   };
 
   return (
-    <div className="my-collection">
-      <main className="my-collection_list">
+    <div className="p-4 flex flex-col gap-6 bg-gray-900 min-h-full">
+      <header className="text-center space-y-2">
+        <h1 className="text-3xl font-bold text-white">Ma Collection</h1>
+        {!isLoading && (
+          <div className="text-gray-400 text-sm">
+            Tu possèdes <span className="text-[#f1c40f] font-bold">{albums.length}</span> album{albums.length > 1 ? "s" : ""} au total.
+          </div>
+        )}
+      </header>
+
+      <main className="w-full">
         {isLoading && (
-          <p className="status-msg">Chargement de la collection...</p>
+          <div className="flex justify-center py-10">
+            <p className="text-[#f1c40f] animate-pulse">Ouverture des bacs...</p>
+          </div>
         )}
 
         {!isLoading && albums.length === 0 && (
-          <p className="status-msg">Aucun album dans votre collection.</p>
+          <div className="flex flex-col items-center justify-center py-20 text-gray-500 space-y-4">
+            <p className="italic text-center">Ta collection est vide. Il est temps de chiner !</p>
+            <button 
+              onClick={openModaleAddNewAlbum}
+              className="text-[#f1c40f] hover:underline font-medium"
+            >
+              Ajouter mon premier disque →
+            </button>
+          </div>
         )}
-        {!isLoading && albums.length > 0 && (
-          <div>Tu as {albums.length} album{albums.length >1 && "s"} dans ta collection.</div>
-        )}
-        {albums.length > 0 &&
-          albums.map((item: any) => (
-            <Album
-              id={item?.album?.id}
-              key={item.id}
-              title={item?.album?.title}
-              artist={item?.album?.artist}
-              cover={item?.album?.coverUrl}
-              year={item?.album?.releaseDate}
-              onClick={() => openAlbumDetails(item.id)}
-            />
-          ))}
+
+        <div className="flex flex-col gap-4">
+          {albums.length > 0 &&
+            albums.map((item: any) => (
+              <Album
+                id={item?.album?.id}
+                key={item.id}
+                title={item?.album?.title}
+                artist={item?.album?.artist}
+                cover={item?.album?.coverUrl}
+                year={String(item?.album?.releaseDate)}
+                onClick={() => openAlbumDetails(item.id)}
+                className="w-full"
+              />
+            ))}
+        </div>
       </main>
 
       <button
-        className="add-button"
+        className="fixed bottom-24 right-6 w-14 h-14 bg-[#f1c40f] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
         onClick={openModaleAddNewAlbum}
         aria-label="Ajouter un album"
       >

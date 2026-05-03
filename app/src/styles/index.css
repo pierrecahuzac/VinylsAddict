@@ -1,15 +1,32 @@
-
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+@import "tailwindcss";
 
-* {
-  font-family: "Montserrat", sans-serif;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@theme {
+  --color-primary: #f1c40f;
 }
 
-body {
-  background-color: $secondary;
-  color: $white;
+@layer base {
+  body {
+    @apply bg-gray-950 text-white min-h-screen;
+    font-family: 'Montserrat', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    @apply h-full min-h-screen;
+  }
+
+  /* Custom scrollbar for a more premium look */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-950;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-800 rounded-full hover:bg-gray-700 transition-colors;
+  }
 }
