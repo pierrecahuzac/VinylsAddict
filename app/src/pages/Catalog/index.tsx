@@ -12,6 +12,7 @@ import { useUser } from "../../contexts/userContext.tsx";
 
 import Album from "../../components/Album/index.tsx";
 import Modale from "../../components/Modale/index.tsx";
+import { IoAddOutline } from "react-icons/io5";
 
 import type { AlbumState } from "../../types/album.ts";
 
@@ -93,8 +94,8 @@ const Catalog = () => {
   return (
     <div className="p-4 flex flex-col gap-6">
       <header className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-white">Catalogue</h1>
-        <div className="text-gray-400 text-sm">
+        <h1 className="text-3xl font-bold text-white tracking-tight">Catalogue</h1>
+        <div className="text-gray-400 text-sm font-medium">
           Il y a{" "}
           <span className="text-[#f1c40f] font-bold">{albums.length}</span>{" "}
           album{albums.length > 1 ? "s" : ""} dans les derniers ajouts.
@@ -104,8 +105,8 @@ const Catalog = () => {
       <main className="w-full">
         {isLoading && (
           <div className="flex justify-center py-10">
-            <p className="text-[#f1c40f] animate-pulse">
-              Chargement des albums...
+            <p className="text-[#f1c40f] animate-pulse font-medium">
+              Ouverture des bacs...
             </p>
           </div>
         )}
@@ -128,15 +129,21 @@ const Catalog = () => {
                 className="w-full"
               />
             ))}
-        </div>{" "}
-        {userIsLogged && (
-          <div
-            className="h-20 mt-3  flex justify-center items-center bg-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-700 transition-all shadow-lg border border-gray-700/50 hover:border-[#f1c40f]/50 group text-center"
-            onClick={openModaleAddNewAlbum}
-          >
-            <div className="font-bold">-- Ajouter un album --</div>
-          </div>
-        )}
+
+          {userIsLogged && (
+            <button
+              className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-gray-800/30 border-2 border-dashed border-gray-700 hover:border-[#f1c40f] hover:bg-gray-800/60 rounded-xl transition-all group overflow-hidden"
+              onClick={openModaleAddNewAlbum}
+            >
+              <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-500 group-hover:text-[#f1c40f] group-hover:scale-110 transition-all">
+                <IoAddOutline size={24} />
+              </div>
+              <span className="font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest text-xs">
+                Ajouter un nouveau vinyle
+              </span>
+            </button>
+          )}
+        </div>
       </main>
 
       {modaleAddNewAlbum && (
