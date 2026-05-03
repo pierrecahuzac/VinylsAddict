@@ -4,7 +4,7 @@ import { useCollection } from "../../hooks/useCollection.ts";
 import { IoLibraryOutline, IoHeartOutline, IoStatsChartOutline, IoTrendingUpOutline } from "react-icons/io5";
 
 const MyStats = () => {
-  const { albums, getAllUserAlbums, isLoading } = useCollection();
+  const { albums, getAllUserAlbums } = useCollection();
   const [wishlistCount, setWishlistCount] = useState(0);
 
   useEffect(() => {

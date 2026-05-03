@@ -1,5 +1,5 @@
 import type { ModaleProps } from "../../types/modale";
-import { IoCloseOutline } from "react-icons/io5";
+
 
 const Modale = ({
   submitNewAlbum,

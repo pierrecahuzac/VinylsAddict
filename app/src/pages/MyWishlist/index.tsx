@@ -4,7 +4,6 @@ import Album from "../../components/Album";
 import { useNavigate } from "react-router";
 import type { AlbumData } from "../../types/album";
 import { IoTrashOutline, IoCloseOutline } from "react-icons/io5";
-import { useUser } from "../../contexts/userContext";
 
 interface WishlistEntry extends AlbumData {
   wishlistId: string;
@@ -12,7 +11,7 @@ interface WishlistEntry extends AlbumData {
 
 const MyWishlist = () => {
   const [userWishlist, setUserWishlist] = useState<WishlistEntry[]>([]);
-  const { user } = useUser();
+  
   const [modaleDeleteFromWishlist, setModaleDeleteFromWishlist] =
     useState(false);
   const [albumToDelete, setAlbumToDelete] = useState<string | null>(null);

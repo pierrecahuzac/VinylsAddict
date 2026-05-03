@@ -81,6 +81,7 @@ export interface UserAlbumData {
   notes?: string;
   condition?: MetadataItem;
   album: AlbumData;
+  userId?:string
 }
 
 export interface FullAlbumState {
