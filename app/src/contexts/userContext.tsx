@@ -157,14 +157,16 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         {},
         { withCredentials: true },
       );
+      onSuccess("Déconnexion réussie");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion API", error);
+      onError("Erreur lors de la déconnexion.");
+    } finally {
       setUser(null);
       setUserIslogged(false);
       setEmail("");
       setPassword("");
-      onSuccess("Déconnexion réussie");
       navigate("/");
-    } catch (error) {
-      onError("Erreur lors de la déconnexion.");
     }
   };
 
