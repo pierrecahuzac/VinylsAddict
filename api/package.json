@@ -8,7 +8,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "start": "node server.js",
+    "start": "npx prisma migrate deploy && node server.js",
     "nodemon": "nodemon -L server.js",
     "seed": "node --loader ts-node/esm prisma/seed.ts"
   },
