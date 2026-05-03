@@ -8,46 +8,40 @@ const app = express();
 app.use(helmet());
 app.use(cookieParser());
 
-const origins = process.env.AUTHORIZED_IPS.split(",").map((ip) => ip.trim());
+const origins = process.env.AUTHORIZED_IPS ? process.env.AUTHORIZED_IPS.split(",").map((ip) => ip.trim()) : [];
 
-if (process.env.NODE_ENV === "development") {
-  const developmentCORS = {
-    origin: (origin, callback) => {
-      if (!origin) {
-        return callback(null, true);
-      }
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin && process.env.NODE_ENV === "development") {
+      return callback(null, true);
+    }
+
+    if (process.env.NODE_ENV === "development") {
       const isAllowed = origins.some((authorized) => {
         const withPort = `http://${authorized}:55173`;
-
         const asDomain = authorized.includes("tail2fc6b2.ts.net")
           ? `http://${authorized}:55173`
           : null;
-
         return origin === withPort || (asDomain && origin === asDomain);
       });
 
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        console.error(
-          `Tentative de connexion bloquée pour l'origine : ${origin}`,
-        );
-        callback(new Error("Non autorisé par CORS"));
+      if (isAllowed) return callback(null, true);
+    } else {
+      const normalize = (url) => url?.replace(/\/+$/, "").toLowerCase();
+      if (normalize(origin) === normalize(process.env.FRONTEND_URL)) {
+        return callback(null, true);
       }
-    },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  };
-  app.use(cors(developmentCORS));
-}
-const productionCORS = {
-    origin: process.env.POSTGRES_URL,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
-  };
-  app.use(cors(productionCORS));
+    }
+
+    callback(new Error("Non autorisé par CORS"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 const port = process.env.PORT || 33000;
 
 app.use(express.json());

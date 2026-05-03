@@ -33,9 +33,12 @@ const Usercontroller = {
         },
       });
 
-      return res.status(201).json({ message: "User créé !", user: newUser });
+      const { password: _, ...userWithoutPassword } = newUser;
+
+      return res.status(201).json({ message: "User créé !", user: userWithoutPassword });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      console.error("Signup error:", error);
+      return res.status(500).json({ error: "Une erreur est survenue lors de l'inscription." });
     }
   },
   login: async (req, res) => {
@@ -50,7 +53,7 @@ const Usercontroller = {
       if (!user) {
         return res
           .status(401)
-          .json({ message: "Combinaison email / password not work" });
+          .json({ message: "Combinaison email / password incorrecte" });
       }
       if (!user.canConnect) {
         return res.status(401).json({
@@ -59,7 +62,7 @@ const Usercontroller = {
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
       if (!comparePassword) {
-        return res.status(400).json({ message: "Invalid password" });
+        return res.status(401).json({ message: "Combinaison email / password incorrecte" });
       }
       delete user.password;
       const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
@@ -67,7 +70,7 @@ const Usercontroller = {
       });
       res.cookie("va_token", jwtToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "prod",
+        secure: process.env.NODE_ENV !== "development",
         sameSite: "lax",
         maxAge: 3600000,
       });
@@ -75,13 +78,14 @@ const Usercontroller = {
         .status(200)
         .json({ message: "Login successful", user, isLogged: true });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      console.error("Login error:", error);
+      return res.status(500).json({ error: "Erreur lors de la connexion." });
     }
   },
   logout: (req, res) => {
     res.clearCookie("va_token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "prod",
+      secure: process.env.NODE_ENV !== "development",
       sameSite: "lax",
     });
     return res
@@ -114,11 +118,8 @@ const Usercontroller = {
         return res.status(401).json({ message: "Unauthorized" });
       }
     } catch (error) {
-      if (error.response?.status !== 401) {
-        console.error("Erreur technique :", error);
-      } else {
-        console.log("Visiteur anonyme (OK)");
-      }
+      console.error("CheckToken error:", error);
+      return res.status(500).json({ error: "Erreur de vérification." });
     }
   },
   getOneUserAlbum: async (req, res) => {
@@ -131,9 +132,11 @@ const Usercontroller = {
       });
     }
     try {
-      const userAlbum = await prisma.userAlbum.findUnique({
+      // FIX IDOR: On vérifie que l'album appartient bien au userId
+      const userAlbum = await prisma.userAlbum.findFirst({
         where: {
           id: id,
+          userId: userId,
         },
         include: {
           album: {
@@ -157,8 +160,8 @@ const Usercontroller = {
         .status(200)
         .json({ userAlbum, message: `Détails de l'album trouvés` });
     } catch (error) {
-      console.log(error);
-      return res.status(500).json({ error: error.message });
+      console.error("getOneUserAlbum error:", error);
+      return res.status(500).json({ error: "Erreur lors de la récupération de l'album." });
     }
   },
 
@@ -188,7 +191,8 @@ const Usercontroller = {
         .status(200)
         .json({ userAlbum, message: `Album présent dans la collection` });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      console.error("checkAlbumInCollection error:", error);
+      return res.status(500).json({ error: "Erreur de vérification." });
     }
   },
   getAllUserAlbums: async (req, res) => {
@@ -216,7 +220,6 @@ const Usercontroller = {
           condition: true,
         },
       });
-      console.log("allUserAlbums", allUserAlbums);
 
       if (allUserAlbums.length < 1) {
         return res
@@ -228,16 +231,13 @@ const Usercontroller = {
         message: `Liste des albums dans la collection`,
       });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      console.error("getAllUserAlbums error:", error);
+      return res.status(500).json({ error: "Erreur lors de la récupération de la collection." });
     }
   },
   changePassword: async (req, res) => {
-    console.log("--- DEBUG CHANGE PASSWORD ---");
-    console.log("BODY REÇU :", req.body); 
-    console.log("TYPE DE currentPassword :", typeof req.body.currentPassword);
     const userId = req.userId;
-    const { currentPassword, newPassword, newPasswordConfirmation } = req.body;
-  
+    const { currentPassword, newPassword, newPasswordConfirmation } = req.body; 
     
 
     if (!userId) {
@@ -256,16 +256,12 @@ const Usercontroller = {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      const decryptedPassword = await bcryptjs.compare(currentPassword, user.password);
-      console.log(decryptedPassword);
-      
+
       const isCurrentPasswordValid = await bcryptjs.compare(
         currentPassword,
         user.password,
       );
 
-      console.log(isCurrentPasswordValid);
-      
       if (!isCurrentPasswordValid) {
         return res
           .status(400)
@@ -278,7 +274,7 @@ const Usercontroller = {
 
       const hashedNewPassword = await bcryptjs.hash(newPassword, 10);
 
-      const userUpdated = await prisma.user.update({
+      await prisma.user.update({
         where: {
           id: userId,
         },
@@ -287,11 +283,10 @@ const Usercontroller = {
         },
       });
 
-      console.log(userUpdated);
       return res.status(200).json({ message: "Password changed successfully" });
     } catch (error) {
-      console.log(error);
-      return res.status(500).json({ error: error.message });
+      console.error("changePassword error:", error);
+      return res.status(500).json({ error: "Erreur lors du changement de mot de passe." });
     }
   },
 };

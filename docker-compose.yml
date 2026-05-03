@@ -17,9 +17,6 @@ services:
       - "33000:33000"
     env_file:
       - ./api/.env
-    # environment:
-    #   - DATABASE_URL=postgresql://postgres:password@db:5432/vinyls_addict
-    #   - PORT=33000
     command: pnpm run nodemon
     volumes:
       - ./api:/api
@@ -32,11 +29,6 @@ services:
     image: postgres:18.3-alpine
     env_file:
       - .env
-    # environment:
-    #   POSTGRES_USER: postgres
-    #   POSTGRES_PASSWORD: password
-    #   POSTGRES_DB: vinyls_addict
-    #   DATABASE_URL: postgresql://postgres:password@db:5432/vinyls_addict
       
     ports:
       - "55432:5432"
@@ -48,12 +40,6 @@ services:
     image: postgres:18.3-alpine
     env_file:
       - .env.test
-    # environment:
-    #   POSTGRES_USER: postgres_test
-    #   POSTGRES_PASSWORD: password_test
-    #   POSTGRES_DB: vinyls_addict_test
-    #   DATABASE_URL: postgresql://postgres:password@db:5432/vinyls_addict_test
-      
     ports:
       - "55433:5432"
     volumes:

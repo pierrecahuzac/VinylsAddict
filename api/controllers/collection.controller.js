@@ -27,7 +27,8 @@ const CollectionController = {
         .status(201)
         .json({ message: "Album ajouté à la collection !", userAlbum });
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      return res.status(500).json({ error: "Impossible d'ajouter l'album à la collection." });
     }
   },
 };
