@@ -18,7 +18,7 @@ const Signup = () => {
     <div className="flex flex-col items-center justify-center min-h-full p-6 bg-gray-900">
       <div className="w-full max-w-sm space-y-8">
         <header className="text-center space-y-2">
-          <h1 className="text-4xl font-black text-white tracking-tighter italic">JOIN THE <span className="text-[#f1c40f]">CRATE</span></h1>
+          <h1 className="text-4xl font-black text-white tracking-tighter italic">REJOINS <span className="text-[#f1c40f]">L'AVENTURE</span></h1>
           <h2 className="text-gray-400 text-sm font-medium">Crée ton compte et commence ta collection.</h2>
         </header>
 
