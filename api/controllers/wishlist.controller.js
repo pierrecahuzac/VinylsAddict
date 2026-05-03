@@ -33,7 +33,7 @@ const WishlistController = {
       const albumIsWishlistedByUser = await prisma.wishlist.findUnique({
         where: { userId_albumId: { userId, albumId } },
       });
-      console.log(albumIsWishlistedByUser);
+
 
       if (albumIsWishlistedByUser) {
         return res.status(404).json({

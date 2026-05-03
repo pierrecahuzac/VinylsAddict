@@ -70,7 +70,7 @@ const AlbumController = {
         trackCount,
         formatId,
       } = req.body;
-      console.log(req.body);
+   
 
       // Utilisation d'une transaction pour garantir l'intégrité des données
       const result = await prisma.$transaction(async (tx) => {
