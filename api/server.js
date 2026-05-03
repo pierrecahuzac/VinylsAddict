@@ -16,7 +16,6 @@ if (process.env.NODE_ENV === "development") {
       if (!origin) {
         return callback(null, true);
       }
-
       const isAllowed = origins.some((authorized) => {
         const withPort = `http://${authorized}:55173`;
 
@@ -42,7 +41,13 @@ if (process.env.NODE_ENV === "development") {
   };
   app.use(cors(developmentCORS));
 }
-
+const productionCORS = {
+    origin: process.env.NODE_ENV,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  };
+  app.use(cors(productionCORS));
 const port = process.env.PORT || 33000;
 
 app.use(express.json());
