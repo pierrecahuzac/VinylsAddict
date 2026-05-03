@@ -27,7 +27,8 @@ const corsOptions = {
 
       if (isAllowed) return callback(null, true);
     } else {
-      if (origin === process.env.FRONTEND_URL) {
+      const normalize = (url) => url?.replace(/\/+$/, "").toLowerCase();
+      if (normalize(origin) === normalize(process.env.FRONTEND_URL)) {
         return callback(null, true);
       }
     }
