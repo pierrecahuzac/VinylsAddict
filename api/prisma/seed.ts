@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 import datas from "./seedData.json" with { type: "json" };
 
 const seedDB = async () => {
-  console.log("Début du seeding...");
+ 
 
   // 1. Seed des Genres et de leurs Styles (imbriqués)
   for (const genreData of datas.genres) {
@@ -47,7 +47,7 @@ const seedDB = async () => {
       create: format,
     });
   }
-  console.log("Seeding terminé !");
+
 };
 
 seedDB()

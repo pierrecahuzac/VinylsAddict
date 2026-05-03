@@ -7,7 +7,7 @@ const CollectionController = {
     const userId = req.userId;
     
     
-    console.log(userId, "userid");
+
 
     try {
       const { albumId } = req.params;
@@ -21,7 +21,7 @@ const CollectionController = {
           condition: { connect: { id: conditionId } },
         },
       });
-      console.log("userAlbum", userAlbum);
+  
 
       return res
         .status(201)
