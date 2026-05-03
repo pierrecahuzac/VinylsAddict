@@ -41,7 +41,7 @@ const Login = () => {
           <div className="flex flex-col gap-3 pt-4">
             <button 
               type="submit" 
-              className="w-full bg-[#f1c40f] text-gray-950 font-black py-4 rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#f1c40f]/10"
+              className="w-full bg-primary text-gray-950 font-black py-4 rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#f1c40f]/10"
             >
               SE CONNECTER
             </button>
@@ -57,7 +57,7 @@ const Login = () => {
         </form>
 
         <footer className="text-center pt-6">
-          <Link to={"/signup"} className="text-sm text-gray-400 hover:text-[#f1c40f] transition-colors">
+          <Link to={"/signup"} className="text-sm text-gray-400 hover:text-primary transition-colors">
             Pas encore de compte ? <span className="font-bold underline">Inscris-toi !</span>
           </Link>
         </footer>

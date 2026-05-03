@@ -97,7 +97,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setUserIslogged(true);
         setPassword("");        
         setEmail("");        
-        navigate(`/collection/${user?.id}`)
+        navigate(`/collection`)
         onSuccess("Heureux de vous revoir !");
       }
     } catch (error) {

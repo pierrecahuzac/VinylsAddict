@@ -12,6 +12,7 @@ import { useUser } from "../../contexts/userContext.tsx";
 
 import Album from "../../components/Album/index.tsx";
 import Modale from "../../components/Modale/index.tsx";
+import { IoAddOutline } from "react-icons/io5";
 
 import type { AlbumState } from "../../types/album.ts";
 
@@ -57,16 +58,16 @@ const Catalog = () => {
 
   const submitNewAlbum = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     const payload = {
       ...album,
       year: album.year ? Number(album.year) : null,
       price: album.price ? Number(album.price) : null,
       trackCount: album.trackCount ? Number(album.trackCount) : null,
       diskCount: album.diskCount ? Number(album.diskCount) : null,
-      addAlbumToCollection
+      addAlbumToCollection,
     };
-    
+
     try {
       await axios.post(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/albums`,
@@ -89,31 +90,35 @@ const Catalog = () => {
     getAllMetadata();
     setModaleAddNewAlbum(true);
   };
-  
+
   return (
     <div className="p-4 flex flex-col gap-6">
       <header className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-white">Catalogue</h1>
-        <div className="text-gray-400 text-sm">
-          Il y a <span className="text-[#f1c40f] font-bold">{albums.length}</span> album{albums.length > 1 ? "s" : ""} dans les derniers ajouts.
+        <h1 className="text-3xl font-bold text-white tracking-tight">Catalogue</h1>
+        <div className="text-gray-400 text-sm font-medium">
+          Il y a{" "}
+          <span className="text-[#f1c40f] font-bold">{albums.length}</span>{" "}
+          album{albums.length > 1 ? "s" : ""} dans les derniers ajouts.
         </div>
       </header>
 
       <main className="w-full">
         {isLoading && (
           <div className="flex justify-center py-10">
-            <p className="text-[#f1c40f] animate-pulse">Chargement des albums...</p>
+            <p className="text-[#f1c40f] animate-pulse font-medium">
+              Ouverture des bacs...
+            </p>
           </div>
         )}
-
         {!isLoading && albums.length === 0 && (
-          <p className="text-center text-gray-500 py-10 italic">Aucun album dans les derniers ajouts.</p>
+          <p className="text-center text-gray-500 py-10 italic">
+            Aucun album dans les derniers ajouts.
+          </p>
         )}
-
         <div className="flex flex-col gap-3">
           {albums.length > 0 &&
             albums?.map((item: any) => (
-              <Album              
+              <Album
                 id={item.id}
                 key={item.id}
                 title={item.title}
@@ -124,18 +129,22 @@ const Catalog = () => {
                 className="w-full"
               />
             ))}
+
+          {userIsLogged && (
+            <button
+              className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-gray-800/30 border-2 border-dashed border-gray-700 hover:border-[#f1c40f] hover:bg-gray-800/60 rounded-xl transition-all group overflow-hidden"
+              onClick={openModaleAddNewAlbum}
+            >
+              <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-500 group-hover:text-[#f1c40f] group-hover:scale-110 transition-all">
+                <IoAddOutline size={24} />
+              </div>
+              <span className="font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest text-xs">
+                Ajouter un nouveau vinyle
+              </span>
+            </button>
+          )}
         </div>
       </main>
-
-      {userIsLogged && (
-        <button
-          className="fixed bottom-24 right-6 w-14 h-14 bg-[#f1c40f] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
-          onClick={openModaleAddNewAlbum}
-          aria-label="Ajouter un album"
-        >
-          +
-        </button>
-      )}
 
       {modaleAddNewAlbum && (
         <Modale
