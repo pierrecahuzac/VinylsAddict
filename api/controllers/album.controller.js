@@ -24,7 +24,8 @@ const AlbumController = {
       }
       return res.status(200).json(album);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      console.error(error);
+      return res.status(500).json({ error: "Erreur serveur lors de la récupération des données." });
     }
   },
   getAllAlbums: async (req, res) => {
@@ -41,7 +42,8 @@ const AlbumController = {
 
       return res.status(200).json(albums);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      console.error(error);
+      return res.status(500).json({ error: "Erreur serveur lors de la récupération des données." });
     }
   },
 
@@ -118,9 +120,9 @@ const AlbumController = {
         userAlbum: result.userAlbum,
       });
     } catch (error) {
+      console.error(error);
       return res.status(500).json({
-        message: "Erreur lors de la création",
-        error: error.message,
+        message: "Erreur lors de la création de l'album.",
       });
     }
   },

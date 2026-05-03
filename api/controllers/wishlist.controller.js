@@ -17,7 +17,7 @@ const WishlistController = {
 
       return res.status(200).json(flattenedWishlist);
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       return res
         .status(500)
@@ -48,6 +48,7 @@ const WishlistController = {
         wishlistedAlbum,
       });
     } catch (error) {
+      console.error(error);
       return res
         .status(500)
         .json({ error: "Impossible d'ajouter à la wishlist" });
@@ -67,7 +68,7 @@ const WishlistController = {
         deletedWishlistEntry,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return res
         .status(500)
         .json({ error: "Impossible de retirer de la wishlist" });
@@ -100,7 +101,8 @@ const WishlistController = {
         .status(200)
         .json({ wishlistedAlbum, message: `Album présent dans la wishlist` });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      console.error(error);
+      return res.status(500).json({ error: "Erreur lors de la vérification de la wishlist." });
     }
   },
 };
