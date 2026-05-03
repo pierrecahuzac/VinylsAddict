@@ -13,4 +13,4 @@ COPY . .
 RUN pnpm prisma generate
 EXPOSE 33000
 
-CMD ["pnpm", "run", "start"]
+CMD ["pnpm",  "start"]
