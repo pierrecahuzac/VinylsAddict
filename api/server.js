@@ -42,7 +42,7 @@ if (process.env.NODE_ENV === "development") {
   app.use(cors(developmentCORS));
 }
 const productionCORS = {
-    origin: process.env.NODE_ENV,
+    origin: process.env.POSTGRES_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
