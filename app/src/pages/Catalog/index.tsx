@@ -42,6 +42,7 @@ const Catalog = () => {
 
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);
   const [addAlbumToCollection, setAddAlbumToCollection] = useState(false);
+  console.log(allMetadata);
 
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -94,7 +95,9 @@ const Catalog = () => {
   return (
     <div className="p-4 flex flex-col gap-6">
       <header className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-white tracking-tight">Catalogue</h1>
+        <h1 className="text-3xl font-bold text-white tracking-tight">
+          Catalogue
+        </h1>
         <div className="text-gray-400 text-sm font-medium">
           Il y a{" "}
           <span className="text-[#f1c40f] font-bold">{albums.length}</span>{" "}
