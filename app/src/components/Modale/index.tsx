@@ -11,18 +11,12 @@ const Modale = ({
   setAddAlbumToCollection,
   isCollectionContext = false,
 }: ModaleProps) => {
+  console.log(allMetadata);
+  
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
       <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
-        {/* <div className="flex justify-between items-center p-5 border-b border-gray-700 sticky top-0 bg-gray-800 rounded-t-2xl z-10">
-          <h2 className="text-xl font-bold text-white uppercase tracking-tight">Ajouter un vinyle</h2>
-          <button 
-            onClick={() => setModaleAddNewAlbum(false)} 
-            className="text-gray-400 hover:text-white transition-colors"
-          >
-            <IoCloseOutline size={28} />
-          </button>
-        </div> */}
+       
         
         <form onSubmit={submitNewAlbum} className="p-6 space-y-5">
           {/* Main Info */}
@@ -157,7 +151,7 @@ const Modale = ({
                 className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
               >
                 <option value="">-- Style --</option>
-                {allMetadata?.styles?.map((s) => (
+                {allMetadata?.style?.map((s) => (
                   <option key={s.id} value={s.id}>{s.nameFR || s.name}</option>
                 ))}
               </select>
