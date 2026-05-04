@@ -12,7 +12,7 @@ const Modale = ({
   isCollectionContext = false,
 }: ModaleProps) => {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
       <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
         {/* <div className="flex justify-between items-center p-5 border-b border-gray-700 sticky top-0 bg-gray-800 rounded-t-2xl z-10">
           <h2 className="text-xl font-bold text-white uppercase tracking-tight">Ajouter un vinyle</h2>
