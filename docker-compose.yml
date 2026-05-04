@@ -17,19 +17,27 @@ services:
       - "33000:33000"
     env_file:
       - ./api/.env
-    command: pnpm run nodemon
+    command: >
+      sh -c "npx prisma migrate deploy && 
+             npx prisma db seed && 
+             pnpm run nodemon"
     volumes:
       - ./api:/api
       - /api/node_modules
     restart: always
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     container_name: db
     image: postgres:18.3-alpine
     env_file:
       - .env
-      
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d vinyls_addict"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     ports:
       - "55432:5432"
     volumes:
@@ -61,4 +69,3 @@ services:
       - db
 volumes:
   db_data:    
-      
