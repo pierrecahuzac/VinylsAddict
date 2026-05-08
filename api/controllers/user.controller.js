@@ -35,10 +35,14 @@ const Usercontroller = {
 
       const { password: _, ...userWithoutPassword } = newUser;
 
-      return res.status(201).json({ message: "User créé !", user: userWithoutPassword });
+      return res
+        .status(201)
+        .json({ message: "User créé !", user: userWithoutPassword });
     } catch (error) {
       console.error("Signup error:", error);
-      return res.status(500).json({ error: "Une erreur est survenue lors de l'inscription." });
+      return res
+        .status(500)
+        .json({ error: "Une erreur est survenue lors de l'inscription." });
     }
   },
   login: async (req, res) => {
@@ -62,7 +66,9 @@ const Usercontroller = {
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
       if (!comparePassword) {
-        return res.status(401).json({ message: "Combinaison email / password incorrecte" });
+        return res
+          .status(401)
+          .json({ message: "Combinaison email / password incorrecte" });
       }
       delete user.password;
       const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
@@ -161,7 +167,9 @@ const Usercontroller = {
         .json({ userAlbum, message: `Détails de l'album trouvés` });
     } catch (error) {
       console.error("getOneUserAlbum error:", error);
-      return res.status(500).json({ error: "Erreur lors de la récupération de l'album." });
+      return res
+        .status(500)
+        .json({ error: "Erreur lors de la récupération de l'album." });
     }
   },
 
@@ -232,13 +240,14 @@ const Usercontroller = {
       });
     } catch (error) {
       console.error("getAllUserAlbums error:", error);
-      return res.status(500).json({ error: "Erreur lors de la récupération de la collection." });
+      return res
+        .status(500)
+        .json({ error: "Erreur lors de la récupération de la collection." });
     }
   },
   changePassword: async (req, res) => {
     const userId = req.userId;
-    const { currentPassword, newPassword, newPasswordConfirmation } = req.body; 
-    
+    const { currentPassword, newPassword, newPasswordConfirmation } = req.body;
 
     if (!userId) {
       return res.status(401).json({
@@ -251,8 +260,7 @@ const Usercontroller = {
           id: userId,
         },
       });
-  
-      
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -286,7 +294,47 @@ const Usercontroller = {
       return res.status(200).json({ message: "Password changed successfully" });
     } catch (error) {
       console.error("changePassword error:", error);
-      return res.status(500).json({ error: "Erreur lors du changement de mot de passe." });
+      return res
+        .status(500)
+        .json({ error: "Erreur lors du changement de mot de passe." });
+    }
+  },
+  getUserRole: async (req, res) => {
+    const userId = req.userId;
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+      console.log(user);
+
+      if (user) {
+        return res.status(200).json({
+          role: user.role,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getAllUsers: async (req, res) => {
+    try {
+      const users = await prisma.user.findMany();
+      console.log("users",users);
+     
+      
+        users.forEach(user => {
+          delete user.password
+          console.log(user);
+          
+        });
+        return res.status(200).json({
+          users,
+        });
+      
+    } catch (error) {
+      consoler.log(error);
     }
   },
 };
