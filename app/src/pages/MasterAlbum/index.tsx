@@ -163,7 +163,7 @@ const MasterAlbum = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full bg-gray-900 text-white">
+    <div className="h-dvh flex flex-col min-h-full bg-gray-900 text-white">
       {/* Cover Image with Overlay Header */}
       <div className="relative w-full aspect-square md:aspect-video overflow-hidden group">
         <img

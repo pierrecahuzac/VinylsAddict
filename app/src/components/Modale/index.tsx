@@ -11,7 +11,7 @@ const Modale = ({
   setAddAlbumToCollection,
   isCollectionContext = false,
 }: ModaleProps) => {
-  console.log(allMetadata);
+ 
   
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
@@ -54,6 +54,17 @@ const Modale = ({
               placeholder="https://..."
               name="coverUrl"
               value={album.coverUrl}
+              onChange={changeDataAlbum}
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+            />
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Code barre</label>
+            <input
+              type="text"
+              placeholder="Ex: 352415..."
+              name="barCode"
+              value={album.barCode}
               onChange={changeDataAlbum}
               className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
             />

@@ -14,7 +14,8 @@
   }
 
   #root {
-    @apply h-full min-h-screen;
+     
+    @apply h-svh ;
   }
 
   /* Custom scrollbar for a more premium look */
