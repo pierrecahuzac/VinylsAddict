@@ -322,12 +322,29 @@ const Usercontroller = {
     try {
       const users = await prisma.user.findMany();
 
-      const usersWithoutPassword = users.map(user => {
-      const { password, ...userWithoutPassword } = user;
-      return userWithoutPassword;
-    });
+      const usersWithoutPassword = users.map((user) => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
 
-      return res.status(200).json({ users:usersWithoutPassword });
+      return res.status(200).json({ users: usersWithoutPassword });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getById: async (req, res) => {
+    const id = req.userId;
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (user) {
+        delete user.password;
+        return res.status(200).json({...user });
+      }
     } catch (error) {
       console.log(error);
     }

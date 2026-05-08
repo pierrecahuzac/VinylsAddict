@@ -16,8 +16,9 @@ const Dashboard = () => {
   const { user } = useUser();
   const [users, setUsers] = useState<User[] | null>();
   const [albums, setAlbums] = useState<any[]>([]);
+  const [modaleUser, setModaleUser] = useState(false);
   const navigate = useNavigate();
-
+  const [userToModify, setUserToModify] = useState("");
   useEffect(() => {
     verifyUserRole();
   }, []);
@@ -81,7 +82,9 @@ const Dashboard = () => {
       console.log(error.response);
     }
   };
-  const openUserDatas = (userId) => {};
+  const openUserDatas = (userId: string) => {
+    setModaleUser(true);
+  };
   return (
     <div className="p-4 flex flex-col gap-8 bg-gray-950 min-h-full">
       {/* Section En-tête */}
@@ -94,8 +97,9 @@ const Dashboard = () => {
           Vue d'ensemble de la plateforme
         </p>
       </div>
-
-      {/* Vue rapide des Stats */}
+      {modaleUser && (
+        <Modale setModaleUser={setModaleUser} userId={userToModify} />
+      )}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-gray-900 p-4 rounded-2xl border border-gray-800 shadow-lg">
           <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold">
@@ -126,7 +130,10 @@ const Dashboard = () => {
             users.map((u: User) => (
               <div
                 key={u.id}
-                onClick={() => openUserDatas(id)}
+                data-id={u.id}
+                onClick={() => {
+                  (openUserDatas(u.id), setUserToModify(u.id));
+                }}
                 className="bg-gray-900 p-4 rounded-xl border border-gray-800 flex items-center justify-between hover:border-[#f1c40f]/50 transition-colors group"
               >
                 <div className="flex flex-col">
@@ -154,10 +161,7 @@ const Dashboard = () => {
                 </div>
               </div>
             ))}
-          <div
-            onClick={() => openUserDatas(id)}
-            className="bg-gray-900 p-4 rounded-xl border border-gray-800 flex items-center justify-between border-dotted hover:border-[#f1c40f]/50 transition-colors group"
-          >
+          <div className="bg-gray-900 p-4 rounded-xl border border-gray-800 flex items-center justify-between border-dotted hover:border-[#f1c40f]/50 transition-colors group">
             <div className="flex flex-col">
               <span className="font-bold text-white group-hover:text-[#f1c40f] transition-colors"></span>
               <span className="text-gray-500 text-xs"></span>
@@ -182,4 +186,238 @@ const Dashboard = () => {
   );
 };
 
+const Modale = ({ setModaleUser, userId }: any) => {
+  const { onError } = useToast();
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    userToFetch();
+  }, []);
+
+  const userToFetch = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/getById`,
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(response.data);
+      setUser(response.data);
+    } catch (error) {
+      onError("Une erreur c'est produite: " + error);
+      console.log(error);
+    }
+  };
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
+        <form className="p-6 space-y-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Utilisateur
+              </label>
+              {userId}
+              <input
+                type="text"
+                placeholder="Ex: Dark Side of the Moon"
+                name="title"
+                required
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1"></label>
+              <div> Nom d'utilisateur{user && <div>{user.username}</div>} </div>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+              Email :
+            </label>
+            {/* <input
+              type="text"
+              placeholder="https://..."
+              name="email"
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+            /> */}
+            <div>{user && <div>{user.email}</div>}</div>
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+              Peut se connecter
+            </label>
+            <div>{user && <div>{user.canConnect}</div>}</div>
+            {/* <input
+              type="text"
+              placeholder="Ex: 352415..."
+              name="barCode"
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+            /> */}
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Année
+              </label>
+              <input
+                type="number"
+                placeholder="1973"
+                name="year"
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Pistes
+              </label>
+              <input
+                type="number"
+                placeholder="10"
+                name="trackCount"
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Disques
+              </label>
+              <input
+                type="number"
+                placeholder="1"
+                name="diskCount"
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Technical Selects */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Format
+              </label>
+              <select
+                name="formatId"
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              >
+                <option value="">-- Format --</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Variante
+              </label>
+              <select
+                name="variantId"
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              >
+                <option value="">-- Variante --</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Genre
+              </label>
+              <select
+                name="genreId"
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              >
+                <option value="">-- Genre --</option>
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Style
+              </label>
+              <select
+                name="styleId"
+                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              >
+                <option value="">-- Style --</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+              Couleur précise
+            </label>
+            <input
+              type="text"
+              placeholder="Ex: Transparent Blue"
+              name="color"
+              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+            />
+          </div>
+
+          {/* Collection Checkbox */}
+          {
+            <label className="flex items-center gap-3 p-4 bg-gray-900/50 rounded-xl border border-gray-700 cursor-pointer group">
+              <input
+                type="checkbox"
+                name="addToCollection"
+                className="w-5 h-5 rounded border-gray-700 text-[#f1c40f] focus:ring-[#f1c40f] bg-gray-950"
+              />
+              <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
+                Je possède cet album
+              </span>
+            </label>
+          }
+
+          {/* Price & Condition */}
+          {
+            <div className="grid grid-cols-2 gap-4 p-4 bg-amber-500/5 rounded-xl border border-amber-500/20">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-amber-500/70 ml-1">
+                  Prix (€)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder="20.00"
+                  name="price"
+                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-amber-500/70 ml-1">
+                  État
+                </label>
+                <select
+                  name="conditionId"
+                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                >
+                  <option value="">-- État --</option>
+                </select>
+              </div>
+            </div>
+          }
+
+          {/* Form Actions */}
+          <div className="flex gap-4 pt-4 sticky bottom-0 bg-gray-800 pb-2">
+            <button
+              type="button"
+              onClick={() => setModaleUser(false)}
+              className="flex-1 px-4 py-4 bg-gray-700 text-white font-bold rounded-2xl hover:bg-gray-600 transition-colors"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              className="flex-1 px-4 py-4 bg-[#f1c40f] text-gray-950 font-black rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#f1c40f]/10"
+            >
+              ENREGISTRER
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
 export default Dashboard;
