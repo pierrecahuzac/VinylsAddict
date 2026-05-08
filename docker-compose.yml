@@ -4,12 +4,14 @@ services:
     build: ./app
     ports:
       - "55173:55173"
+    # On garde les volumes pour le dev, mais sans le :ro qui bloque pnpm/vite
     volumes:
       - ./app:/app
       - /app/node_modules
     restart: always
     depends_on:
       - api
+
   api:
     container_name: api
     build: ./api
@@ -17,6 +19,8 @@ services:
       - "33000:33000"
     env_file:
       - ./api/.env
+    # En dev on peut vouloir nodemon, en prod le CMD du Dockerfile (node server.js)
+    # Pour garder un seul fichier, on laisse la commande de dev ici ou on utilise des variables
     command: >
       sh -c "npx prisma migrate deploy && 
              npx prisma db seed && 
@@ -28,34 +32,43 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
   db:
     container_name: db
-    image: postgres:18.3-alpine
+    image: postgres:17-alpine
     env_file:
       - .env
+    environment:
+      - POSTGRES_DB=vinyls_addict
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d vinyls_addict"]
-      interval: 5s
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
       timeout: 5s
       retries: 5
     ports:
       - "55432:5432"
     volumes:
-      - db_data:/var/lib/postgresql
+      - db_data:/var/lib/postgresql/data
     restart: always
+
+  # --- Services de DEV uniquement (Profiles) ---
+
   db_test:
     container_name: db_test
-    image: postgres:18.3-alpine
+    image: postgres:17-alpine
+    profiles: ["dev"]
     env_file:
       - .env.test
     ports:
       - "55433:5432"
     volumes:
-      - db_data:/var/lib/postgresql
+      - db_test_data:/var/lib/postgresql/data
     restart: always
+
   prisma-studio:
     container_name: prisma-studio
     build: ./api 
+    profiles: ["dev"]
     command: npx prisma studio --port 5555 --browser none
     environment:
       - POSTGRES_URL=postgresql://postgres:password@db:5432/vinyls_addict
@@ -67,5 +80,7 @@ services:
     restart: always
     depends_on:
       - db
+
 volumes:
-  db_data:    
+  db_data:
+  db_test_data:

@@ -321,20 +321,15 @@ const Usercontroller = {
   getAllUsers: async (req, res) => {
     try {
       const users = await prisma.user.findMany();
-      console.log("users",users);
-     
-      
-        users.forEach(user => {
-          delete user.password
-          console.log(user);
-          
-        });
-        return res.status(200).json({
-          users,
-        });
-      
+
+      const usersWithoutPassword = users.map(user => {
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
+
+      return res.status(200).json({ users:usersWithoutPassword });
     } catch (error) {
-      consoler.log(error);
+      console.log(error);
     }
   },
 };
