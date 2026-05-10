@@ -3,8 +3,12 @@ import mainRouter from "./routers/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
-import { env } from "@prisma/config";
+
 const app = express();
+
+// Nécessaire pour Render/Heroku/Vercel pour que les cookies "secure" fonctionnent derrière le proxy
+app.set("trust proxy", 1);
+
 app.use(helmet());
 app.use(cookieParser());
 
