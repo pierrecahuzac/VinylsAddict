@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
-
+import { IoBuild } from "react-icons/io5";
 const Header = () => {
   const navigate = useNavigate();
   const { user, userIsLogged, logout } = useUser();
@@ -15,18 +15,26 @@ const Header = () => {
         >
           V<span className="text-white">A</span>
         </div>
-        
+
         <div className="flex items-center gap-4">
+          {user && user.role === "ADMIN" && (
+            <Link
+              to="/dashboard"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1c40f] text-gray-950 font-bold text-sm hover:scale-105 transition-transform"
+            >
+              <IoBuild/>
+            </Link>
+          )}
           {userIsLogged && user && (
             <div className="flex items-center gap-3">
-              <Link 
+              <Link
                 to="/profile"
                 className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1c40f] text-gray-950 font-bold text-sm hover:scale-105 transition-transform"
               >
                 {user.username[0].toUpperCase()}
               </Link>
-              
-              <button 
+
+              <button
                 onClick={logout}
                 className="text-gray-400 hover:text-red-500 transition-colors p-1"
                 aria-label="Se déconnecter"

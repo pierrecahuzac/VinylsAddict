@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 
 import Layout from "./components/Layout";
 import MyStats from "./pages/MyStats";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Catalog />} />
           <Route path="/collection" element={<MyCollection />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/wishlist" element={<MyWishlist />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />

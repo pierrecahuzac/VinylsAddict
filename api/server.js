@@ -11,7 +11,7 @@ app.use(cookieParser());
 const origins = process.env.AUTHORIZED_IPS ? process.env.AUTHORIZED_IPS.split(",").map((ip) => ip.trim()) : [];
 
 const corsOptions = {
-  origin: (origin, callback) => {
+  origin: (origin, callback) => {    
     if (!origin && process.env.NODE_ENV === "development") {
       return callback(null, true);
     }

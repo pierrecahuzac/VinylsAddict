@@ -15,10 +15,12 @@ interface User {
   id: string;
   email: string;
   username: string;
+  role?: string;
 }
 
 interface UserContextType {
   user: User | null;
+  role?: string;
   userIsLogged: boolean;
   isLoading: boolean;
   email: string;
@@ -44,7 +46,9 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 // Schéma de validation pour l'inscription
 const signupSchema = z
   .object({
-    username: z.string().min(2, "Le nom d'utilisateur doit faire au moins 2 caractères"),
+    username: z
+      .string()
+      .min(2, "Le nom d'utilisateur doit faire au moins 2 caractères"),
     email: z.email("Format d'email invalide"),
     password: z
       .string()
@@ -52,7 +56,10 @@ const signupSchema = z
       .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
       .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
       .regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre")
-      .regex(/[^A-Za-z0-9]/, "Le mot de passe doit contenir au moins un caractère spécial"),
+      .regex(
+        /[^A-Za-z0-9]/,
+        "Le mot de passe doit contenir au moins un caractère spécial",
+      ),
     passwordConfirmation: z.string(),
   })
   .refine((data) => data.password === data.passwordConfirmation, {
