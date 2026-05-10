@@ -195,9 +195,7 @@ const Modale = ({ setModaleUser, userId, refresh }: any) => {
   }, [userId]);
 
   const userToFetch = async () => {
-    try {
-      console.log(userId);
-      
+    try {      
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}`,
         {
@@ -226,6 +224,22 @@ const Modale = ({ setModaleUser, userId, refresh }: any) => {
     }
   };
 
+  const handleUserRole = async (role: string) => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}/role`,
+        { role },
+        { withCredentials: true }
+      );
+      onSuccess("Rôle mis à jour avec succès");
+      setUser({ ...user, role });
+      refresh();
+    } catch (error) {
+      onError("Erreur lors du changement de rôle");
+      console.log(error);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
       <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
@@ -250,6 +264,21 @@ const Modale = ({ setModaleUser, userId, refresh }: any) => {
               Email :
             </label>
             <div className="text-white">{user?.email || "..."}</div>
+          </div>
+          <div className="space-y-1">
+            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+              Rôle
+            </label>
+            {user && (
+                <select
+                  value={user.role || "USER"}
+                  onChange={(e) => handleUserRole(e.target.value)}
+                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                >
+                  <option value="ADMIN">Administrateur</option>
+                  <option value="USER">Utilisateur</option>
+                </select>
+              )}
           </div>
 
           <div className="space-y-1">

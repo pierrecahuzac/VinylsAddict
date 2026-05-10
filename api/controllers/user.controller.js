@@ -4,7 +4,10 @@ import jwt from "jsonwebtoken";
 import { log } from "node:console";
 import { NetworkResources } from "node:inspector/promises";
 import { format } from "node:path";
+
+
 const Usercontroller = {
+  
   signup: async (req, res) => {
     try {
       const { email, password, passwordConfirmation, username } = req.body;
@@ -320,13 +323,14 @@ const Usercontroller = {
     }
   },
   getAllUsers: async (req, res) => {
+    const userId = req.userId
     const verifyUserIsAdmin = await prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
     if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
-      return res.status(401).json("Utilasiteur non autorisé");
+      return res.status(403).json("Utilisateur non autorisé");
     }
     try {
       const users = await prisma.user.findMany();
@@ -350,7 +354,7 @@ const Usercontroller = {
       },
     });
     if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
-      return res.status(401).json("Utilasiteur non autorisé");
+      return res.status(403).json("Utilisateur non autorisé");
     }
     try {
       const user = await prisma.user.findUnique({
@@ -368,6 +372,8 @@ const Usercontroller = {
     }
   },
   changeAuthorizationToConnect: async (req, res) => {
+
+    const userId = req.userId
     const { id } = req.params;
     const verifyUserIsAdmin = await prisma.user.findUnique({
       where: {
@@ -375,7 +381,7 @@ const Usercontroller = {
       },
     });
     if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
-      return res.status(401).json("Utilasiteur non autorisé");
+      return res.status(403).json("Utilisateur non autorisé");
     }
     try {
       const findUser = await prisma.user.findUnique({
@@ -385,7 +391,7 @@ const Usercontroller = {
       });
       if (!findUser) {
         return res.status(404).json({
-          message: "Utilsaiteur introuvable",
+          message: "Utilisateur introuvable",
         });
       }
       await prisma.user.update({
@@ -401,7 +407,50 @@ const Usercontroller = {
         message: "Utilisateur modifié",
       });
     } catch (error) {
-      return res.status(401).json({
+      return res.status(500).json({
+        message: error,
+      });
+    }
+  },
+  changeUserRole: async (req, res) => {
+
+    const userId = req.userId
+    console.log(req.body);
+    
+    const { id } = req.params;
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(403).json("Utilisateur non autorisé");
+    }
+    try {
+      const findUser = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!findUser) {
+        return res.status(404).json({
+          message: "Utilisateur introuvable",
+        });
+      }
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          role: req.body.role,
+        },
+      });
+
+      return res.status(200).json({
+        message: "Rôle de l'utilisateur modifié",
+      });
+    } catch (error) {
+      return res.status(500).json({
         message: error,
       });
     }

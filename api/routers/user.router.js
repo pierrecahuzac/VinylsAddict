@@ -9,6 +9,7 @@ UserRouter.post('/login', UserController.login);
 UserRouter.get('/', AuthMiddleWare.checkToken,UserController.getAllUsers);
 UserRouter.get('/:id', AuthMiddleWare.checkToken,UserController.getById);
 UserRouter.put('/:id/status', AuthMiddleWare.checkToken,UserController.changeAuthorizationToConnect);
+UserRouter.put('/:id/role', AuthMiddleWare.checkToken,UserController.changeUserRole);
 
 UserRouter.post('/logout', UserController.logout);
 UserRouter.post('/signup', UserController.signup);
