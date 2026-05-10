@@ -38,7 +38,7 @@ const MasterAlbum = () => {
     if (!userIsLogged) return false;
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/check/${id}`,
+        `/api/users/albums/check/${id}`,
         {
           withCredentials: true,
         },
@@ -57,7 +57,7 @@ const MasterAlbum = () => {
     if (!userIsLogged) return false;
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/albums/check/${id}`,
+        `/api/wishlists/albums/check/${id}`,
         {
           withCredentials: true,
         },
@@ -75,7 +75,7 @@ const MasterAlbum = () => {
   const getCatalog = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums/${id}`,
+        `/api/albums/${id}`,
         {
           withCredentials: true,
         },
@@ -98,7 +98,7 @@ const MasterAlbum = () => {
   const addAlbumToWishlist = async () => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
+        `/api/wishlists/${id}`,
         {},
         {
           withCredentials: true,
@@ -115,7 +115,7 @@ const MasterAlbum = () => {
   const deleteAlbumFromWishlist = async () => {
     try {
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${id}`,
+        `/api/wishlists/${id}`,
         {
           withCredentials: true,
         },
@@ -134,7 +134,7 @@ const MasterAlbum = () => {
     e.preventDefault();
     try {
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${id}`,
+        `/api/collections/${id}`,
         {
           price: albumAddedToCollection.price,
           conditionId: albumAddedToCollection.conditionId,
