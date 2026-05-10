@@ -1,4 +1,5 @@
 import type { ModaleProps } from "../../types/modale";
+import type { MetadataItem } from "../../types/album";
 
 
 const Modale = ({
@@ -64,7 +65,7 @@ const Modale = ({
               type="text"
               placeholder="Ex: 352415..."
               name="barCode"
-              value={album.barCode}
+              value={album.barCode?.toString() || ""}
               onChange={changeDataAlbum}
               className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
             />
@@ -117,7 +118,7 @@ const Modale = ({
                 className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
               >
                 <option value="">-- Format --</option>
-                {allMetadata?.formats?.map((f) => (
+                {allMetadata?.formats?.map((f: MetadataItem) => (
                   <option key={f.id} value={f.id}>{f.name}</option>
                 ))}
               </select>
@@ -131,7 +132,7 @@ const Modale = ({
                 className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
               >
                 <option value="">-- Variante --</option>
-                {allMetadata?.variants?.map((v) => (
+                {allMetadata?.variants?.map((v: MetadataItem) => (
                   <option key={v.id} value={v.id}>{v.nameFR || v.nameEN || v.name}</option>
                 ))}
               </select>
@@ -148,7 +149,7 @@ const Modale = ({
                 className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
               >
                 <option value="">-- Genre --</option>
-                {allMetadata?.genres?.map((g) => (
+                {allMetadata?.genres?.map((g: MetadataItem) => (
                   <option key={g.id} value={g.id}>{g.nameFR || g.name}</option>
                 ))}
               </select>
@@ -162,7 +163,7 @@ const Modale = ({
                 className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
               >
                 <option value="">-- Style --</option>
-                {allMetadata?.style?.map((s) => (
+                {allMetadata?.styles?.map((s: MetadataItem) => (
                   <option key={s.id} value={s.id}>{s.nameFR || s.name}</option>
                 ))}
               </select>
@@ -219,7 +220,7 @@ const Modale = ({
                   className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
                 >
                   <option value="">-- État --</option>
-                  {allMetadata?.conditions?.map((c) => (
+                  {allMetadata?.conditions?.map((c: MetadataItem) => (
                     <option key={c.id} value={c.id}>{c.nameFR || c.nameEN || c.name}</option>
                   ))}
                 </select>
