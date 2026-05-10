@@ -98,7 +98,7 @@ const Dashboard = () => {
         </p>
       </div>
       {modaleUser && (
-        <Modale setModaleUser={setModaleUser} userId={userToModify} />
+        <Modale setModaleUser={setModaleUser} userId={userToModify} refresh={fetchDatas} />
       )}
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-gray-900 p-4 rounded-2xl border border-gray-800 shadow-lg">
@@ -186,49 +186,62 @@ const Dashboard = () => {
   );
 };
 
-const Modale = ({ setModaleUser, userId }: any) => {
-  const { onError } = useToast();
-  const [user, setUser] = useState("");
+const Modale = ({ setModaleUser, userId, refresh }: any) => {
+  const { onError, onSuccess } = useToast();
+  const [user, setUser] = useState<any>(null);
+
   useEffect(() => {
     userToFetch();
-  }, []);
+  }, [userId]);
 
   const userToFetch = async () => {
     try {
+      console.log(userId);
+      
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/getById`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}`,
         {
           withCredentials: true,
         },
       );
-      console.log(response.data);
       setUser(response.data);
     } catch (error) {
-      onError("Une erreur c'est produite: " + error);
+      onError("Une erreur s'est produite lors de la récupération : " + error);
+    }
+  };
+
+  const handleUserConnection = async (canConnect: boolean) => {
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}/status`,
+        { canConnect },
+        { withCredentials: true }
+      );
+      onSuccess("Statut mis à jour avec succès");
+      setUser({ ...user, canConnect });
+      refresh(); 
+    } catch (error) {
+      onError("Erreur lors de la mise à jour");
       console.log(error);
     }
   };
+
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
       <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
-        <form className="p-6 space-y-5">
+        <div className="p-6 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
               <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
                 Utilisateur
               </label>
-              {userId}
-              <input
-                type="text"
-                placeholder="Ex: Dark Side of the Moon"
-                name="title"
-                required
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              />
+              <div className="text-white font-mono text-xs">{userId}</div>
             </div>
             <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1"></label>
-              <div> Nom d'utilisateur{user && <div>{user.username}</div>} </div>
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                Nom d'utilisateur
+              </label>
+              <div className="text-white">{user?.username || "Chargement..."}</div>
             </div>
           </div>
 
@@ -236,186 +249,38 @@ const Modale = ({ setModaleUser, userId }: any) => {
             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
               Email :
             </label>
-            {/* <input
-              type="text"
-              placeholder="https://..."
-              name="email"
-              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-            /> */}
-            <div>{user && <div>{user.email}</div>}</div>
-          </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-              Peut se connecter
-            </label>
-            <div>{user && <div>{user.canConnect}</div>}</div>
-            {/* <input
-              type="text"
-              placeholder="Ex: 352415..."
-              name="barCode"
-              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-            /> */}
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-                Année
-              </label>
-              <input
-                type="number"
-                placeholder="1973"
-                name="year"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-                Pistes
-              </label>
-              <input
-                type="number"
-                placeholder="10"
-                name="trackCount"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-                Disques
-              </label>
-              <input
-                type="number"
-                placeholder="1"
-                name="diskCount"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              />
-            </div>
-          </div>
-
-          {/* Technical Selects */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-                Format
-              </label>
-              <select
-                name="formatId"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              >
-                <option value="">-- Format --</option>
-              </select>
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-                Variante
-              </label>
-              <select
-                name="variantId"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              >
-                <option value="">-- Variante --</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-                Genre
-              </label>
-              <select
-                name="genreId"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              >
-                <option value="">-- Genre --</option>
-              </select>
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-                Style
-              </label>
-              <select
-                name="styleId"
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-              >
-                <option value="">-- Style --</option>
-              </select>
-            </div>
+            <div className="text-white">{user?.email || "..."}</div>
           </div>
 
           <div className="space-y-1">
             <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
-              Couleur précise
+              Autorisation de connexion
             </label>
-            <input
-              type="text"
-              placeholder="Ex: Transparent Blue"
-              name="color"
-              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-            />
-          </div>
 
-          {/* Collection Checkbox */}
-          {
-            <label className="flex items-center gap-3 p-4 bg-gray-900/50 rounded-xl border border-gray-700 cursor-pointer group">
-              <input
-                type="checkbox"
-                name="addToCollection"
-                className="w-5 h-5 rounded border-gray-700 text-[#f1c40f] focus:ring-[#f1c40f] bg-gray-950"
-              />
-              <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">
-                Je possède cet album
-              </span>
-            </label>
-          }
-
-          {/* Price & Condition */}
-          {
-            <div className="grid grid-cols-2 gap-4 p-4 bg-amber-500/5 rounded-xl border border-amber-500/20">
-              <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-amber-500/70 ml-1">
-                  Prix (€)
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="20.00"
-                  name="price"
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-amber-500/70 ml-1">
-                  État
-                </label>
+            <div>
+              {user && (
                 <select
-                  name="conditionId"
+                  value={user.canConnect ? "true" : "false"}
+                  onChange={(e) => handleUserConnection(e.target.value === "true")}
                   className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
                 >
-                  <option value="">-- État --</option>
+                  <option value="true">Autorisé (Oui)</option>
+                  <option value="false">Bloqué (Non)</option>
                 </select>
-              </div>
+              )}
             </div>
-          }
+          </div>
 
-          {/* Form Actions */}
           <div className="flex gap-4 pt-4 sticky bottom-0 bg-gray-800 pb-2">
             <button
               type="button"
               onClick={() => setModaleUser(false)}
-              className="flex-1 px-4 py-4 bg-gray-700 text-white font-bold rounded-2xl hover:bg-gray-600 transition-colors"
+              className="flex-1 px-4 py-4 bg-[#f1c40f] text-gray-950 font-black rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl"
             >
-              Annuler
-            </button>
-            <button
-              type="submit"
-              className="flex-1 px-4 py-4 bg-[#f1c40f] text-gray-950 font-black rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#f1c40f]/10"
-            >
-              ENREGISTRER
+              FERMER
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );

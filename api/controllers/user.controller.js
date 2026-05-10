@@ -2,6 +2,7 @@ import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { log } from "node:console";
+import { NetworkResources } from "node:inspector/promises";
 import { format } from "node:path";
 const Usercontroller = {
   signup: async (req, res) => {
@@ -319,6 +320,14 @@ const Usercontroller = {
     }
   },
   getAllUsers: async (req, res) => {
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(401).json("Utilasiteur non autorisé");
+    }
     try {
       const users = await prisma.user.findMany();
 
@@ -333,7 +342,16 @@ const Usercontroller = {
     }
   },
   getById: async (req, res) => {
-    const id = req.userId;
+    const { id } = req.params;
+    const userId = req.userId;
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(401).json("Utilasiteur non autorisé");
+    }
     try {
       const user = await prisma.user.findUnique({
         where: {
@@ -343,10 +361,49 @@ const Usercontroller = {
 
       if (user) {
         delete user.password;
-        return res.status(200).json({...user });
+        return res.status(200).json({ ...user });
       }
     } catch (error) {
       console.log(error);
+    }
+  },
+  changeAuthorizationToConnect: async (req, res) => {
+    const { id } = req.params;
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(401).json("Utilasiteur non autorisé");
+    }
+    try {
+      const findUser = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!findUser) {
+        return res.status(404).json({
+          message: "Utilsaiteur introuvable",
+        });
+      }
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          canConnect: req.body.canConnect,
+        },
+      });
+
+      return res.status(200).json({
+        message: "Utilisateur modifié",
+      });
+    } catch (error) {
+      return res.status(401).json({
+        message: error,
+      });
     }
   },
 };

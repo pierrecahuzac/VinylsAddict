@@ -7,7 +7,9 @@ const UserRouter = Router();
 
 UserRouter.post('/login', UserController.login);
 UserRouter.get('/', AuthMiddleWare.checkToken,UserController.getAllUsers);
-UserRouter.get('/getById', AuthMiddleWare.checkToken,UserController.getById);
+UserRouter.get('/:id', AuthMiddleWare.checkToken,UserController.getById);
+UserRouter.put('/:id/status', AuthMiddleWare.checkToken,UserController.changeAuthorizationToConnect);
+
 UserRouter.post('/logout', UserController.logout);
 UserRouter.post('/signup', UserController.signup);
 UserRouter.get('/role',AuthMiddleWare.checkToken, UserController.getUserRole)
