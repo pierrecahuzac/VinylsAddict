@@ -12,7 +12,7 @@ const Album = ({
   return (
     <div
       id={id}
-      className={`flex items-center bg-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-700 transition-all shadow-lg border border-gray-700/50 hover:border-[#f1c40f]/50 group ${className}`}
+      className={` flex items-center bg-gray-800 rounded-xl overflow-hidden cursor-pointer hover:bg-gray-700 transition-all shadow-lg border border-gray-700/50 hover:border-[#f1c40f]/50 group ${className}`}
       onClick={() => onClick()}
     >
       <div className="w-20 h-20 flex-shrink-0">

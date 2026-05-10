@@ -12,6 +12,7 @@ export interface AlbumFormState {
   styleId: string;
   trackCount?: string | number;
   diskCount?: string | number;
+  barCode?: string | bigint;
 }
 
 export interface AlbumProps {
@@ -81,7 +82,7 @@ export interface UserAlbumData {
   notes?: string;
   condition?: MetadataItem;
   album: AlbumData;
-  userId?:string
+  userId?: string;
 }
 
 export interface FullAlbumState {

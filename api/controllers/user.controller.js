@@ -2,8 +2,12 @@ import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { log } from "node:console";
+import { NetworkResources } from "node:inspector/promises";
 import { format } from "node:path";
+
+
 const Usercontroller = {
+  
   signup: async (req, res) => {
     try {
       const { email, password, passwordConfirmation, username } = req.body;
@@ -35,10 +39,14 @@ const Usercontroller = {
 
       const { password: _, ...userWithoutPassword } = newUser;
 
-      return res.status(201).json({ message: "User créé !", user: userWithoutPassword });
+      return res
+        .status(201)
+        .json({ message: "User créé !", user: userWithoutPassword });
     } catch (error) {
       console.error("Signup error:", error);
-      return res.status(500).json({ error: "Une erreur est survenue lors de l'inscription." });
+      return res
+        .status(500)
+        .json({ error: "Une erreur est survenue lors de l'inscription." });
     }
   },
   login: async (req, res) => {
@@ -62,7 +70,9 @@ const Usercontroller = {
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
       if (!comparePassword) {
-        return res.status(401).json({ message: "Combinaison email / password incorrecte" });
+        return res
+          .status(401)
+          .json({ message: "Combinaison email / password incorrecte" });
       }
       delete user.password;
       const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
@@ -161,7 +171,9 @@ const Usercontroller = {
         .json({ userAlbum, message: `Détails de l'album trouvés` });
     } catch (error) {
       console.error("getOneUserAlbum error:", error);
-      return res.status(500).json({ error: "Erreur lors de la récupération de l'album." });
+      return res
+        .status(500)
+        .json({ error: "Erreur lors de la récupération de l'album." });
     }
   },
 
@@ -232,13 +244,14 @@ const Usercontroller = {
       });
     } catch (error) {
       console.error("getAllUserAlbums error:", error);
-      return res.status(500).json({ error: "Erreur lors de la récupération de la collection." });
+      return res
+        .status(500)
+        .json({ error: "Erreur lors de la récupération de la collection." });
     }
   },
   changePassword: async (req, res) => {
     const userId = req.userId;
-    const { currentPassword, newPassword, newPasswordConfirmation } = req.body; 
-    
+    const { currentPassword, newPassword, newPasswordConfirmation } = req.body;
 
     if (!userId) {
       return res.status(401).json({
@@ -251,8 +264,7 @@ const Usercontroller = {
           id: userId,
         },
       });
-  
-      
+
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -286,7 +298,161 @@ const Usercontroller = {
       return res.status(200).json({ message: "Password changed successfully" });
     } catch (error) {
       console.error("changePassword error:", error);
-      return res.status(500).json({ error: "Erreur lors du changement de mot de passe." });
+      return res
+        .status(500)
+        .json({ error: "Erreur lors du changement de mot de passe." });
+    }
+  },
+  getUserRole: async (req, res) => {
+    const userId = req.userId;
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+      console.log(user);
+
+      if (user) {
+        return res.status(200).json({
+          role: user.role,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getAllUsers: async (req, res) => {
+    const userId = req.userId
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(403).json("Utilisateur non autorisé");
+    }
+    try {
+      const users = await prisma.user.findMany();
+
+      const usersWithoutPassword = users.map((user) => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+
+      return res.status(200).json({ users: usersWithoutPassword });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  getById: async (req, res) => {
+    const { id } = req.params;
+    const userId = req.userId;
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(403).json("Utilisateur non autorisé");
+    }
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+
+      if (user) {
+        delete user.password;
+        return res.status(200).json({ ...user });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  changeAuthorizationToConnect: async (req, res) => {
+
+    const userId = req.userId
+    const { id } = req.params;
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(403).json("Utilisateur non autorisé");
+    }
+    try {
+      const findUser = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!findUser) {
+        return res.status(404).json({
+          message: "Utilisateur introuvable",
+        });
+      }
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          canConnect: req.body.canConnect,
+        },
+      });
+
+      return res.status(200).json({
+        message: "Utilisateur modifié",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: error,
+      });
+    }
+  },
+  changeUserRole: async (req, res) => {
+
+    const userId = req.userId
+    console.log(req.body);
+    
+    const { id } = req.params;
+    const verifyUserIsAdmin = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!verifyUserIsAdmin || verifyUserIsAdmin.role !== "ADMIN") {
+      return res.status(403).json("Utilisateur non autorisé");
+    }
+    try {
+      const findUser = await prisma.user.findUnique({
+        where: {
+          id,
+        },
+      });
+      if (!findUser) {
+        return res.status(404).json({
+          message: "Utilisateur introuvable",
+        });
+      }
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          role: req.body.role,
+        },
+      });
+
+      return res.status(200).json({
+        message: "Rôle de l'utilisateur modifié",
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: error,
+      });
     }
   },
 };
