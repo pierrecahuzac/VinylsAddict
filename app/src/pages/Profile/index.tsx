@@ -15,7 +15,7 @@ const Profile = () => {
   const handleSubmitNewPassword = async () => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/changePassword`,
+        `/api/users/changePassword`,
         {
           currentPassword,
           newPassword,

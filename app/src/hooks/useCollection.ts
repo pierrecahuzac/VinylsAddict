@@ -12,7 +12,7 @@ export const useCollection = () => {
     setIsLoading(true);
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/metadatas`,
+        `/api/metadatas`,
       );
 
       setAllMetadata(result.data);
@@ -27,7 +27,7 @@ export const useCollection = () => {
     setIsLoading(true);
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/genres`,
+        `/api/genres`,
       );
       setGenres(result.data);
     } catch (error) {
@@ -41,7 +41,7 @@ export const useCollection = () => {
     setIsLoading(true);
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums`,
+        `/api/albums`,
       );
       setAlbums(result.data);
     } catch (error) {
@@ -54,7 +54,7 @@ export const useCollection = () => {
   const getAllUserAlbums = async () => {
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums`,
+        `/api/users/albums`,
         {
           withCredentials: true,
         },

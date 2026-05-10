@@ -48,5 +48,11 @@ export default defineConfig({
     port: 55173,
     strictPort: true,
     allowedHosts: [".tail2fc6b2.ts.net"],
+    proxy: {
+      "/api": {
+        target: "http://localhost:33000",
+        changeOrigin: true,
+      },
+    },
   },
 });

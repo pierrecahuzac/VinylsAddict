@@ -83,7 +83,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const checkToken = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/checkToken`,
+        `/api/users/checkToken`,
         {
           withCredentials: true,
         },
@@ -114,7 +114,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       const result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/login`,
+        `/api/users/login`,
         { email, password },
         { withCredentials: true },
       );
@@ -157,7 +157,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`,
+        `/api/users/signup`,
         { email, password, passwordConfirmation, username },
         { withCredentials: true },
       );
@@ -185,7 +185,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/logout`,
+        `/api/users/logout`,
         {},
         { withCredentials: true },
       );

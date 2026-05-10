@@ -20,7 +20,7 @@ const MyWishlist = () => {
   const fetchUserWishlist = async () => {
     try {
       const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists`,
+        `/api/wishlists`,
         {
           withCredentials: true,
         },
@@ -51,7 +51,7 @@ const MyWishlist = () => {
     if (!userWishlist) return;
     try {
       const result = await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists/${albumId}`,
+        `/api/wishlists/${albumId}`,
         {
           withCredentials: true,
         },
