@@ -5,9 +5,7 @@ import { log } from "node:console";
 import { NetworkResources } from "node:inspector/promises";
 import { format } from "node:path";
 
-
 const Usercontroller = {
-  
   signup: async (req, res) => {
     try {
       const { email, password, passwordConfirmation, username } = req.body;
@@ -81,7 +79,7 @@ const Usercontroller = {
       res.cookie("va_token", jwtToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
         maxAge: 3600000,
       });
       return res
@@ -96,7 +94,7 @@ const Usercontroller = {
     res.clearCookie("va_token", {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
     });
     return res
       .status(200)
@@ -323,7 +321,7 @@ const Usercontroller = {
     }
   },
   getAllUsers: async (req, res) => {
-    const userId = req.userId
+    const userId = req.userId;
     const verifyUserIsAdmin = await prisma.user.findUnique({
       where: {
         id: userId,
@@ -372,8 +370,7 @@ const Usercontroller = {
     }
   },
   changeAuthorizationToConnect: async (req, res) => {
-
-    const userId = req.userId
+    const userId = req.userId;
     const { id } = req.params;
     const verifyUserIsAdmin = await prisma.user.findUnique({
       where: {
@@ -413,10 +410,9 @@ const Usercontroller = {
     }
   },
   changeUserRole: async (req, res) => {
-
-    const userId = req.userId
+    const userId = req.userId;
     console.log(req.body);
-    
+
     const { id } = req.params;
     const verifyUserIsAdmin = await prisma.user.findUnique({
       where: {
