@@ -79,7 +79,7 @@ const MyCollection = () => {
 
     try {
       await axios.post(
-        `/api/albums`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums`,
         payload,
         { withCredentials: true },
       );

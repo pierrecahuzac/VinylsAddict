@@ -51,7 +51,7 @@ const Dashboard = () => {
   const verifyUserRole = async () => {
     try {
       const response = await axios.get<{ role: string }>(
-        `/api/users/role`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/role`,
         { withCredentials: true },
       );
       if (response.data.role !== "ADMIN") {
@@ -68,7 +68,7 @@ const Dashboard = () => {
   const getAllAbums = async () => {
     try {
       const response = await axios.get<AlbumData[]>(
-        `/api/albums`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums`,
       );
       setAlbums(response.data);
     } catch (error) {
@@ -80,7 +80,7 @@ const Dashboard = () => {
   const getAllUsers = async () => {
     try {
       const response = await axios.get<{ users: User[] }>(
-        `/api/users`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users`,
         {
           withCredentials: true,
         },
@@ -208,7 +208,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
   const userToFetch = async () => {
     try {      
       const response = await axios.get<User>(
-        `/api/users/${userId}`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}`,
         {
           withCredentials: true,
         },
@@ -223,7 +223,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
   const handleUserConnection = async (canConnect: boolean) => {
     try {
       await axios.put(
-        `/api/users/${userId}/status`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}/status`,
         { canConnect },
         { withCredentials: true }
       );
@@ -239,7 +239,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
   const handleUserRole = async (role: string) => {
     try {
       await axios.put(
-        `/api/users/${userId}/role`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}/role`,
         { role },
         { withCredentials: true }
       );
