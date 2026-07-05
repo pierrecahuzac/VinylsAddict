@@ -1,12 +1,14 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { log } from "node:console";
+
 import { NetworkResources } from "node:inspector/promises";
 import { format } from "node:path";
 
 const Usercontroller = {
   signup: async (req, res) => {
+    console.log("Usercontroller loaded");
+    
     try {
       const { email, password, passwordConfirmation, username } = req.body;
 
@@ -48,6 +50,7 @@ const Usercontroller = {
     }
   },
   login: async (req, res) => {
+    
     try {
       const { email, password } = req.body;
       const user = await prisma.user.findUnique({
