@@ -128,6 +128,7 @@ const Catalog = () => {
                 artist={item.artist}
                 cover={item.coverUrl}
                 year={String(item.releaseDate)}
+                color={item.color}
                 onClick={() => openAlbumDetails(item.id)}
                 className="w-full"
               />

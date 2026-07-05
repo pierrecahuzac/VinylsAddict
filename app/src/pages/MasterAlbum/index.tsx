@@ -209,6 +209,16 @@ const MasterAlbum = () => {
             </div>
           </div>
 
+          {masterAlbumDetails?.color && (
+            <div className="flex items-start gap-4">
+              <IoDiscOutline className="text-[#f1c40f] mt-1 shrink-0" size={20} />
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Couleur</p>
+                <p className="text-gray-100">{masterAlbumDetails.color}</p>
+              </div>
+            </div>
+          )}
+
           <div className="flex items-start gap-4">
             <IoBarcodeOutline className="text-[#f1c40f] mt-1 shrink-0" size={20} />
             <div>

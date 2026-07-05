@@ -21,6 +21,7 @@ export interface AlbumProps {
   cover?: string;
   id: string;
   year: string;
+  color?: string;
   onClick: () => void;
   className?: string;
 }
