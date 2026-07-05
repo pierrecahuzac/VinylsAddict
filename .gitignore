@@ -32,11 +32,12 @@ pnpm-debug.log*
 # Database & Generated files
 /api/generated/prisma/
 
-# Media & Temporary files
-/images/
-/@images/
-
 incoherence.md
 GEMINI.md
 RAPPORT.md
+CONTEXT.md
 
+# Claude rules (optional - can be committed for team consistency)
+.app/.rules/
+
+INCOHERENCES.md
