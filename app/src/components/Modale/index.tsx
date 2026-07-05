@@ -163,7 +163,7 @@ const Modale = ({
                 className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
               >
                 <option value="">-- Style --</option>
-                {allMetadata?.style?.map((s: MetadataItem) => (
+                {allMetadata?.styles?.map((s: MetadataItem) => (
                   <option key={s.id} value={s.id}>{s.nameFR || s.name}</option>
                 ))}
               </select>

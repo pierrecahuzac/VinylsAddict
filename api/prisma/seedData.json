@@ -51,7 +51,8 @@
       "releaseDate": 1996,
       "trackCount": 10,
       "formatName": "12\" LP", 
-      "genreName": "rock" 
+      "genreName": "rock",
+      "coverURL": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTinwf-epOV8B53n0rmmLssS0XBo1qy6wqx-Y6fCF3L7g&s=10" 
     },
     {
       "title": "Slaughter of the Soul",
@@ -59,7 +60,8 @@
       "releaseDate": 1995,
       "trackCount": 11,
       "formatName": "12\" LP",
-      "genreName": "rock"
+      "genreName": "rock",
+      "coverURL": "https://static.fnac-static.com/multimedia/Images/FR/NR/d8/df/fe/16703448/1507-1/tsp20231221131222/Slaughter-Of-The-Soul-Edition-Limitee.jpg"
     }
   ]
 }

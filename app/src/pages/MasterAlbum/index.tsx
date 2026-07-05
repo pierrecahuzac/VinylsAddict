@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import {
   IoHeart,
   IoHeartOutline,
-  IoLibrary,
   IoLibraryOutline,
   IoCalendarOutline,
   IoDiscOutline,
@@ -25,7 +24,6 @@ const MasterAlbum = () => {
   const [masterAlbumDetails, setMasterAlbumDetails] =
     useState<AlbumData | null>(null);
   const { onError } = useToast();
-  const [isOwned, setIsOwned] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [modalAddAlbumToUserCollection, setModalAddAlbumToUserCollection] =
     useState(false);
@@ -34,25 +32,6 @@ const MasterAlbum = () => {
     conditionId: "",
   });
 
-  const albumIsInUserCollection = async () => {
-    if (!userIsLogged) return false;
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/check/${id}`,
-        {
-          withCredentials: true,
-        },
-      );
-      if (response.data.userAlbum) {
-        setIsOwned(true);
-        return true;
-      }
-      return false;
-    } catch (error) {
-      setIsOwned(false);
-      return false;
-    }
-  };
   const albumIsInUserWishlist = async () => {
     if (!userIsLogged) return false;
     try {
@@ -81,7 +60,6 @@ const MasterAlbum = () => {
         },
       );
       setMasterAlbumDetails(response.data);
-      await albumIsInUserCollection();
       await albumIsInUserWishlist();
     } catch (error) {
       console.error("Erreur lors de la récupération des données", error);
@@ -190,16 +168,11 @@ const MasterAlbum = () => {
         {userIsLogged && (
           <div className="grid grid-cols-2 gap-4">
             <button
-              onClick={() => !isOwned && setModalAddAlbumToUserCollection(true)}
-              disabled={isOwned}
-              className={`flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all shadow-lg ${
-                isOwned 
-                ? "bg-amber-500/20 text-amber-500 border border-amber-500/50 cursor-default" 
-                : "bg-amber-500 text-gray-950 hover:bg-amber-400 active:scale-95"
-              }`}
+              onClick={() => setModalAddAlbumToUserCollection(true)}
+              className="flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all shadow-lg bg-amber-500 text-gray-950 hover:bg-amber-400 active:scale-95"
             >
-              {isOwned ? <IoLibrary size={20} /> : <IoLibraryOutline size={20} />}
-              <span className="text-sm">{isOwned ? "En collection" : "Posséder"}</span>
+              <IoLibraryOutline size={20} />
+              <span className="text-sm">Posséder</span>
             </button>
 
             <button
