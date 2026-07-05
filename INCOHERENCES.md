@@ -10,7 +10,7 @@ Ce document sert à suivre les points d'amélioration, les incohérences structu
 | 002 | Typescript | Incohérence entre les types `Metadata` (ID en `number`) et la réalité de l'API (ID en `string`/UUID). | Haute | Résolu |
 | 003 | Maintenance | Présence de `console.log` de debug dans les contrôleurs (`api/controllers/user.controller.js`). | Basse | Résolu |
 | 004 | Organisation | Les fichiers de tests sont mélangés avec le code source (`api/controllers/user.controller.test.js`). | Basse | Ouvert |
-| 005 | Architecture | Risque CORS en production : logique fragile dans `api/server.js`. | Haute | Ouvert |
+| 005 | Architecture | Risque CORS en production : logique fragile dans `api/server.js`. | Haute | Résolu |
 | 006 | Intégrité | Absence de contrainte `@unique` composite sur Album (title, artist, userId). | Haute | Ouvert |
 
 ---
