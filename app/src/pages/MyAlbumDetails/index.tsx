@@ -33,7 +33,7 @@ const MyAlbumDetails = () => {
         setLoading(true);
         setError(null);
         const userRes = await axios.get(
-          `/api/users/albums/${albumId}`,
+          `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${albumId}`,
           {
             withCredentials: true,
           },
@@ -80,7 +80,7 @@ const MyAlbumDetails = () => {
 
     try {
       await axios.delete(
-        `/api/users/albums/${userAlbum.id}`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${userAlbum.id}`,
         { withCredentials: true },
       );
       setModaleDeleteAlbum(false);

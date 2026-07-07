@@ -43,5 +43,23 @@
     { "name": "10\" EP", "speed": "33/45 RPM", "description": "Format intermédiaire (25cm)" },
     { "name": "12\" Maxi", "speed": "45 RPM", "description": "Grand format, souvent pour les clubs" },
     { "name": "10\" 78 RPM", "speed": "78 RPM", "description": "Vieux disques en gomme-laque (Shellac)" }
+  ],
+  "albums": [
+    {
+      "title": "The Jester Race",
+      "artist": "In Flames",
+      "releaseDate": 1996,
+      "trackCount": 10,
+      "formatName": "12\" LP", 
+      "genreName": "rock" 
+    },
+    {
+      "title": "Slaughter of the Soul",
+      "artist": "At The Gates",
+      "releaseDate": 1995,
+      "trackCount": 11,
+      "formatName": "12\" LP",
+      "genreName": "rock"
+    }
   ]
 }

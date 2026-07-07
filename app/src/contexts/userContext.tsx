@@ -83,7 +83,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const checkToken = async () => {
     try {
       const response = await axios.get(
-        `/api/users/checkToken`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/checkToken`,
         {
           withCredentials: true,
         },
@@ -114,7 +114,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       const result = await axios.post(
-        `/api/users/login`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/login`,
         { email, password },
         { withCredentials: true },
       );
@@ -138,6 +138,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const signup = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
+console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
 
     // Validation avec Zod
     const validation = signupSchema.safeParse({
@@ -157,7 +158,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await axios.post(
-        `/api/users/signup`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`,
         { email, password, passwordConfirmation, username },
         { withCredentials: true },
       );
@@ -185,7 +186,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     try {
       await axios.post(
-        `/api/users/logout`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/logout`,
         {},
         { withCredentials: true },
       );

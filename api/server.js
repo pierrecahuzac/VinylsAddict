@@ -3,14 +3,17 @@ import mainRouter from "./routers/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import rateLimit from 'express-rate-limit';
 
 const app = express();
 
-// Nécessaire pour Render/Heroku/Vercel pour que les cookies "secure" fonctionnent derrière le proxy
 app.set("trust proxy", 1);
 
 app.use(helmet());
 app.use(cookieParser());
+app.use(express.json()); 
+app.disable("x-powered-by");
+
 
 const origins = process.env.AUTHORIZED_IPS ? process.env.AUTHORIZED_IPS.split(",").map((ip) => ip.trim()) : [];
 
@@ -40,17 +43,15 @@ const corsOptions = {
     callback(new Error("Non autorisé par CORS"));
   },
   methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
+  credentials: true, 
 };
 
 app.use(cors(corsOptions));
 
-const port = process.env.PORT || 33000;
 
-app.use(express.json());
-app.use("/api", mainRouter);
-app.disable("x-powered-by");
+app.use(mainRouter);
+
+const port = process.env.PORT || 33000;
 app.listen(port, () => {
   console.log(`API lancée sur le port ${port}`);
 });

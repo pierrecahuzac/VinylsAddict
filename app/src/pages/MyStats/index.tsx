@@ -15,7 +15,7 @@ const MyStats = () => {
   const fetchWishlistCount = async () => {
     try {
       const response = await axios.get(
-        `/api/wishlists`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/wishlists`,
         { withCredentials: true }
       );
       setWishlistCount(response.data.length);
