@@ -42,7 +42,6 @@ const Catalog = () => {
 
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);
   const [addAlbumToCollection, setAddAlbumToCollection] = useState(false);
-  console.log(allMetadata);
 
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,

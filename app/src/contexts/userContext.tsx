@@ -161,7 +161,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         { email, password, passwordConfirmation, username },
         { withCredentials: true },
       );
-      console.log(response);
       if (response.status === 409) {
         onError("Email existant, merci de vous connecter");
       }
