@@ -48,15 +48,11 @@ const seedDB = async () => {
   }
 
   const saltRounds = 10;
-const devPassword = "password123";
+const passwordToHash = process.env.DEV_USER_PASSWORD;
 
-const prodPassword = process.env.PROD_SYSTEM_PASSWORD;
-
-
-const passwordToHash = process.env.NODE_ENV === "production" && prodPassword 
-  ? prodPassword 
-  : devPassword;
-
+if (!passwordToHash) {
+  throw new Error("La variable d'environnement DEV_USER_PASSWORD est requise pour le seeding.");
+}
 
 const hashedPassword = await bcrypt.hash(passwordToHash, saltRounds);
 
@@ -71,6 +67,21 @@ const user = await prisma.user.upsert({
     role: "ADMIN",
   },
 });
+
+// Utilisateur de test pour le développement
+if (process.env.NODE_ENV === "development") {
+  const testPassword = await bcrypt.hash("password123", saltRounds);
+  await prisma.user.upsert({
+    where: { email: "test@va.eu" },
+    update: {},
+    create: {
+      email: "test@va.eu",
+      username: "testuser",
+      password: testPassword,
+      role: "USER",
+    },
+  });
+}
 
    for (const albumData of datas.albums) {
    
@@ -90,19 +101,44 @@ const user = await prisma.user.upsert({
       continue;
     }
 
-    await prisma.album.create({
-      data: {
+    // Recherche de l'album existant pour cet utilisateur
+    const existingAlbum = await prisma.album.findFirst({
+      where: {
         title: albumData.title,
         artist: albumData.artist,
-        releaseDate: albumData.releaseDate,
-        trackCount: albumData.trackCount,
-        userId: user.id,
-        formatId: format.id,
-        genres: {
-          connect: genre ? [{ id: genre.id }] : [],
-        },
-      },
+        userId: user.id
+      }
     });
+
+    if (existingAlbum) {
+      await prisma.album.update({
+        where: { id: existingAlbum.id },
+        data: {
+          releaseDate: albumData.releaseDate,
+          trackCount: albumData.trackCount,
+          coverUrl: albumData.coverURL,
+          formatId: format.id,
+          genres: {
+            set: genre ? [{ id: genre.id }] : [],
+          },
+        },
+      });
+    } else {
+      await prisma.album.create({
+        data: {
+          title: albumData.title,
+          artist: albumData.artist,
+          releaseDate: albumData.releaseDate,
+          trackCount: albumData.trackCount,
+          coverUrl: albumData.coverURL,
+          userId: user.id,
+          formatId: format.id,
+          genres: {
+            connect: genre ? [{ id: genre.id }] : [],
+          },
+        },
+      });
+    }
   }
 };
 

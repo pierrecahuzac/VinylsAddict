@@ -118,6 +118,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         { email, password },
         { withCredentials: true },
       );
+      
       if (result.status === 200 && result.data.isLogged) {
         setUser(result.data.user);
         setUserIslogged(true);
@@ -138,9 +139,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const signup = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
-console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
 
-    // Validation avec Zod
     const validation = signupSchema.safeParse({
       username,
       email,
@@ -162,7 +161,6 @@ console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
         { email, password, passwordConfirmation, username },
         { withCredentials: true },
       );
-
       if (response.status === 409) {
         onError("Email existant, merci de vous connecter");
       }

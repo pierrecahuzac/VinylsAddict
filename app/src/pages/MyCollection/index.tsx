@@ -130,7 +130,7 @@ const MyCollection = () => {
           {albums.length > 0 &&
             albums.map((item: any) => (
               <Album
-                id={item?.album?.id}
+                id={item.id}
                 key={item.id}
                 title={item?.album?.title}
                 artist={item?.album?.artist}

@@ -122,7 +122,7 @@ const MyAlbumDetails = () => {
             className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/30 rounded-lg hover:bg-red-500 hover:text-white transition-all text-sm font-bold"
           >
             <IoTrashOutline size={18} />
-            Supprimer du bac
+            Supprimer de la collection
           </button>
         </div>
 

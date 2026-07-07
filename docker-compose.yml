@@ -4,7 +4,6 @@ services:
     build: ./app
     ports:
       - "55173:55173"
-    # On garde les volumes pour le dev, mais sans le :ro qui bloque pnpm/vite
     volumes:
       - ./app:/app
       - /app/node_modules
@@ -19,8 +18,6 @@ services:
       - "33000:33000"
     env_file:
       - ./api/.env
-    # En dev on peut vouloir nodemon, en prod le CMD du Dockerfile (node server.js)
-    # Pour garder un seul fichier, on laisse la commande de dev ici ou on utilise des variables
     command: >
       sh -c "npx prisma migrate deploy && 
              npx prisma db seed && 
@@ -51,7 +48,6 @@ services:
       - db_data:/var/lib/postgresql/data
     restart: always
 
-  # --- Services de DEV uniquement (Profiles) ---
 
   db_test:
     container_name: db_test
@@ -84,3 +80,4 @@ services:
 volumes:
   db_data:
   db_test_data:
+

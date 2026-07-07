@@ -7,7 +7,6 @@ import { format } from "node:path";
 
 const Usercontroller = {
   signup: async (req, res) => {
-    console.log("Usercontroller loaded");
     
     try {
       const { email, password, passwordConfirmation, username } = req.body;
@@ -70,6 +69,9 @@ const Usercontroller = {
         });
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
+      console.log("Tentative de login pour:", email);
+      console.log("Résultat comparaison:", comparePassword);
+
       if (!comparePassword) {
         return res
           .status(401)
@@ -82,7 +84,8 @@ const Usercontroller = {
       res.cookie("va_token", jwtToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
+        partitioned: process.env.NODE_ENV !== "development",
         maxAge: 3600000,
       });
       return res
@@ -314,7 +317,6 @@ const Usercontroller = {
           id: userId,
         },
       });
-      console.log(user);
 
       if (user) {
         return res.status(200).json({
@@ -322,7 +324,7 @@ const Usercontroller = {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error("getUserRole error:", error);
     }
   },
   getAllUsers: async (req, res) => {
@@ -345,7 +347,7 @@ const Usercontroller = {
 
       return res.status(200).json({ users: usersWithoutPassword });
     } catch (error) {
-      console.log(error);
+      console.error("getAllUsers error:", error);
     }
   },
   getById: async (req, res) => {
@@ -371,7 +373,7 @@ const Usercontroller = {
         return res.status(200).json({ ...user });
       }
     } catch (error) {
-      console.log(error);
+      console.error("getById error:", error);
     }
   },
   changeAuthorizationToConnect: async (req, res) => {
@@ -416,8 +418,6 @@ const Usercontroller = {
   },
   changeUserRole: async (req, res) => {
     const userId = req.userId;
-    console.log(req.body);
-
     const { id } = req.params;
     const verifyUserIsAdmin = await prisma.user.findUnique({
       where: {
