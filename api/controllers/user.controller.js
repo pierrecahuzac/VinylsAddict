@@ -85,6 +85,7 @@ const Usercontroller = {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
         sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
+        partitioned: process.env.NODE_ENV !== "development",
         maxAge: 3600000,
       });
       return res
