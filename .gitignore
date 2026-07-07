@@ -13,7 +13,7 @@ build/
 .env.local
 .env.test
 .env.test.local
-
+.rules
 # IDE & OS files
 .vscode/*
 !.vscode/extensions.json
@@ -39,5 +39,5 @@ CONTEXT.md
 
 # Claude rules (optional - can be committed for team consistency)
 .app/.rules/
-
+.rules/
 INCOHERENCES.md

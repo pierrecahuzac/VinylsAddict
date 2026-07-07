@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from "express";
 import mainRouter from "./routers/index.js";
 import cors from "cors";
@@ -11,15 +12,19 @@ app.set("trust proxy", 1);
 
 app.use(helmet());
 app.use(cookieParser());
-app.use(express.json()); 
+app.use(express.json());
 app.disable("x-powered-by");
 
 
 const isDev = process.env.NODE_ENV === "development";
 
+const devOrigins = [
+  ...(process.env.AUTHORIZED_IPS ? process.env.AUTHORIZED_IPS.split(',') : [])
+];
+
 const corsOptions = {
-  origin: isDev 
-    ? ["http://localhost:55173", "http://localhost:5173", "http://192.168.1.181:55173"] // Ajout de l'IP locale
+  origin: isDev
+    ? devOrigins
     : process.env.FRONTEND_URL,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,

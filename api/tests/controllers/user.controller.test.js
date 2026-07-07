@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import Usercontroller from './user.controller.js';
-import prisma from '../database/prismaClient.js';
+import Usercontroller from '../../controllers/user.controller.js';
+import prisma from '../../database/prismaClient.js';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-vi.mock('../database/prismaClient.js', () => ({
+vi.mock('../../database/prismaClient.js', () => ({
   default: {
     user: {
       findUnique: vi.fn(),
@@ -30,7 +30,7 @@ describe('Usercontroller.login', () => {
   });
 
   it('devrait retourner 200 et un token si les identifiants sont corrects', async () => {
-    const mockUser = { id: 1, email: 'test@example.com', password: 'hashedPassword' };
+    const mockUser = { id: 1, email: 'test@example.com', password: 'hashedPassword', canConnect: true };
     prisma.user.findUnique.mockResolvedValue(mockUser);
     bcryptjs.compare.mockResolvedValue(true);
     jwt.sign.mockReturnValue('fake-jwt-token');
@@ -45,22 +45,22 @@ describe('Usercontroller.login', () => {
     }));
   });
 
-  it('devrait retourner 404 si l\'utilisateur n\'existe pas', async () => {
+  it('devrait retourner 401 si l\'utilisateur n\'existe pas', async () => {
     prisma.user.findUnique.mockResolvedValue(null);
 
     await Usercontroller.login(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ message: "Combinaison email / password not work" });
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: "Combinaison email / password incorrecte" });
   });
 
-  it('devrait retourner 400 si le mot de passe est incorrect', async () => {
-    prisma.user.findUnique.mockResolvedValue({ id: 1, password: 'hashed' });
+  it('devrait retourner 401 si le mot de passe est incorrect', async () => {
+    prisma.user.findUnique.mockResolvedValue({ id: 1, password: 'hashed', canConnect: true });
     bcryptjs.compare.mockResolvedValue(false);
 
     await Usercontroller.login(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ message: "Invalid password" });
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: "Combinaison email / password incorrecte" });
   });
 });
