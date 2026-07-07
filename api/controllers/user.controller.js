@@ -84,7 +84,7 @@ const Usercontroller = {
       res.cookie("va_token", jwtToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
         maxAge: 3600000,
       });
       return res
