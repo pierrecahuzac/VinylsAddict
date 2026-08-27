@@ -467,12 +467,25 @@ const Usercontroller = {
         return res.status(404).json({ message: "Utilisateur introuvable" });
       }
 
-      // Récupérer toute la collection pour nettoyage fichiers (CollectionImage cascade DB mais pas FS)
+      // Récupérer d'abord les images pour nettoyage FS (best effort) avant suppression DB
       const userAlbums = await prisma.userAlbum.findMany({
         where: { userId },
         include: { images: true },
       });
 
+      // Transaction atomique : anonymisation des Albums masters + suppression du user (cascade UserAlbum/Wishlist)
+      const anonResult = await prisma.$transaction(async (tx) => {
+        const upd = await tx.album.updateMany({
+          where: { userId },
+          data: { userId: null },
+        });
+        await tx.user.delete({ where: { id: userId } });
+        return upd;
+      });
+
+      console.log(`deleteAccount: ${anonResult.count} album(s) anonymisé(s) pour user ${userId}`);
+
+      // Nettoyage FS après succès DB (best effort)
       for (const ua of userAlbums) {
         for (const img of ua.images) {
           try {
@@ -483,16 +496,6 @@ const Usercontroller = {
           }
         }
       }
-
-      // Anonymisation explicite des vinyles master (SetNull ferait aussi le job, mais explicite pour traçabilité)
-      // Les albums restent dans le catalogue, userId passe à null
-      await prisma.album.updateMany({
-        where: { userId },
-        data: { userId: null },
-      });
-
-      // Suppression du user : cascade UserAlbum + Wishlist + SetNull déjà géré
-      await prisma.user.delete({ where: { id: userId } });
 
       res.clearCookie("va_token", {
         httpOnly: true,
