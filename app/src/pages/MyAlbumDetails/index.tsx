@@ -19,6 +19,11 @@ import useToast from "../../hooks/useToast";
 
 import type { FullAlbumState } from "../../types/album";
 
+const getImageUrl = (url: string) => {
+  const base = (import.meta.env.VITE_BACKEND_URL_DEV as string | undefined)?.replace(/\/api\/?$/, "") || "";
+  return `${base}${url}`;
+};
+
 const MyAlbumDetails = () => {
   const { albumId } = useParams<{ albumId: string }>();
   const { userIsLogged } = useUser();
@@ -29,6 +34,7 @@ const MyAlbumDetails = () => {
   const [modaleDeleteAlbum, setModaleDeleteAlbum] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const navigate = useNavigate();
   const { onSuccess, onError } = useToast();
 
@@ -93,12 +99,20 @@ const MyAlbumDetails = () => {
     }
   };
 
+  const isAtLimit = (userAlbum?.images?.length || 0) >= 10;
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !userAlbum) return;
 
+    if (isAtLimit) {
+      onError("Limite de 10 photos atteinte pour cet album.");
+      e.target.value = "";
+      return;
+    }
+
     // validation front légère
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+    if (!["image/jpeg", "image/png", "image/webp", "image/jpg"].includes(file.type)) {
       onError("Format non supporté. JPEG/PNG/WebP uniquement.");
       return;
     }
@@ -291,21 +305,29 @@ const MyAlbumDetails = () => {
           {/* Photos Collection Section */}
           <div className="bg-gray-800/40 p-5 rounded-2xl border border-gray-700/50 space-y-4">
             <div className="flex items-center justify-between border-b border-gray-700 pb-2">
-              <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 flex items-center gap-2">
-                <IoImagesOutline size={14} /> Mes photos ({userAlbum?.images?.length || 0})
+              <h3 className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 ${isAtLimit ? "text-amber-500" : "text-gray-500"}`}>
+                <IoImagesOutline size={14} /> Mes photos ({userAlbum?.images?.length || 0}/10)
               </h3>
-              <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all ${uploading ? "bg-gray-700 text-gray-400" : "bg-[#f1c40f] text-gray-900 hover:bg-amber-400"}`}>
-                <IoCloudUploadOutline size={16} />
-                {uploading ? "Envoi..." : "Ajouter"}
+              <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isAtLimit || uploading ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-[#f1c40f] text-gray-900 hover:bg-amber-400 cursor-pointer"}`}>
+                {uploading ? (
+                  <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <IoCloudUploadOutline size={16} />
+                )}
+                {uploading ? "Envoi..." : isAtLimit ? "Limite atteinte" : "Ajouter"}
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
                   className="hidden"
                   onChange={handleImageUpload}
-                  disabled={uploading}
+                  disabled={uploading || isAtLimit}
                 />
               </label>
             </div>
+
+            {isAtLimit && (
+              <p className="text-amber-500/80 text-xs text-center -mt-2">Limite de 10 photos atteinte.</p>
+            )}
 
             {(!userAlbum?.images || userAlbum.images.length === 0) ? (
               <p className="text-gray-500 text-sm italic text-center py-4">
@@ -315,28 +337,60 @@ const MyAlbumDetails = () => {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {userAlbum.images.map((img) => (
                   <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-gray-900">
-                    <img
-                      src={`${import.meta.env.VITE_BACKEND_URL_DEV.replace('/api','')}${img.url}`}
-                      alt="vinyle"
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
+                    <button
+                      onClick={() => setLightboxUrl(getImageUrl(img.url))}
+                      className="w-full h-full"
+                      title="Voir en grand"
+                    >
+                      <img
+                        src={getImageUrl(img.url)}
+                        alt="vinyle"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </button>
                     <button
                       onClick={() => handleImageDelete(img.id)}
                       disabled={deletingImageId === img.id}
-                      className="absolute top-1.5 right-1.5 p-1.5 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                      className="absolute top-1.5 right-1.5 p-1.5 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50 flex items-center justify-center min-w-[28px] min-h-[28px]"
                       title="Supprimer cette photo"
                     >
-                      <IoTrashOutline size={14} />
+                      {deletingImageId === img.id ? (
+                        <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <IoTrashOutline size={14} />
+                      )}
                     </button>
                   </div>
                 ))}
               </div>
             )}
-            <p className="text-[10px] text-gray-500 italic">Les images sont nettoyées côté serveur (EXIF/GPS supprimés) avant stockage.</p>
+            <p className="text-[10px] text-gray-500 italic">Les images sont nettoyées côté serveur (EXIF/GPS supprimés) avant stockage. JPEG/PNG→WebP, max 5MB.</p>
           </div>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setLightboxUrl(null)}
+        >
+          <button
+            onClick={() => setLightboxUrl(null)}
+            className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full backdrop-blur-sm transition-colors"
+            aria-label="Fermer"
+          >
+            <IoCloseOutline size={28} />
+          </button>
+          <img
+            src={lightboxUrl}
+            alt="aperçu vinyle"
+            className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
 
       {/* Delete Modal */}
       {modaleDeleteAlbum && (
