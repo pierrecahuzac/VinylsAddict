@@ -135,7 +135,7 @@ model CollectionImage {
   url              String
   description      String?
   userCollectionId String
-  userCollection   UserAlbum @relation(fields: [userCollectionId], references: [id])
+  userCollection   UserAlbum @relation(fields: [userCollectionId], references: [id], onDelete: Cascade)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }

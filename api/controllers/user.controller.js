@@ -164,6 +164,7 @@ const Usercontroller = {
             },
           },
           condition: true,
+          images: true,
         },
       });
 

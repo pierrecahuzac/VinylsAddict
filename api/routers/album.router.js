@@ -5,6 +5,8 @@ const AlbumRouter = Router();
 AlbumRouter.get('/', AlbumController.getAllAlbums);
 AlbumRouter.post('/', AlbumController.create);
 AlbumRouter.get('/:id', AlbumController.getOneAlbum);
+AlbumRouter.put('/:id', AlbumController.update);
+AlbumRouter.delete('/:id', AlbumController.delete);
 
 
 

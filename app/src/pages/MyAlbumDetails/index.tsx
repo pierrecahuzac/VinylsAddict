@@ -10,9 +10,12 @@ import {
   IoColorPaletteOutline,
   IoAlbumsOutline,
   IoMusicalNotesOutline,
-  IoCloseOutline
+  IoCloseOutline,
+  IoImagesOutline,
+  IoCloudUploadOutline
 } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
+import useToast from "../../hooks/useToast";
 
 import type { FullAlbumState } from "../../types/album";
 
@@ -24,7 +27,10 @@ const MyAlbumDetails = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [modaleDeleteAlbum, setModaleDeleteAlbum] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const navigate = useNavigate();
+  const { onSuccess, onError } = useToast();
 
   useEffect(() => {
     const fetchFullDetails = async () => {
@@ -74,19 +80,96 @@ const MyAlbumDetails = () => {
   const album = data.userAlbum?.album || data.album;
   const userAlbum = data.userAlbum;
 
+  const refreshDetails = async () => {
+    if (!albumId) return;
+    try {
+      const userRes = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${albumId}`,
+        { withCredentials: true },
+      );
+      setData(userRes.data);
+    } catch (err) {
+      console.log("Erreur refresh:", err);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !userAlbum) return;
+
+    // validation front légère
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      onError("Format non supporté. JPEG/PNG/WebP uniquement.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      onError("Image trop lourde (max 5MB).");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      setUploading(true);
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}/images`,
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      onSuccess("Photo ajoutée (métadonnées nettoyées) !");
+      await refreshDetails();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        onError(err.response?.data?.message || "Erreur lors de l'upload.");
+      } else {
+        onError("Erreur lors de l'upload.");
+      }
+    } finally {
+      setUploading(false);
+      // reset input
+      e.target.value = "";
+    }
+  };
+
+  const handleImageDelete = async (imageId: string) => {
+    if (!userAlbum) return;
+    try {
+      setDeletingImageId(imageId);
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}/images/${imageId}`,
+        { withCredentials: true }
+      );
+      onSuccess("Photo supprimée !");
+      await refreshDetails();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        onError(err.response?.data?.message || "Erreur lors de la suppression.");
+      } else {
+        onError("Erreur lors de la suppression.");
+      }
+    } finally {
+      setDeletingImageId(null);
+    }
+  };
+
   const submitDeleteUserAlbum = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!userAlbum) return;
 
     try {
       await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/${userAlbum.id}`,
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}`,
         { withCredentials: true },
       );
       setModaleDeleteAlbum(false);
-      navigate(`/collection/${data.userAlbum?.userId}`);
+      navigate(`/collection`);
     } catch (err) {
       console.error("Erreur lors de la suppression de l'album :", err);
+      onError("Erreur lors de la suppression.");
     }
   };
 
@@ -204,6 +287,54 @@ const MyAlbumDetails = () => {
               <p className="text-gray-300 italic text-sm">"{userAlbum.notes}"</p>
             </div>
           )}
+
+          {/* Photos Collection Section */}
+          <div className="bg-gray-800/40 p-5 rounded-2xl border border-gray-700/50 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-700 pb-2">
+              <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 flex items-center gap-2">
+                <IoImagesOutline size={14} /> Mes photos ({userAlbum?.images?.length || 0})
+              </h3>
+              <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition-all ${uploading ? "bg-gray-700 text-gray-400" : "bg-[#f1c40f] text-gray-900 hover:bg-amber-400"}`}>
+                <IoCloudUploadOutline size={16} />
+                {uploading ? "Envoi..." : "Ajouter"}
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={uploading}
+                />
+              </label>
+            </div>
+
+            {(!userAlbum?.images || userAlbum.images.length === 0) ? (
+              <p className="text-gray-500 text-sm italic text-center py-4">
+                Aucune photo. Ajoute une photo de ta galette — les métadonnées EXIF/GPS seront automatiquement supprimées.
+              </p>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {userAlbum.images.map((img) => (
+                  <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-gray-900">
+                    <img
+                      src={`${import.meta.env.VITE_BACKEND_URL_DEV.replace('/api','')}${img.url}`}
+                      alt="vinyle"
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    <button
+                      onClick={() => handleImageDelete(img.id)}
+                      disabled={deletingImageId === img.id}
+                      className="absolute top-1.5 right-1.5 p-1.5 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
+                      title="Supprimer cette photo"
+                    >
+                      <IoTrashOutline size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p className="text-[10px] text-gray-500 italic">Les images sont nettoyées côté serveur (EXIF/GPS supprimés) avant stockage.</p>
+          </div>
         </div>
       </div>
 

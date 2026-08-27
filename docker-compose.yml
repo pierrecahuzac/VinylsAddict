@@ -19,9 +19,10 @@ services:
     env_file:
       - ./api/.env
     command: >
-      sh -c "npx prisma migrate deploy && 
-             npx prisma db seed && 
-             pnpm run nodemon"
+      sh -c "if [ ! -f node_modules/.bin/prisma ]; then npm install; fi &&
+             npx prisma migrate deploy &&
+             npx prisma db seed &&
+             npm run nodemon"
     volumes:
       - ./api:/api
       - /api/node_modules

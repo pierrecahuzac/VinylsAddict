@@ -16,7 +16,7 @@ const AlbumController = {
           vinylVariant: true,
         },
       });
-      delete album.userId;
+      if (album && album.userId) delete album.userId;
 
 
       if (!album) {
@@ -127,7 +127,43 @@ const AlbumController = {
     }
   },
 
-  
+  update: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, artist, year, color, coverUrl } = req.body;
+
+      const album = await prisma.album.update({
+        where: { id },
+        data: {
+          title,
+          artist,
+          releaseDate: year ? parseInt(year) : null,
+          color,
+          coverUrl,
+        },
+      });
+
+      return res.status(200).json({ message: "Album mis à jour.", album });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erreur lors de la mise à jour." });
+    }
+  },
+
+  delete: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      await prisma.album.delete({
+        where: { id },
+      });
+
+      return res.status(200).json({ message: "Album supprimé." });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erreur lors de la suppression." });
+    }
+  },
 };
 
 export default AlbumController;

@@ -16,4 +16,4 @@ echo "✅ Bases de données migrées et seedées avec succès."
 
 # 3. Lancement du serveur en mode développement (nodemon)
 # Les arguments passés au container seront transmis à nodemon (ex: --watch ou autres flags)
-exec pnpm run nodemon "$@"
+exec npm run nodemon "$@"

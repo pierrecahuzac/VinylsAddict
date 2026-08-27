@@ -2,14 +2,14 @@ FROM node:22-alpine
 
 WORKDIR /api
 
-RUN npm install -g pnpm
+COPY package*.json ./
 
-COPY package*.json pnpm-lock.yaml* ./
+RUN npm install
 
-
-RUN pnpm install --ignore-scripts
 COPY . .
-RUN pnpm prisma generate
+
+RUN npx prisma generate
+
 EXPOSE 33000
 
-CMD ["pnpm",  "start"]
+CMD ["npm", "start"]
