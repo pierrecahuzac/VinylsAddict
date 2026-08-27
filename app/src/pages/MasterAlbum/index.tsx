@@ -141,9 +141,9 @@ const MasterAlbum = () => {
   };
 
   return (
-    <div className="h-dvh flex flex-col min-h-full bg-gray-900 text-white">
-      {/* Cover Image with Overlay Header */}
-      <div className="relative w-full aspect-square md:aspect-video overflow-hidden group">
+    <div className="min-h-full bg-gray-900 text-white">
+      {/* Cover Image with Overlay Header - responsive: square mobile, limité sur PC */}
+      <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/10] max-h-[65vh] md:max-h-[480px] overflow-hidden group md:rounded-b-2xl">
         <img
           src={masterAlbumDetails?.coverUrl || "/placeholder.jpg"}
           alt={masterAlbumDetails?.title}
@@ -161,8 +161,8 @@ const MasterAlbum = () => {
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="p-6 space-y-8">
+      {/* Main Content Area - centré et limité sur PC */}
+      <div className="p-6 space-y-8 max-w-5xl mx-auto w-full">
         
         {/* Action Buttons */}
         {userIsLogged && (

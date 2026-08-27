@@ -189,8 +189,8 @@ const MyAlbumDetails = () => {
 
   return (
     <div className="flex flex-col min-h-full bg-gray-900 text-white pb-20">
-      {/* Hero Image Section */}
-      <div className="relative w-full aspect-square md:aspect-video overflow-hidden shadow-2xl">
+      {/* Hero Image Section - responsive max-h sur PC */}
+      <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/10] max-h-[65vh] md:max-h-[480px] overflow-hidden shadow-2xl md:rounded-b-2xl">
         <img
           src={album?.coverUrl || "/placeholder.jpg"}
           alt={`${album?.title} cover`}
@@ -211,7 +211,7 @@ const MyAlbumDetails = () => {
         </div>
       </div>
 
-      <div className="p-6 space-y-8">
+      <div className="p-6 space-y-8 max-w-5xl mx-auto w-full">
         {/* Quick Actions (Delete) */}
         <div className="flex justify-end">
           <button
@@ -334,7 +334,7 @@ const MyAlbumDetails = () => {
                 Aucune photo. Ajoute une photo de ta galette — les métadonnées EXIF/GPS seront automatiquement supprimées.
               </p>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {userAlbum.images.map((img) => (
                   <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-gray-900">
                     <button
