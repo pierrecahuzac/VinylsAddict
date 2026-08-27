@@ -16,7 +16,10 @@ const AlbumController = {
           vinylVariant: true,
         },
       });
-      if (album && album.userId) delete album.userId;
+      if (album) {
+        delete album.userId;
+        delete album.creator;
+      }
 
 
       if (!album) {
@@ -39,8 +42,13 @@ const AlbumController = {
           createdAt: "desc",
         },
       });
+      // Masquer le créateur : on garde title/artist mais on n'expose jamais userId/creator
+      const sanitized = albums.map((a) => {
+        const { userId, ...rest } = a;
+        return rest;
+      });
 
-      return res.status(200).json(albums);
+      return res.status(200).json(sanitized);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Erreur serveur lors de la récupération des données." });
