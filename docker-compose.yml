@@ -63,6 +63,16 @@ services:
       - db_test_data:/var/lib/postgresql/data
     restart: always
 
+  landing:
+    container_name: landing
+    build: ./landing
+    ports:
+      - "4321:4321"
+    volumes:
+      - ./landing:/app
+      - /app/node_modules
+    restart: always
+
   prisma-studio:
     container_name: prisma-studio
     build: ./api 
