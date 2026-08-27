@@ -27,6 +27,7 @@ interface UserContextType {
   setEmail: (email: string) => void;
   login: (e: React.SyntheticEvent<HTMLFormElement>) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   checkToken: () => Promise<void>;
   signup: (e: SyntheticEvent<HTMLFormElement>) => Promise<void>;
   password: string;
@@ -200,6 +201,30 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const deleteAccount = async () => {
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/me`,
+        { withCredentials: true },
+      );
+      if (res.status === 200) {
+        onSuccess("Compte supprimé. Collection purgée, vinyles anonymisés.");
+        setUser(null);
+        setUserIslogged(false);
+        setEmail("");
+        setPassword("");
+        navigate("/");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        onError(error.response?.data?.message || "Erreur lors de la suppression du compte.");
+      } else {
+        onError("Erreur lors de la suppression du compte.");
+      }
+      throw error;
+    }
+  };
+
   const value = {
     user,
     userIsLogged,
@@ -220,6 +245,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     errorMessage,
     signup,
     logout,
+    deleteAccount,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
