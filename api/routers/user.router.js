@@ -16,6 +16,8 @@ UserRouter.get('/albums', AuthMiddleWare.checkToken, UserController.getAllUserAl
 UserRouter.get('/albums/:id', AuthMiddleWare.checkToken, UserController.getOneUserAlbum);
 UserRouter.get('/albums/check/:id', AuthMiddleWare.checkToken, UserController.checkAlbumInCollection);
 
+UserRouter.delete('/me', AuthMiddleWare.checkToken, UserController.deleteAccount);
+
 UserRouter.get('/', AuthMiddleWare.checkToken,UserController.getAllUsers);
 UserRouter.get('/:id', AuthMiddleWare.checkToken,UserController.getById);
 UserRouter.put('/:id/status', AuthMiddleWare.checkToken,UserController.changeAuthorizationToConnect);

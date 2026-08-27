@@ -1,9 +1,8 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-
-import { NetworkResources } from "node:inspector/promises";
-import { format } from "node:path";
+import fs from "node:fs/promises";
+import path from "node:path";
 
 const Usercontroller = {
   signup: async (req, res) => {
@@ -455,6 +454,57 @@ const Usercontroller = {
       return res.status(500).json({
         message: error,
       });
+    }
+  },
+  deleteAccount: async (req, res) => {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur introuvable" });
+      }
+
+      // Récupérer toute la collection pour nettoyage fichiers (CollectionImage cascade DB mais pas FS)
+      const userAlbums = await prisma.userAlbum.findMany({
+        where: { userId },
+        include: { images: true },
+      });
+
+      for (const ua of userAlbums) {
+        for (const img of ua.images) {
+          try {
+            const filePath = path.join(process.cwd(), img.url.replace(/^\//, ""));
+            await fs.unlink(filePath);
+          } catch (e) {
+            console.warn(`Fichier non supprimé: ${img.url}`, e.message);
+          }
+        }
+      }
+
+      // Anonymisation explicite des vinyles master (SetNull ferait aussi le job, mais explicite pour traçabilité)
+      // Les albums restent dans le catalogue, userId passe à null
+      await prisma.album.updateMany({
+        where: { userId },
+        data: { userId: null },
+      });
+
+      // Suppression du user : cascade UserAlbum + Wishlist + SetNull déjà géré
+      await prisma.user.delete({ where: { id: userId } });
+
+      res.clearCookie("va_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
+        partitioned: process.env.NODE_ENV !== "development",
+      });
+
+      return res.status(200).json({ message: "Compte supprimé, collection purgée, vinyles anonymisés." });
+    } catch (error) {
+      console.error("deleteAccount error:", error);
+      return res.status(500).json({ error: "Erreur lors de la suppression du compte." });
     }
   },
 };
