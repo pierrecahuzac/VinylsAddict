@@ -9,6 +9,8 @@ import Profile from "./pages/Profile";
 import Catalog from "./pages/Catalog";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Artist from "./pages/Artist";
+import Versions from "./pages/Versions";
 
 import Layout from "./components/Layout";
 import MyStats from "./pages/MyStats";
@@ -28,6 +30,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/album/:id" element={<MasterAlbum />} />
+          <Route path="/artist/:name" element={<Artist />} />
+          <Route path="/versions/:title" element={<Versions />} />
           <Route path="/my-stats" element={<MyStats />} />
           <Route path="/collection/album/:albumId" element={<UserDetailsAlbum />} />
         </Route>

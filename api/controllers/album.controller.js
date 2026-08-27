@@ -33,10 +33,16 @@ const AlbumController = {
   },
   getAllAlbums: async (req, res) => {
     try {
+      const { artist, title } = req.query;
+      const where = {};
+      if (artist) where.artist = { equals: String(artist), mode: "insensitive" };
+      if (title) where.title = { equals: String(title), mode: "insensitive" };
       const albums = await prisma.album.findMany({
+        where,
         include: {
           format: true,
           genres: true,
+          vinylVariant: true,
         },
         orderBy: {
           createdAt: "desc",

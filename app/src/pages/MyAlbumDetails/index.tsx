@@ -202,12 +202,18 @@ const MyAlbumDetails = () => {
           <p className="text-[#f1c40f] text-sm font-bold uppercase tracking-[0.2em] mb-2 drop-shadow-lg">
             Ma Collection
           </p>
-          <h1 className="text-3xl font-bold leading-tight drop-shadow-lg">
+          <button
+            onClick={() => album?.title && navigate(`/versions/${encodeURIComponent(album.title)}`)}
+            className="text-3xl font-bold leading-tight drop-shadow-lg hover:underline text-left"
+          >
             {album?.title}
-          </h1>
-          <p className="text-xl text-gray-300 drop-shadow-md">
+          </button>
+          <button
+            onClick={() => album?.artist && navigate(`/artist/${encodeURIComponent(album.artist)}`)}
+            className="text-xl text-gray-300 drop-shadow-md hover:text-[#f1c40f] hover:underline text-left block"
+          >
             {album?.artist}
-          </p>
+          </button>
         </div>
       </div>
 

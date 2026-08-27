@@ -19,8 +19,12 @@ const AlbumServices = {
     }
     return result;
   },
-  getAllAlbums: async () => {
+  getAllAlbums: async (artist, title) => {
+    const where = {};
+    if (artist) where.artist = { equals: String(artist), mode: "insensitive" };
+    if (title) where.title = { equals: String(title), mode: "insensitive" };
     const result = await prisma.album.findMany({
+      where,
       include: {
         format: true,
         genres: true,

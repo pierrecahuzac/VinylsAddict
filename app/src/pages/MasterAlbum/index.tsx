@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   IoHeart,
   IoHeartOutline,
@@ -19,6 +19,7 @@ import { useCollection } from "../../hooks/useCollection";
 
 const MasterAlbum = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { userIsLogged } = useUser();
   const { allMetadata, getAllMetadata } = useCollection();
   const [masterAlbumDetails, setMasterAlbumDetails] =
@@ -152,12 +153,18 @@ const MasterAlbum = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-90" />
         
         <div className="absolute bottom-0 left-0 p-6 w-full">
-          <h1 className="text-3xl font-bold leading-tight drop-shadow-lg">
+          <button
+            onClick={() => masterAlbumDetails?.title && navigate(`/versions/${encodeURIComponent(masterAlbumDetails.title)}`)}
+            className="text-3xl font-bold leading-tight drop-shadow-lg hover:underline text-left"
+          >
             {masterAlbumDetails?.title}
-          </h1>
-          <p className="text-xl text-[#f1c40f] font-semibold drop-shadow-md mt-1">
+          </button>
+          <button
+            onClick={() => masterAlbumDetails?.artist && navigate(`/artist/${encodeURIComponent(masterAlbumDetails.artist)}`)}
+            className="text-xl text-[#f1c40f] font-semibold drop-shadow-md mt-1 hover:underline text-left block"
+          >
             {masterAlbumDetails?.artist}
-          </p>
+          </button>
         </div>
       </div>
 
