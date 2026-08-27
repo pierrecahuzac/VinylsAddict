@@ -27,9 +27,13 @@ const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.vinyls-addict.eu";
       </div>
       <div class="relative">
         <div class="aspect-[4/3] rounded-[2rem] bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-800 p-6 flex flex-col justify-between">
-          <div class="flex gap-3">
-            <div class="w-20 h-20 rounded-xl bg-gray-700"></div>
-            <div><div class="font-bold">Slaughter of the Soul</div><div class="text-sm text-gray-400">At The Gates • 1995</div><div class="text-xs text-brand">12" LP • rock</div></div>
+          <div class="flex gap-3 items-center min-w-0">
+            <div class="w-20 h-20 rounded-xl bg-gray-700 shrink-0"></div>
+            <div class="min-w-0 flex-1">
+              <div class="font-bold leading-tight truncate">Slaughter of the Soul</div>
+              <div class="text-sm text-gray-400 truncate">At The Gates • 1995</div>
+              <div class="text-xs text-brand truncate">12" LP • rock</div>
+            </div>
           </div>
           <div class="bg-gray-950 rounded-xl p-4 border border-gray-800">
             <div class="text-xs text-gray-500 uppercase tracking-widest">Aperçu app</div>
