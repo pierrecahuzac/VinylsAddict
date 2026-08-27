@@ -1,0 +1,22 @@
+---
+interface Props { title?: string; description?: string; }
+const { title = "Vinyls Addict — Gérez votre collection vinyle", description = "Cataloguez vos vinyles, gérez votre collection et wishlist. PWA rapide, privée et pensée pour les diggers." } = Astro.props;
+---
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://vinyls-addict.eu" />
+    <meta property="og:image" content="https://vinyls-addict.eu/og.jpg" />
+    <link rel="icon" href="/favicon.svg" />
+    <meta name="robots" content="index, follow" />
+  </head>
+  <body class="bg-gray-950 text-white antialiased">
+    <slot />
+  </body>
+</html>

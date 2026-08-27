@@ -36,7 +36,10 @@ incoherence.md
 GEMINI.md
 RAPPORT.md
 CONTEXT.md
-
+CAHIER_DES_CHARGES.md
+REVUE_CODE.md
+TODO.md
+UPDATE.md
 # Claude rules (optional - can be committed for team consistency)
 .app/.rules/
 .rules/

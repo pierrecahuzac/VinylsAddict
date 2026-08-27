@@ -63,6 +63,16 @@ services:
       - db_test_data:/var/lib/postgresql/data
     restart: always
 
+  landing:
+    container_name: landing
+    build:
+      context: ./landing
+      args:
+        PUBLIC_APP_URL: ${PUBLIC_APP_URL:-https://app.vinyls-addict.eu}
+    ports:
+      - "44321:80"
+    restart: always
+
   prisma-studio:
     container_name: prisma-studio
     build: ./api 

@@ -20,7 +20,7 @@ const Album = ({
         <img 
           src={cover || "/placeholder.jpg"} 
           alt={title} 
-          className="w-full h-full object-cover transition-transform group-hover:scale-110"
+          className="w-full h-full object-cover"
         />
       </div>
 
