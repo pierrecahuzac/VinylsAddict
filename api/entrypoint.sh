@@ -6,6 +6,9 @@ echo "==============================================="
 echo "🚀 Démarrage du service API : Exécution des migrations et seeds."
 echo "==============================================="
 
+# 0. Génération du client Prisma (nécessaire quand schema monté en volume)
+npx prisma generate
+
 # 1. Migrations de la base de données
 npx prisma migrate deploy
 
