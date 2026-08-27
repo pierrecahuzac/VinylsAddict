@@ -95,25 +95,17 @@ const CollectionController = {
         return res.status(400).json({ message: "Limite de 10 photos atteinte pour cet album." });
       }
 
-      // Nettoyage EXIF/GPS : sharp supprime toutes les métadonnées par défaut
-      // On ré-encode sans withMetadata() -> image anonymisée
-      const ext = file.mimetype === 'image/png' ? 'png' : file.mimetype === 'image/webp' ? 'webp' : 'jpg';
-      const filename = `${randomUUID()}.${ext}`;
+      // Nettoyage EXIF/GPS + conversion universelle WebP : sharp supprime toutes les métadonnées par défaut
+      // On ré-encode tout en WebP sans withMetadata() -> image anonymisée + léger
+      const filename = `${randomUUID()}.webp`;
       const outputPath = path.join('uploads', filename);
 
       await fs.mkdir('uploads', { recursive: true });
 
-      let pipeline = sharp(file.buffer).rotate(); // rotate applique l'orientation EXIF puis la supprime
-      // Ré-encodage sans métadonnées
-      if (ext === 'png') {
-        pipeline = pipeline.png();
-      } else if (ext === 'webp') {
-        pipeline = pipeline.webp({ quality: 85 });
-      } else {
-        pipeline = pipeline.jpeg({ quality: 85, mozjpeg: true });
-      }
-
-      await pipeline.toFile(outputPath);
+      await sharp(file.buffer)
+        .rotate() // applique l'orientation EXIF puis la supprime
+        .webp({ quality: 85 })
+        .toFile(outputPath);
 
       const imageUrl = `/uploads/${filename}`;
 
