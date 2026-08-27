@@ -6,6 +6,9 @@ echo "==============================================="
 echo "🚀 Démarrage du service API : Exécution des migrations et seeds."
 echo "==============================================="
 
+# 0. Génération du client Prisma (nécessaire quand schema monté en volume)
+npx prisma generate
+
 # 1. Migrations de la base de données
 npx prisma migrate deploy
 
@@ -16,4 +19,4 @@ echo "✅ Bases de données migrées et seedées avec succès."
 
 # 3. Lancement du serveur en mode développement (nodemon)
 # Les arguments passés au container seront transmis à nodemon (ex: --watch ou autres flags)
-exec pnpm run nodemon "$@"
+exec npm run nodemon "$@"

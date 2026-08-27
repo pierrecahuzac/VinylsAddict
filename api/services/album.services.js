@@ -13,6 +13,10 @@ const AlbumServices = {
         vinylVariant: true,
       },
     });
+    if (result) {
+      delete result.userId;
+      delete result.creator;
+    }
     return result;
   },
   getAllAlbums: async () => {
@@ -27,7 +31,10 @@ const AlbumServices = {
         createdAt: "desc",
       },
     });
-    return result;
+    return result.map((a) => {
+      const { userId, creator, ...rest } = a;
+      return rest;
+    });
   },
   create: async (albumData, userId) => {
     // Utilisation d'une transaction pour garantir l'intégrité des données

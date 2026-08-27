@@ -77,6 +77,12 @@ export interface AlbumData {
   vinylVariant?: MetadataItem;
 }
 
+export interface CollectionImageData {
+  id: string;
+  url: string;
+  description?: string;
+}
+
 export interface UserAlbumData {
   id: string;
   price?: number;
@@ -84,6 +90,7 @@ export interface UserAlbumData {
   condition?: MetadataItem;
   album: AlbumData;
   userId?: string;
+  images?: CollectionImageData[];
 }
 
 export interface FullAlbumState {

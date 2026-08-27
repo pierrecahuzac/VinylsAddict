@@ -41,3 +41,6 @@ CONTEXT.md
 .app/.rules/
 .rules/
 INCOHERENCES.md
+# Uploads (vinyle photos)
+api/uploads/*
+!api/uploads/.gitkeep

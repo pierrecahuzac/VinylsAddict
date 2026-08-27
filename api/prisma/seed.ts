@@ -56,6 +56,21 @@ if (!passwordToHash) {
 
 const hashedPassword = await bcrypt.hash(passwordToHash, saltRounds);
 
+// Compte système : propriétaire des albums anonymisés (non connectable)
+const systemEmail = process.env.SYSTEM_USER_EMAIL || "system@va.eu";
+const systemUsername = process.env.SYSTEM_USERNAME || "Système";
+const systemPassword = await bcrypt.hash(`system-${Date.now()}-${Math.random()}`, saltRounds);
+await prisma.user.upsert({
+  where: { email: systemEmail },
+  update: { canConnect: false },
+  create: {
+    email: systemEmail,
+    username: systemUsername,
+    password: systemPassword,
+    role: "USER",
+    canConnect: false,
+  },
+});
 
 const user = await prisma.user.upsert({
   where: { email: "dev@va.eu" },

@@ -19,9 +19,11 @@ services:
     env_file:
       - ./api/.env
     command: >
-      sh -c "npx prisma migrate deploy && 
-             npx prisma db seed && 
-             pnpm run nodemon"
+      sh -c "if [ ! -f node_modules/.bin/prisma ]; then npm install; fi &&
+             npx prisma generate &&
+             npx prisma migrate deploy &&
+             npx prisma db seed &&
+             npm run nodemon"
     volumes:
       - ./api:/api
       - /api/node_modules
@@ -65,7 +67,7 @@ services:
     container_name: prisma-studio
     build: ./api 
     profiles: ["dev"]
-    command: npx prisma studio --port 5555 --browser none
+    command: npx prisma studio --port 5555 --hostname 0.0.0.0 --browser none
     environment:
       - POSTGRES_URL=postgresql://postgres:password@db:5432/vinyls_addict
     ports:
