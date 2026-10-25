@@ -6,6 +6,42 @@
 
 }
 
+:root {
+  --toastify-color-dark: #0a0a0a;
+  --toastify-color-info: #8b5cf6;
+  --toastify-color-success: #8b5cf6;
+  --toastify-color-warning: #f59e0b;
+  --toastify-color-error: #ef4444;
+  --toastify-icon-color-info: #8b5cf6;
+  --toastify-icon-color-success: #8b5cf6;
+  --toastify-icon-color-warning: #f59e0b;
+  --toastify-icon-color-error: #ef4444;
+  --toastify-color-progress-dark: #8b5cf6;
+  --toastify-color-progress-info: #8b5cf6;
+  --toastify-color-progress-success: #8b5cf6;
+  --toastify-color-progress-warning: #f59e0b;
+  --toastify-color-progress-error: #ef4444;
+  --toastify-toast-bd-radius: 16px;
+  --toastify-toast-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+  --toastify-font-family: "Montserrat", sans-serif;
+  --toastify-text-color-dark: #ffffff;
+}
+
+.Toastify__toast-theme--dark {
+  background: rgba(10, 10, 10, 0.96);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  backdrop-filter: blur(12px);
+}
+
+.Toastify__close-button {
+  color: #9ca3af;
+  opacity: 0.8;
+}
+
+.Toastify__close-button:hover {
+  color: #ffffff;
+}
+
 @layer base {
   body {
     @apply bg-black text-white min-h-screen;

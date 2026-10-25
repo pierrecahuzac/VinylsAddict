@@ -20,7 +20,7 @@ import Dashboard from "./pages/Dashboard";
 const App = () => {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer theme="dark" />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Catalog />} />
