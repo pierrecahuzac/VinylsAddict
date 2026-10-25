@@ -100,14 +100,14 @@ const MyAlbumDetails = () => {
     }
   };
 
-  const isAtLimit = (userAlbum?.images?.length || 0) >= 10;
+  const isAtLimit = (userAlbum?.images?.length || 0) >= 5;
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !userAlbum) return;
 
     if (isAtLimit) {
-      onError("Limite de 10 photos atteinte pour cet album.");
+      onError("Limite de 5 photos atteinte pour cet album.");
       e.target.value = "";
       return;
     }
@@ -313,7 +313,7 @@ const MyAlbumDetails = () => {
           <div className="bg-white/5/40 p-5 rounded-2xl border border-white/10/50 space-y-4">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <h3 className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 ${isAtLimit ? "text-[#8b5cf6]-500" : "text-gray-500"}`}>
-                <IoImagesOutline size={14} /> Mes photos ({userAlbum?.images?.length || 0}/10)
+                <IoImagesOutline size={14} /> Mes photos ({userAlbum?.images?.length || 0}/5)
               </h3>
               <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isAtLimit || uploading ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-[#8b5cf6] text-gray-900 hover:bg-amber-400 cursor-pointer"}`}>
                 {uploading ? (
@@ -349,7 +349,7 @@ const MyAlbumDetails = () => {
             </div>
 
             {isAtLimit && (
-              <p className="text-[#8b5cf6]-500/80 text-xs text-center -mt-2">Limite de 10 photos atteinte.</p>
+              <p className="text-[#8b5cf6]-500/80 text-xs text-center -mt-2">Limite de 5 photos atteinte.</p>
             )}
 
             {(!userAlbum?.images || userAlbum.images.length === 0) ? (

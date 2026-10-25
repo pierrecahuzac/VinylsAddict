@@ -134,12 +134,12 @@ const CollectionController = {
         return res.status(404).json({ message: "Album non trouvé dans votre collection." });
       }
 
-      // Limite : 10 images max par UserAlbum
+      // Limite : 5 images max par UserAlbum
       const imageCount = await prisma.collectionImage.count({
         where: { userCollectionId: userAlbumId },
       });
-      if (imageCount >= 10) {
-        return res.status(400).json({ message: "Limite de 10 photos atteinte pour cet album." });
+      if (imageCount >= 5) {
+        return res.status(400).json({ message: "Limite de 5 photos atteinte pour cet album." });
       }
 
       // Nettoyage EXIF/GPS + conversion universelle WebP : sharp supprime toutes les métadonnées par défaut
