@@ -27,16 +27,17 @@
     display: none;
   }
 
-  /* Custom scrollbar for a more premium look */
+  /* Minimal scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
+    height: 4px;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-black;
+    background: transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-800 rounded-full hover:bg-gray-700 transition-colors;
+    @apply bg-white/20 rounded-full hover:bg-white/40 transition-colors;
   }
 }
