@@ -102,6 +102,25 @@ const MyAlbumDetails = () => {
 
   const isAtLimit = (userAlbum?.images?.length || 0) >= 5;
 
+  const [updatingSigned, setUpdatingSigned] = useState(false);
+
+  const handleToggleSigned = async () => {
+    if (!userAlbum) return;
+    setUpdatingSigned(true);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}`,
+        { signed: !userAlbum.signed },
+        { withCredentials: true },
+      );
+      await refreshDetails();
+    } catch (err) {
+      onError("Erreur lors de la mise à jour.");
+    } finally {
+      setUpdatingSigned(false);
+    }
+  };
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !userAlbum) return;
@@ -249,6 +268,20 @@ const MyAlbumDetails = () => {
                 </p>
                 <p className="text-gray-100 font-medium">{userAlbum?.condition?.nameFR || "—"}</p>
               </div>
+            </div>
+            <div className="flex items-center justify-between pt-2 border-t border-white/10">
+              <p className="text-[10px] text-gray-400 font-bold uppercase">Dédicassé</p>
+              <button
+                onClick={handleToggleSigned}
+                disabled={updatingSigned}
+                className={`px-3 py-1 rounded-full text-xs font-bold border transition ${
+                  userAlbum?.signed
+                    ? "bg-amber-500/20 text-amber-400 border-amber-500/40"
+                    : "bg-white/5 text-gray-400 border-white/10"
+                } disabled:opacity-50`}
+              >
+                {updatingSigned ? "..." : userAlbum?.signed ? "Oui" : "Non"}
+              </button>
             </div>
           </div>
 
