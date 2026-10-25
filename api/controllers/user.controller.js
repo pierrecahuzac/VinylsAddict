@@ -1,29 +1,7 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import fs from "node:fs/promises";
-import path from "node:path";
-import { randomUUID } from "node:crypto";
-
-// Compte système : propriétaire des albums anonymisés après suppression de compte.
-// Non connectable (canConnect=false), jamais exposé côté front (catalog/master gardent title/artist seulement).
-const SYSTEM_USER_EMAIL = process.env.SYSTEM_USER_EMAIL || "system@va.eu";
-const SYSTEM_USERNAME = process.env.SYSTEM_USERNAME || "Système";
-
-async function getOrCreateSystemUser() {
-  const hashed = await bcryptjs.hash(randomUUID(), 10);
-  return prisma.user.upsert({
-    where: { email: SYSTEM_USER_EMAIL },
-    update: { canConnect: false },
-    create: {
-      email: SYSTEM_USER_EMAIL,
-      username: SYSTEM_USERNAME,
-      password: hashed,
-      canConnect: false,
-      role: "USER",
-    },
-  });
-}
+import { deleteUserAndAnonymize } from "../services/user.service.js";
 
 const Usercontroller = {
   signup: async (req, res) => {
@@ -485,56 +463,45 @@ const Usercontroller = {
       });
     }
   },
+  adminDeleteUser: async (req, res) => {
+    const userId = req.params.id;
+    if (!userId) {
+      return res.status(400).json({ message: "Identifiant utilisateur requis." });
+    }
+    if (userId === req.userId) {
+      return res.status(400).json({
+        message: "Utilisez la suppression de votre propre compte depuis votre profil.",
+      });
+    }
+    try {
+      const result = await deleteUserAndAnonymize(userId);
+      if (!result.ok) {
+        return res.status(result.status).json({ message: result.message });
+      }
+
+      console.log(`adminDeleteUser: ${result.albumsAnonymized} album(s) réassigné(s) au compte système pour user ${userId}`);
+
+      return res.status(200).json({
+        message: "Utilisateur supprimé, collection purgée, vinyles anonymisés.",
+        albumsAnonymized: result.albumsAnonymized,
+      });
+    } catch (error) {
+      console.error("adminDeleteUser error:", error);
+      return res.status(500).json({ error: "Erreur lors de la suppression de l'utilisateur." });
+    }
+  },
   deleteAccount: async (req, res) => {
     const userId = req.userId;
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
     }
     try {
-      const user = await prisma.user.findUnique({ where: { id: userId } });
-      if (!user) {
-        return res.status(404).json({ message: "Utilisateur introuvable" });
-      }
-      // Protection : le compte système ne peut pas être supprimé
-      if (user.email === SYSTEM_USER_EMAIL) {
-        return res.status(403).json({ message: "Le compte système ne peut pas être supprimé." });
+      const result = await deleteUserAndAnonymize(userId);
+      if (!result.ok) {
+        return res.status(result.status).json({ message: result.message });
       }
 
-      // Récupérer le compte système (créé si inexistant) avant la transaction
-      const systemUser = await getOrCreateSystemUser();
-      if (systemUser.id === userId) {
-        return res.status(403).json({ message: "Le compte système ne peut pas être supprimé." });
-      }
-
-      // Récupérer d'abord les images pour nettoyage FS (best effort) avant suppression DB
-      const userAlbums = await prisma.userAlbum.findMany({
-        where: { userId },
-        include: { images: true },
-      });
-
-      // Transaction atomique : réassignation des Albums masters au compte système + suppression du user (cascade UserAlbum/Wishlist)
-      const anonResult = await prisma.$transaction(async (tx) => {
-        const upd = await tx.album.updateMany({
-          where: { userId },
-          data: { userId: systemUser.id },
-        });
-        await tx.user.delete({ where: { id: userId } });
-        return upd;
-      });
-
-      console.log(`deleteAccount: ${anonResult.count} album(s) réassigné(s) au compte système (${systemUser.id}) pour user ${userId}`);
-
-      // Nettoyage FS après succès DB (best effort)
-      for (const ua of userAlbums) {
-        for (const img of ua.images) {
-          try {
-            const filePath = path.join(process.cwd(), img.url.replace(/^\//, ""));
-            await fs.unlink(filePath);
-          } catch (e) {
-            console.warn(`Fichier non supprimé: ${img.url}`, e.message);
-          }
-        }
-      }
+      console.log(`deleteAccount: ${result.albumsAnonymized} album(s) réassigné(s) au compte système pour user ${userId}`);
 
       res.clearCookie("va_token", {
         httpOnly: true,

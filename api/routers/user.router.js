@@ -23,6 +23,7 @@ UserRouter.get('/', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, Use
 UserRouter.get('/:id', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.getById);
 UserRouter.put('/:id/status', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.changeAuthorizationToConnect);
 UserRouter.put('/:id/role', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.changeUserRole);
+UserRouter.delete('/:id', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.adminDeleteUser);
 
 
 
