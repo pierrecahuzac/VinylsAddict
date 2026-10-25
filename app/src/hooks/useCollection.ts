@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
+import api from "../lib/axios";
 
 
 export const useCollection = () => {
@@ -11,9 +11,7 @@ export const useCollection = () => {
   const getAllMetadata = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/metadatas`,
-      );
+      const result = await api.get("/metadatas");
 
       setAllMetadata(result.data);
     } catch (error) {
@@ -26,9 +24,7 @@ export const useCollection = () => {
   const getAllGenres = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/genres`,
-      );
+      const result = await api.get("/genres");
       setGenres(result.data);
     } catch (error) {
       console.error("Erreur Genres:", error);
@@ -40,9 +36,7 @@ export const useCollection = () => {
   const getAllAlbums = async () => {
     setIsLoading(true);
     try {
-      const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/albums`,
-      );
+      const result = await api.get("/albums");
       setAlbums(result.data);
     } catch (error) {
       console.error("Erreur Albums:", error);
@@ -53,12 +47,7 @@ export const useCollection = () => {
 
   const getAllUserAlbums = async () => {
     try {
-      const result = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums`,
-        {
-          withCredentials: true,
-        },
-      );
+      const result = await api.get("/users/albums");
       
      
       setAlbums(result.data.allUserAlbums);
