@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 
 import { useCollection } from "../../hooks/useCollection.ts";
+import type { UserAlbumData } from "../../types/album.ts";
 
 import Modale from "../../components/Modale/index.tsx"; 
 import Album from "../../components/Album/index.tsx";
@@ -128,7 +129,7 @@ const MyCollection = () => {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {albums.length > 0 &&
-            albums.map((item: any) => (
+            albums.map((item: UserAlbumData) => (
               <Album
                 id={item.id}
                 key={item.id}

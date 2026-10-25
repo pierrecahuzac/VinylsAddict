@@ -36,8 +36,8 @@ const Profile = () => {
         onSuccess("Mot de passe changé avec succès");
       }
       return;
-    } catch (error: any) {
-      onError(error.response.data);
+    } catch (error) {
+      onError((error as { response?: { data?: unknown } })?.response?.data as string);
     }
   };
 
