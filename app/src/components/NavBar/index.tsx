@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import {
   IoLibraryOutline,
   IoHome,
@@ -10,36 +10,50 @@ import {
 
 import { useUser } from "../../contexts/userContext";
 
+const navItem = (active: boolean) =>
+  `flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
+    active
+      ? "text-[#f1c40f] bg-[#f1c40f]/10"
+      : "text-gray-400 hover:text-white hover:bg-white/5"
+  }`;
+
 const NavBar = () => {
   const { userIsLogged } = useUser();
+  const { pathname } = useLocation();
 
   return (
-    <nav className="w-full h-16 bg-gray-950 flex items-center justify-around text-2xl z-10 border-t border-gray-800 shrink-0">
-      <Link to="/" className="text-gray-400 hover:text-[#f1c40f] transition-colors">
-        <IoHome />
+    <nav className="w-full h-16 bg-gray-950/80 backdrop-blur-md flex items-center justify-around text-xl z-10 border-t border-gray-800/60 shrink-0">
+      <Link to="/" className={navItem(pathname === "/")}>
+        <IoHome size={20} />
+        <span className="text-[10px] font-medium">Accueil</span>
       </Link>
-      
+
       {!userIsLogged && (
         <>
-          <Link to="/login" className="text-gray-400 hover:text-[#f1c40f] transition-colors">
-            <IoLogIn />
+          <Link to="/login" className={navItem(pathname === "/login")}>
+            <IoLogIn size={20} />
+            <span className="text-[10px] font-medium">Connexion</span>
           </Link>
-          <Link to="/signup" className="text-gray-400 hover:text-[#f1c40f] transition-colors">
-            <IoPersonAddOutline />
+          <Link to="/signup" className={navItem(pathname === "/signup")}>
+            <IoPersonAddOutline size={20} />
+            <span className="text-[10px] font-medium">Inscription</span>
           </Link>
         </>
       )}
 
       {userIsLogged && (
         <>
-          <Link to="/collection" className="text-gray-400 hover:text-[#f1c40f] transition-colors">
-            <IoLibraryOutline />
+          <Link to="/collection" className={navItem(pathname.startsWith("/collection"))}>
+            <IoLibraryOutline size={20} />
+            <span className="text-[10px] font-medium">Collection</span>
           </Link>
-          <Link to="/wishlist" className="text-gray-400 hover:text-[#f1c40f] transition-colors">
-            <IoHeartOutline />
+          <Link to="/wishlist" className={navItem(pathname === "/wishlist")}>
+            <IoHeartOutline size={20} />
+            <span className="text-[10px] font-medium">Wishlist</span>
           </Link>
-          <Link to="/my-stats" className="text-gray-400 hover:text-[#f1c40f] transition-colors">
-            <IoStatsChartOutline />
+          <Link to="/my-stats" className={navItem(pathname === "/my-stats")}>
+            <IoStatsChartOutline size={20} />
+            <span className="text-[10px] font-medium">Stats</span>
           </Link>
         </>
       )}
