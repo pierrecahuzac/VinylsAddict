@@ -97,12 +97,12 @@ const MyCollection = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col gap-6 bg-gray-900 min-h-full max-w-6xl mx-auto w-full">
+    <div className="p-4 flex flex-col gap-6 bg-[#0a0a0a] min-h-full max-w-6xl mx-auto w-full">
       <header className="text-center space-y-2">
         <h1 className="text-3xl font-bold text-white">Ma Collection</h1>
         {!isLoading && (
           <div className="text-gray-400 text-sm">
-            Tu possèdes <span className="text-[#f1c40f] font-bold">{albums.length}</span> album{albums.length > 1 ? "s" : ""} au total.
+            Tu possèdes <span className="text-[#8b5cf6] font-bold">{albums.length}</span> album{albums.length > 1 ? "s" : ""} au total.
           </div>
         )}
       </header>
@@ -110,7 +110,7 @@ const MyCollection = () => {
       <main className="w-full">
         {isLoading && (
           <div className="flex justify-center py-10">
-            <p className="text-[#f1c40f] animate-pulse">Ouverture des bacs...</p>
+            <p className="text-[#8b5cf6] animate-pulse">Ouverture des bacs...</p>
           </div>
         )}
 
@@ -119,7 +119,7 @@ const MyCollection = () => {
             <p className="italic text-center">Ta collection est vide. Il est temps de chiner !</p>
             <button 
               onClick={openModaleAddNewAlbum}
-              className="text-[#f1c40f] hover:underline font-medium"
+              className="text-[#8b5cf6] hover:underline font-medium"
             >
               Ajouter mon premier disque →
             </button>
@@ -144,7 +144,7 @@ const MyCollection = () => {
       </main>
 
       <button
-        className="fixed bottom-24 right-6 w-14 h-14 bg-[#f1c40f] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
+        className="fixed bottom-24 right-6 w-14 h-14 bg-[#8b5cf6] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
         onClick={openModaleAddNewAlbum}
         aria-label="Ajouter un album"
       >

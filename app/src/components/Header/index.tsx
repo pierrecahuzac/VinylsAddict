@@ -7,7 +7,7 @@ const Header = () => {
   const { user, userIsLogged, logout } = useUser();
 
   return (
-    <header className="w-full h-16 bg-gray-950 border-b border-gray-800 shrink-0">
+    <header className="w-full h-16 bg-black border-b border-gray-800 shrink-0">
       <div className="w-full h-full px-4 flex justify-between items-center">
         <div
           className="text-primary font-black italic text-lg tracking-tighter cursor-pointer select-none"
@@ -20,7 +20,7 @@ const Header = () => {
           {user && user.role === "ADMIN" && (
             <Link
               to="/dashboard"
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1c40f] text-gray-950 font-bold text-sm hover:scale-105 transition-transform"
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-[#8b5cf6] text-gray-950 font-bold text-sm hover:scale-105 transition-transform"
             >
               <IoBuild/>
             </Link>
@@ -29,7 +29,7 @@ const Header = () => {
             <div className="flex items-center gap-3">
               <Link
                 to="/profile"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1c40f] text-gray-950 font-bold text-sm hover:scale-105 transition-transform"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-[#8b5cf6] text-gray-950 font-bold text-sm hover:scale-105 transition-transform"
               >
                 {user.username[0].toUpperCase()}
               </Link>

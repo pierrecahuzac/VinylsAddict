@@ -58,10 +58,10 @@ const Artist = () => {
         </h1>
         <div className="text-gray-400 text-sm">
           {isLoading ? (
-            <span className="animate-pulse text-[#f1c40f]">Chargement…</span>
+            <span className="animate-pulse text-[#8b5cf6]">Chargement…</span>
           ) : (
             <>
-              <span className="text-[#f1c40f] font-bold">{albums.length}</span> album{albums.length > 1 ? "s" : ""} trouvé{albums.length > 1 ? "s" : ""}
+              <span className="text-[#8b5cf6] font-bold">{albums.length}</span> album{albums.length > 1 ? "s" : ""} trouvé{albums.length > 1 ? "s" : ""}
             </>
           )}
         </div>
@@ -70,7 +70,7 @@ const Artist = () => {
       <main className="w-full">
         {isLoading ? (
           <div className="flex justify-center py-10">
-            <p className="text-[#f1c40f] animate-pulse">Chargement des vinyles…</p>
+            <p className="text-[#8b5cf6] animate-pulse">Chargement des vinyles…</p>
           </div>
         ) : albums.length === 0 ? (
           <p className="text-center text-gray-500 py-10 italic">

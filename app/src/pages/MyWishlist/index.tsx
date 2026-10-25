@@ -67,7 +67,7 @@ const MyWishlist = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col gap-6 bg-gray-900 min-h-full">
+    <div className="p-4 flex flex-col gap-6 bg-[#0a0a0a] min-h-full">
       <header className="text-center space-y-2">
         <h1 className="text-3xl font-bold text-white">Ma Wishlist</h1>
         <div className="text-gray-400 text-sm">
@@ -81,7 +81,7 @@ const MyWishlist = () => {
             <p className="italic">Ta liste d'envies est vide pour le moment.</p>
             <button 
               onClick={() => navigate("/")}
-              className="text-[#f1c40f] hover:underline font-medium"
+              className="text-[#8b5cf6] hover:underline font-medium"
             >
               Parcourir le catalogue →
             </button>
@@ -105,7 +105,7 @@ const MyWishlist = () => {
                     setAlbumToDelete(album.id);
                     setModaleDeleteFromWishlist(true);
                   }}
-                  className="absolute top-2 right-2 p-2 bg-gray-950/60 backdrop-blur-md text-gray-400 hover:text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10 border border-white/5"
+                  className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md text-gray-400 hover:text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10 border border-white/5"
                   aria-label="Supprimer de la wishlist"
                 >
                   <IoTrashOutline size={18} />
@@ -118,7 +118,7 @@ const MyWishlist = () => {
 
       {/* Modal Confirmation de suppression */}
       {modaleDeleteFromWishlist && albumToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
             <div className="flex justify-between items-center p-5 border-b border-gray-700">
               <h2 className="text-lg font-bold text-white">Supprimer l'album ?</h2>

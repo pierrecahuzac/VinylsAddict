@@ -27,7 +27,7 @@ const MyStats = () => {
   const totalValue = albums.reduce((acc: number, item: any) => acc + (item.price || 0), 0);
 
   return (
-    <div className="p-6 flex flex-col gap-8 bg-gray-900 min-h-full">
+    <div className="p-6 flex flex-col gap-8 bg-[#0a0a0a] min-h-full">
       <header className="space-y-1">
         <h1 className="text-3xl font-bold text-white uppercase tracking-tight">Tableau de bord</h1>
         <p className="text-gray-500 text-sm font-medium">L'aperçu de ta collection en chiffres.</p>
@@ -68,8 +68,8 @@ const MyStats = () => {
         </div>
 
         {/* Placeholder for future growth */}
-        <div className="bg-[#f1c40f]/5 border border-[#f1c40f]/20 p-6 rounded-3xl flex flex-col gap-4 shadow-lg mt-4 italic text-sm text-gray-400">
-           <div className="flex items-center gap-2 text-[#f1c40f]">
+        <div className="bg-[#8b5cf6]/5 border border-[#8b5cf6]/20 p-6 rounded-3xl flex flex-col gap-4 shadow-lg mt-4 italic text-sm text-gray-400">
+           <div className="flex items-center gap-2 text-[#8b5cf6]">
               <IoTrendingUpOutline size={20} />
               <span className="font-bold uppercase tracking-widest text-[10px]">Prochainement</span>
            </div>

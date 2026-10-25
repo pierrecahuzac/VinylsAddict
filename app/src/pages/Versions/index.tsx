@@ -63,17 +63,17 @@ const Versions = () => {
         {artist && (
           <button
             onClick={() => navigate(`/artist/${encodeURIComponent(artist)}`)}
-            className="text-sm text-[#f1c40f] hover:underline"
+            className="text-sm text-[#8b5cf6] hover:underline"
           >
             {artist}
           </button>
         )}
         <div className="text-gray-400 text-sm">
           {isLoading ? (
-            <span className="animate-pulse text-[#f1c40f]">Chargement…</span>
+            <span className="animate-pulse text-[#8b5cf6]">Chargement…</span>
           ) : (
             <>
-              <span className="text-[#f1c40f] font-bold">{albums.length}</span> version{albums.length > 1 ? "s" : ""} disponible{albums.length > 1 ? "s" : ""}
+              <span className="text-[#8b5cf6] font-bold">{albums.length}</span> version{albums.length > 1 ? "s" : ""} disponible{albums.length > 1 ? "s" : ""}
             </>
           )}
         </div>
@@ -82,7 +82,7 @@ const Versions = () => {
       <main className="w-full">
         {isLoading ? (
           <div className="flex justify-center py-10">
-            <p className="text-[#f1c40f] animate-pulse">Chargement des pressages…</p>
+            <p className="text-[#8b5cf6] animate-pulse">Chargement des pressages…</p>
           </div>
         ) : albums.length === 0 ? (
           <p className="text-center text-gray-500 py-10 italic">
@@ -105,12 +105,12 @@ const Versions = () => {
                 {/* Variante badge */}
                 <div className="absolute top-2 right-2 flex gap-1">
                   {item.color && (
-                    <span className="bg-gray-900/80 backdrop-blur text-white text-[10px] px-2 py-1 rounded-full border border-white/20">
+                    <span className="bg-[#0a0a0a]/80 backdrop-blur text-white text-[10px] px-2 py-1 rounded-full border border-white/20">
                       {item.color}
                     </span>
                   )}
                   {item.vinylVariant && (
-                    <span className="bg-[#f1c40f] text-gray-900 text-[10px] px-2 py-1 rounded-full font-bold">
+                    <span className="bg-[#8b5cf6] text-gray-900 text-[10px] px-2 py-1 rounded-full font-bold">
                       {item.vinylVariant.nameFR || item.vinylVariant.name}
                     </span>
                   )}

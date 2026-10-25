@@ -79,7 +79,7 @@ const Profile = () => {
         <button 
           type="button" 
           onClick={() => setChangePassword(!changePassword)} 
-          className="text-[#f1c40f] hover:underline text-left w-fit transition-colors"
+          className="text-[#8b5cf6] hover:underline text-left w-fit transition-colors"
         >
           {changePassword ? "Annuler le changement" : "Changer mon mot de passe ?"}
         </button>
@@ -90,7 +90,7 @@ const Profile = () => {
               type="password"
               placeholder="Mot de passe actuel"
               name="currentPassword"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#f1c40f] focus:outline-none"
+              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
@@ -98,7 +98,7 @@ const Profile = () => {
               type="password"
               placeholder="Nouveau mot de passe"
               name="newPassword"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#f1c40f] focus:outline-none"
+              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
@@ -106,7 +106,7 @@ const Profile = () => {
               type="password"
               placeholder="Confirmation du nouveau mot de passe"
               name="newPasswordConfirmation"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#f1c40f] focus:outline-none"
+              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPasswordConfirmation}
               onChange={(e) => setNewPasswordConfirmation(e.target.value)}
             />
@@ -142,7 +142,7 @@ const Profile = () => {
 
       {/* Modal confirmation delete */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/90 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
           <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center p-5 border-b border-gray-700">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">

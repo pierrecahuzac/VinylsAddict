@@ -69,7 +69,7 @@ const MyAlbumDetails = () => {
   if (loading)
     return (
       <div className="flex justify-center items-center h-full">
-        <p className="text-[#f1c40f] animate-pulse">Chargement de ton disque...</p>
+        <p className="text-[#8b5cf6] animate-pulse">Chargement de ton disque...</p>
       </div>
     );
 
@@ -188,7 +188,7 @@ const MyAlbumDetails = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full bg-gray-900 text-white pb-20">
+    <div className="flex flex-col min-h-full bg-[#0a0a0a] text-white pb-20">
       {/* Hero Image Section - responsive max-h sur PC */}
       <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/10] max-h-[65vh] md:max-h-[480px] overflow-hidden shadow-2xl md:rounded-b-2xl">
         <img
@@ -199,7 +199,7 @@ const MyAlbumDetails = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
         
         <div className="absolute bottom-0 left-0 p-6 w-full">
-          <p className="text-[#f1c40f] text-sm font-bold uppercase tracking-[0.2em] mb-2 drop-shadow-lg">
+          <p className="text-[#8b5cf6] text-sm font-bold uppercase tracking-[0.2em] mb-2 drop-shadow-lg">
             Ma Collection
           </p>
           <button
@@ -210,7 +210,7 @@ const MyAlbumDetails = () => {
           </button>
           <button
             onClick={() => album?.artist && navigate(`/artist/${encodeURIComponent(album.artist)}`)}
-            className="text-xl text-gray-300 drop-shadow-md hover:text-[#f1c40f] hover:underline text-left block"
+            className="text-xl text-gray-300 drop-shadow-md hover:text-[#8b5cf6] hover:underline text-left block"
           >
             {album?.artist}
           </button>
@@ -240,7 +240,7 @@ const MyAlbumDetails = () => {
                 <p className="text-[10px] text-gray-400 font-bold uppercase flex items-center gap-1">
                   <IoPricetagOutline size={12} /> Prix
                 </p>
-                <p className="text-lg font-bold text-[#f1c40f]">{userAlbum?.price ? `${userAlbum.price} €` : "—"}</p>
+                <p className="text-lg font-bold text-[#8b5cf6]">{userAlbum?.price ? `${userAlbum.price} €` : "—"}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-[10px] text-gray-400 font-bold uppercase flex items-center gap-1">
@@ -257,27 +257,27 @@ const MyAlbumDetails = () => {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className="flex items-center gap-3 text-sm">
-                <IoCalendarOutline className="text-[#f1c40f] shrink-0" size={18} />
+                <IoCalendarOutline className="text-[#8b5cf6] shrink-0" size={18} />
                 <span className="text-gray-400 mr-2 shrink-0">Sortie :</span>
                 <span className="text-gray-100 font-medium truncate">{album?.releaseDate || "—"}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <IoDiscOutline className="text-[#f1c40f] shrink-0" size={18} />
+                <IoDiscOutline className="text-[#8b5cf6] shrink-0" size={18} />
                 <span className="text-gray-400 mr-2 shrink-0">Format :</span>
                 <span className="text-gray-100 font-medium truncate">{album?.format?.name || "—"}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <IoColorPaletteOutline className="text-[#f1c40f] shrink-0" size={18} />
+                <IoColorPaletteOutline className="text-[#8b5cf6] shrink-0" size={18} />
                 <span className="text-gray-400 mr-2 shrink-0">Couleur :</span>
                 <span className="text-gray-100 font-medium truncate">{album?.color || "Standard"}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
-                <IoAlbumsOutline className="text-[#f1c40f] shrink-0" size={18} />
+                <IoAlbumsOutline className="text-[#8b5cf6] shrink-0" size={18} />
                 <span className="text-gray-400 mr-2 shrink-0">Disques :</span>
                 <span className="text-gray-100 font-medium">{album?.diskNumber || "1"}</span>
               </div>
               <div className="flex items-center gap-3 text-sm col-span-full">
-                <IoMusicalNotesOutline className="text-[#f1c40f] shrink-0" size={18} />
+                <IoMusicalNotesOutline className="text-[#8b5cf6] shrink-0" size={18} />
                 <span className="text-gray-400 mr-2 shrink-0">Pistes :</span>
                 <span className="text-gray-100 font-medium">{album?.trackCount || "—"}</span>
               </div>
@@ -293,7 +293,7 @@ const MyAlbumDetails = () => {
                 </span>
               ))}
               {album?.styles?.map((s) => (
-                <span key={s.id} className="bg-[#f1c40f]/10 text-[#f1c40f] border border-[#f1c40f]/20 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
+                <span key={s.id} className="bg-[#8b5cf6]/10 text-[#8b5cf6] border border-[#8b5cf6]/20 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
                   {s.nameFR || s.name}
                 </span>
               ))}
@@ -314,7 +314,7 @@ const MyAlbumDetails = () => {
               <h3 className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 ${isAtLimit ? "text-amber-500" : "text-gray-500"}`}>
                 <IoImagesOutline size={14} /> Mes photos ({userAlbum?.images?.length || 0}/10)
               </h3>
-              <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isAtLimit || uploading ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-[#f1c40f] text-gray-900 hover:bg-amber-400 cursor-pointer"}`}>
+              <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isAtLimit || uploading ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-[#8b5cf6] text-gray-900 hover:bg-amber-400 cursor-pointer"}`}>
                 {uploading ? (
                   <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
                 ) : (
@@ -342,7 +342,7 @@ const MyAlbumDetails = () => {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {userAlbum.images.map((img) => (
-                  <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-gray-900">
+                  <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-[#0a0a0a]">
                     <button
                       onClick={() => setLightboxUrl(getImageUrl(img.url))}
                       className="w-full h-full"
@@ -400,7 +400,7 @@ const MyAlbumDetails = () => {
 
       {/* Delete Modal */}
       {modaleDeleteAlbum && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/90 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
           <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center p-5 border-b border-gray-700">
               <h2 className="text-lg font-bold text-white">Retirer du bac ?</h2>
