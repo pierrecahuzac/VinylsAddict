@@ -142,7 +142,7 @@ const MasterAlbum = () => {
   };
 
   return (
-    <div className="relative min-h-0 text-white pb-6 overflow-hidden">
+    <div className="relative min-h-0 text-white pb-6">
       {/* Blurred backdrop */}
       <div
         className="fixed inset-0 -z-10 scale-110 blur-3xl opacity-40"
