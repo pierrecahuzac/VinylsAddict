@@ -24,9 +24,9 @@ const SearchBar = () => {
   }, [query]); 
 
   return (
-    <div className="searchBar-container">
+    <div className="flex w-full justify-center">
       <input
-        className="searchBar"
+        className="h-[30px] w-4/5 rounded-lg mx-5 pl-4"
         type="text"
         placeholder="Rechercher un artiste, un album..."
         value={query}

@@ -98,11 +98,11 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col gap-8 bg-gray-950 min-h-full">
+    <div className="p-4 flex flex-col gap-8 bg-black min-h-full">
       {/* Section En-tête */}
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold text-white flex items-center gap-2">
-          <IoBuild className="text-[#f1c40f]" />
+          <IoBuild className="text-[#8b5cf6]" />
           Administration
         </h1>
         <p className="text-gray-400 text-sm italic">
@@ -113,19 +113,19 @@ const Dashboard = () => {
         <Modale setModaleUser={setModaleUser} userId={userToModify} refresh={fetchDatas} />
       )}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-gray-900 p-4 rounded-2xl border border-gray-800 shadow-lg">
+        <div className="bg-[#0a0a0a] p-4 rounded-2xl border border-white/10 shadow-lg">
           <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold">
             Utilisateurs
           </p>
-          <p className="text-2xl font-bold text-[#f1c40f]">
+          <p className="text-2xl font-bold text-[#8b5cf6]">
             {users?.length || 0}
           </p>
         </div>
-        <div className="bg-gray-900 p-4 rounded-2xl border border-gray-800 shadow-lg">
+        <div className="bg-[#0a0a0a] p-4 rounded-2xl border border-white/10 shadow-lg">
           <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold">
             Albums
           </p>
-          <p className="text-2xl font-bold text-[#f1c40f]">
+          <p className="text-2xl font-bold text-[#8b5cf6]">
             {albums.length}
           </p>
         </div>
@@ -146,10 +146,10 @@ const Dashboard = () => {
                 onClick={() => {
                   openUserDatas(u.id);
                 }}
-                className="bg-gray-900 p-4 rounded-xl border border-gray-800 flex items-center justify-between hover:border-[#f1c40f]/50 transition-colors group"
+                className="bg-[#0a0a0a] p-4 rounded-xl border border-white/10 flex items-center justify-between hover:border-[#8b5cf6]/50 transition-colors group"
               >
                 <div className="flex flex-col">
-                  <span className="font-bold text-white group-hover:text-[#f1c40f] transition-colors">
+                  <span className="font-bold text-white group-hover:text-[#8b5cf6] transition-colors">
                     {u.username || "Sans nom"}
                   </span>
                   <span className="text-gray-500 text-xs">{u.email}</span>
@@ -159,23 +159,23 @@ const Dashboard = () => {
                   <span
                     className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
                       u.role === "ADMIN"
-                        ? "bg-[#f1c40f] text-gray-950"
-                        : "bg-gray-800 text-gray-400"
+                        ? "bg-[#8b5cf6] text-gray-950"
+                        : "bg-white/5 text-gray-400"
                     }`}
                   >
                     {u.role}
                   </span>
 
                   <div
-                    className={`h-3 w-3 rounded-full border-2 border-gray-950 ${u.canConnect ? "bg-green-500" : "bg-red-500"}`}
+                    className={`h-3 w-3 rounded-full border-2 border-white/10 ${u.canConnect ? "bg-green-500" : "bg-red-500"}`}
                     title={u.canConnect ? "Accès autorisé" : "Accès bloqué"}
                   ></div>
                 </div>
               </div>
             ))}
-          <div className="bg-gray-900 p-4 rounded-xl border border-gray-800 flex items-center justify-between border-dotted hover:border-[#f1c40f]/50 transition-colors group">
+          <div className="bg-[#0a0a0a] p-4 rounded-xl border border-white/10 flex items-center justify-between border-dotted hover:border-[#8b5cf6]/50 transition-colors group">
             <div className="flex flex-col">
-              <span className="font-bold text-white group-hover:text-[#f1c40f] transition-colors"></span>
+              <span className="font-bold text-white group-hover:text-[#8b5cf6] transition-colors"></span>
               <span className="text-gray-500 text-xs"></span>
             </div>
 
@@ -187,7 +187,7 @@ const Dashboard = () => {
               </span>
 
               <div
-                className="h-3 w-3 rounded-full border-2 border-gray-950 border-dotted"
+                className="h-3 w-3 rounded-full border-2 border-white/10 border-dotted"
               ></div>
             </div>
           </div>
@@ -253,8 +253,8 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-white/5 w-full max-w-lg rounded-2xl border border-white/10 shadow-2xl my-8">
         <div className="p-6 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
@@ -285,7 +285,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
                 <select
                   value={userData.role || "USER"}
                   onChange={(e) => handleUserRole(e.target.value)}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 >
                   <option value="ADMIN">Administrateur</option>
                   <option value="USER">Utilisateur</option>
@@ -303,7 +303,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
                 <select
                   value={userData.canConnect ? "true" : "false"}
                   onChange={(e) => handleUserConnection(e.target.value === "true")}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 >
                   <option value="true">Autorisé (Oui)</option>
                   <option value="false">Bloqué (Non)</option>
@@ -312,11 +312,11 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
             </div>
           </div>
 
-          <div className="flex gap-4 pt-4 sticky bottom-0 bg-gray-800 pb-2">
+          <div className="flex gap-4 pt-4 sticky bottom-0 bg-white/5 pb-2">
             <button
               type="button"
               onClick={() => setModaleUser(false)}
-              className="flex-1 px-4 py-4 bg-[#f1c40f] text-gray-950 font-black rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl"
+              className="flex-1 px-4 py-4 bg-[#8b5cf6] text-gray-950 font-black rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl"
             >
               FERMER
             </button>

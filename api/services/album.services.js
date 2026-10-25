@@ -13,10 +13,18 @@ const AlbumServices = {
         vinylVariant: true,
       },
     });
+    if (result) {
+      delete result.userId;
+      delete result.creator;
+    }
     return result;
   },
-  getAllAlbums: async () => {
+  getAllAlbums: async (artist, title) => {
+    const where = {};
+    if (artist) where.artist = { equals: String(artist), mode: "insensitive" };
+    if (title) where.title = { equals: String(title), mode: "insensitive" };
     const result = await prisma.album.findMany({
+      where,
       include: {
         format: true,
         genres: true,
@@ -27,7 +35,10 @@ const AlbumServices = {
         createdAt: "desc",
       },
     });
-    return result;
+    return result.map((a) => {
+      const { userId, creator, ...rest } = a;
+      return rest;
+    });
   },
   create: async (albumData, userId) => {
     // Utilisation d'une transaction pour garantir l'intégrité des données

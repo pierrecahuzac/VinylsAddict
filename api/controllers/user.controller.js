@@ -1,16 +1,45 @@
 import prisma from "../database/prismaClient.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
+import fs from "node:fs/promises";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
 
-import { NetworkResources } from "node:inspector/promises";
-import { format } from "node:path";
+// Compte système : propriétaire des albums anonymisés après suppression de compte.
+// Non connectable (canConnect=false), jamais exposé côté front (catalog/master gardent title/artist seulement).
+const SYSTEM_USER_EMAIL = process.env.SYSTEM_USER_EMAIL || "system@va.eu";
+const SYSTEM_USERNAME = process.env.SYSTEM_USERNAME || "Système";
+
+async function getOrCreateSystemUser() {
+  const hashed = await bcryptjs.hash(randomUUID(), 10);
+  return prisma.user.upsert({
+    where: { email: SYSTEM_USER_EMAIL },
+    update: { canConnect: false },
+    create: {
+      email: SYSTEM_USER_EMAIL,
+      username: SYSTEM_USERNAME,
+      password: hashed,
+      canConnect: false,
+      role: "USER",
+    },
+  });
+}
 
 const Usercontroller = {
   signup: async (req, res) => {
-    console.log("Usercontroller loaded");
     
     try {
       const { email, password, passwordConfirmation, username } = req.body;
+
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email et mot de passe requis." });
+      }
+      if (password.length < 8) {
+        return res.status(400).json({ message: "Le mot de passe doit faire au moins 8 caractères." });
+      }
+      if (password !== passwordConfirmation) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
 
       const foundUser = await prisma.user.findUnique({
         where: {
@@ -24,9 +53,6 @@ const Usercontroller = {
         });
       }
 
-      if (password !== passwordConfirmation) {
-        return res.status(400).json({ message: "Passwords do not match" });
-      }
       const hashedPassword = await bcryptjs.hash(password, 10);
       const newUser = await prisma.user.create({
         data: {
@@ -53,6 +79,9 @@ const Usercontroller = {
     
     try {
       const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email et mot de passe requis." });
+      }
       const user = await prisma.user.findUnique({
         where: {
           email,
@@ -70,6 +99,7 @@ const Usercontroller = {
         });
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
+
       if (!comparePassword) {
         return res
           .status(401)
@@ -82,7 +112,8 @@ const Usercontroller = {
       res.cookie("va_token", jwtToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
-        sameSite: "lax",
+        sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
+        partitioned: process.env.NODE_ENV !== "development",
         maxAge: 3600000,
       });
       return res
@@ -161,6 +192,7 @@ const Usercontroller = {
             },
           },
           condition: true,
+          images: true,
         },
       });
 
@@ -314,7 +346,6 @@ const Usercontroller = {
           id: userId,
         },
       });
-      console.log(user);
 
       if (user) {
         return res.status(200).json({
@@ -322,7 +353,7 @@ const Usercontroller = {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error("getUserRole error:", error);
     }
   },
   getAllUsers: async (req, res) => {
@@ -345,7 +376,7 @@ const Usercontroller = {
 
       return res.status(200).json({ users: usersWithoutPassword });
     } catch (error) {
-      console.log(error);
+      console.error("getAllUsers error:", error);
     }
   },
   getById: async (req, res) => {
@@ -371,7 +402,7 @@ const Usercontroller = {
         return res.status(200).json({ ...user });
       }
     } catch (error) {
-      console.log(error);
+      console.error("getById error:", error);
     }
   },
   changeAuthorizationToConnect: async (req, res) => {
@@ -416,8 +447,6 @@ const Usercontroller = {
   },
   changeUserRole: async (req, res) => {
     const userId = req.userId;
-    console.log(req.body);
-
     const { id } = req.params;
     const verifyUserIsAdmin = await prisma.user.findUnique({
       where: {
@@ -454,6 +483,70 @@ const Usercontroller = {
       return res.status(500).json({
         message: error,
       });
+    }
+  },
+  deleteAccount: async (req, res) => {
+    const userId = req.userId;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    try {
+      const user = await prisma.user.findUnique({ where: { id: userId } });
+      if (!user) {
+        return res.status(404).json({ message: "Utilisateur introuvable" });
+      }
+      // Protection : le compte système ne peut pas être supprimé
+      if (user.email === SYSTEM_USER_EMAIL) {
+        return res.status(403).json({ message: "Le compte système ne peut pas être supprimé." });
+      }
+
+      // Récupérer le compte système (créé si inexistant) avant la transaction
+      const systemUser = await getOrCreateSystemUser();
+      if (systemUser.id === userId) {
+        return res.status(403).json({ message: "Le compte système ne peut pas être supprimé." });
+      }
+
+      // Récupérer d'abord les images pour nettoyage FS (best effort) avant suppression DB
+      const userAlbums = await prisma.userAlbum.findMany({
+        where: { userId },
+        include: { images: true },
+      });
+
+      // Transaction atomique : réassignation des Albums masters au compte système + suppression du user (cascade UserAlbum/Wishlist)
+      const anonResult = await prisma.$transaction(async (tx) => {
+        const upd = await tx.album.updateMany({
+          where: { userId },
+          data: { userId: systemUser.id },
+        });
+        await tx.user.delete({ where: { id: userId } });
+        return upd;
+      });
+
+      console.log(`deleteAccount: ${anonResult.count} album(s) réassigné(s) au compte système (${systemUser.id}) pour user ${userId}`);
+
+      // Nettoyage FS après succès DB (best effort)
+      for (const ua of userAlbums) {
+        for (const img of ua.images) {
+          try {
+            const filePath = path.join(process.cwd(), img.url.replace(/^\//, ""));
+            await fs.unlink(filePath);
+          } catch (e) {
+            console.warn(`Fichier non supprimé: ${img.url}`, e.message);
+          }
+        }
+      }
+
+      res.clearCookie("va_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        sameSite: process.env.NODE_ENV !== "development" ? "none" : "lax",
+        partitioned: process.env.NODE_ENV !== "development",
+      });
+
+      return res.status(200).json({ message: "Compte supprimé, collection purgée, vinyles anonymisés." });
+    } catch (error) {
+      console.error("deleteAccount error:", error);
+      return res.status(500).json({ error: "Erreur lors de la suppression du compte." });
     }
   },
 };

@@ -4,7 +4,6 @@ services:
     build: ./app
     ports:
       - "55173:55173"
-    # On garde les volumes pour le dev, mais sans le :ro qui bloque pnpm/vite
     volumes:
       - ./app:/app
       - /app/node_modules
@@ -19,12 +18,12 @@ services:
       - "33000:33000"
     env_file:
       - ./api/.env
-    # En dev on peut vouloir nodemon, en prod le CMD du Dockerfile (node server.js)
-    # Pour garder un seul fichier, on laisse la commande de dev ici ou on utilise des variables
     command: >
-      sh -c "npx prisma migrate deploy && 
-             npx prisma db seed && 
-             pnpm run nodemon"
+      sh -c "if [ ! -f node_modules/.bin/prisma ]; then npm install; fi &&
+             npx prisma generate &&
+             npx prisma migrate deploy &&
+             npx prisma db seed &&
+             npm run nodemon"
     volumes:
       - ./api:/api
       - /api/node_modules
@@ -51,7 +50,6 @@ services:
       - db_data:/var/lib/postgresql/data
     restart: always
 
-  # --- Services de DEV uniquement (Profiles) ---
 
   db_test:
     container_name: db_test
@@ -65,11 +63,21 @@ services:
       - db_test_data:/var/lib/postgresql/data
     restart: always
 
+  landing:
+    container_name: landing
+    build:
+      context: ./landing
+      args:
+        PUBLIC_APP_URL: ${PUBLIC_APP_URL:-https://app.vinyls-addict.eu}
+    ports:
+      - "44321:80"
+    restart: always
+
   prisma-studio:
     container_name: prisma-studio
     build: ./api 
     profiles: ["dev"]
-    command: npx prisma studio --port 5555 --browser none
+    command: npx prisma studio --port 5555 --hostname 0.0.0.0 --browser none
     environment:
       - POSTGRES_URL=postgresql://postgres:password@db:5432/vinyls_addict
     ports:
@@ -84,3 +92,4 @@ services:
 volumes:
   db_data:
   db_test_data:
+

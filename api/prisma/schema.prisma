@@ -36,8 +36,8 @@ model Album {
   color          String?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
-  userId         String
-  creator        User          @relation("UserCreatedAlbums", fields: [userId], references: [id])
+  userId         String?
+  creator        User?         @relation("UserCreatedAlbums", fields: [userId], references: [id], onDelete: SetNull)
   diskNumber     Int?
   trackCount     Int?
   genres         Genre[]       @relation("AlbumGenres")
@@ -48,14 +48,16 @@ model Album {
   format         Format        @relation(fields: [formatId], references: [id])
   userAlbums     UserAlbum[]
   wishlistedBy   Wishlist[]
+
+  @@index([userId])
 }
 
 model UserAlbum {
   id          String            @id @default(uuid())
   userId      String
-  user        User              @relation(fields: [userId], references: [id])
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   albumId     String
-  album       Album             @relation(fields: [albumId], references: [id])
+  album       Album             @relation(fields: [albumId], references: [id], onDelete: Cascade)
   price       Float?
   boughtAt    DateTime?
   notes       String?
@@ -66,7 +68,8 @@ model UserAlbum {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  
+  @@unique([userId, albumId])
+  @@index([userId])
 }
 
 model Wishlist {
@@ -74,10 +77,10 @@ model Wishlist {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  album   Album  @relation(fields: [albumId], references: [id])
+  album   Album  @relation(fields: [albumId], references: [id], onDelete: Cascade)
   albumId String
 
   @@unique([userId, albumId])
@@ -135,7 +138,7 @@ model CollectionImage {
   url              String
   description      String?
   userCollectionId String
-  userCollection   UserAlbum @relation(fields: [userCollectionId], references: [id])
+  userCollection   UserAlbum @relation(fields: [userCollectionId], references: [id], onDelete: Cascade)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }

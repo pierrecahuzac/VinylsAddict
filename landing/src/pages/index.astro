@@ -1,0 +1,74 @@
+---
+import Base from "../layouts/Base.astro";
+const appUrl = import.meta.env.PUBLIC_APP_URL || "https://app.vinyls-addict.eu";
+---
+<Base>
+  <header class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-brand text-gray-950 grid place-items-center font-black">V</div>
+      <span class="font-bold tracking-tight">Vinyls Addict</span>
+      <span class="hidden md:inline text-xs bg-gray-800 px-2 py-1 rounded-full text-gray-400">vinyls-addict.eu</span>
+    </div>
+    <a href={`${appUrl}/login`} class="text-sm bg-white text-gray-950 px-4 py-2 rounded-full font-bold hover:bg-brand transition">Se connecter →</a>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="max-w-6xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-2 gap-10 items-center">
+      <div>
+        <p class="text-brand font-bold text-xs tracking-widest uppercase mb-3">Catalogue • Collection • Liste de souhaits</p>
+        <h1 class="text-4xl md:text-5xl font-black leading-tight">Votre collection de vinyles,<br/>enfin rangée.</h1>
+        <p class="mt-4 text-gray-400 leading-relaxed">Cataloguez vos vinyles, suivez vos prix, états et photos. Catalogue communautaire, collection privée et liste de souhaits.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href={`${appUrl}`} class="bg-brand text-gray-950 px-6 py-3 rounded-full font-black hover:bg-amber-400 transition">Ouvrir l'app →</a>
+          <a href={`${appUrl}/login`} class="bg-gray-800 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-700 transition">Créer un compte</a>
+        </div>
+        <p class="mt-3 text-xs text-gray-500">Gratuit • Données privées • Hébergé en UE • <a href={`${appUrl}`} class="underline hover:text-white">{appUrl.replace('https://','').replace('http://','')}</a></p>
+      </div>
+      <div class="relative">
+        <div class="aspect-[4/3] rounded-[2rem] bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-800 p-6 flex flex-col justify-between">
+          <div class="flex gap-3 items-center min-w-0">
+            <img src="https://static.fnac-static.com/multimedia/Images/FR/NR/d8/df/fe/16703448/1507-1/tsp20231221131222/Slaughter-Of-The-Soul-Edition-Limitee.jpg" alt="Slaughter of the Soul - At The Gates" class="w-20 h-20 rounded-xl object-cover shrink-0 border border-gray-700" loading="eager" />
+            <div class="min-w-0 flex-1">
+              <div class="font-bold leading-tight truncate">Slaughter of the Soul</div>
+              <div class="text-sm text-gray-400 truncate">At The Gates • 1995</div>
+              <div class="text-xs text-brand truncate">12" LP • rock</div>
+            </div>
+          </div>
+          <div class="bg-gray-950 rounded-xl p-4 border border-gray-800">
+            <div class="text-xs text-gray-500 uppercase tracking-widest">Aperçu app</div>
+            <div class="mt-2 h-2 bg-brand rounded w-2/3"></div>
+            <div class="mt-2 h-2 bg-gray-700 rounded w-1/2"></div>
+          </div>
+        </div>
+        <div class="absolute -bottom-4 -right-4 bg-white text-gray-950 text-xs px-3 py-2 rounded-full font-bold shadow">PWA • Offline</div>
+      </div>
+    </section>
+
+    <!-- 3 points -->
+    <section class="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-6">
+      <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+        <h3 class="font-bold">Catalogue partagé</h3>
+        <p class="text-sm text-gray-400 mt-2">Parcourez les pressages, découvrez les pochettes, les genres et les années. Chaque vinyle ajouté enrichit la discothèque commune.</p>
+      </div>
+      <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+        <h3 class="font-bold">Collection privée</h3>
+        <p class="text-sm text-gray-400 mt-2">Suivez vos exemplaires : prix, état, notes et photos. Votre collection reste personnelle et organisée.</p>
+      </div>
+      <div class="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+        <h3 class="font-bold">Liste de souhaits</h3>
+        <p class="text-sm text-gray-400 mt-2">Gardez vos envies sous le coude. Ajoutez vos prochains vinyles et retrouvez-les en un clic.</p>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 py-12 text-center border-t border-gray-900 mt-6">
+      <h2 class="text-2xl font-black">Prêt à compléter votre collection ?</h2>
+      <p class="mt-2 text-gray-400 text-sm">Votre prochain vinyle n'attend que d'être ajouté à votre discothèque.</p>
+      <a href={`${appUrl}`} class="inline-block mt-6 bg-brand text-gray-950 px-8 py-4 rounded-full font-black hover:bg-amber-400 transition">Ouvrir l'app →</a>
+    </section>
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-6 py-8 text-xs text-gray-500 text-center">
+    <span>© {new Date().getFullYear()} Vinyls Addict</span>
+  </footer>
+</Base>

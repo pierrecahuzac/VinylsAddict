@@ -7,6 +7,7 @@ import {
   type SyntheticEvent,
 } from "react";
 import axios from "axios";
+import api from "../lib/axios";
 import useToast from "../hooks/useToast";
 import { useNavigate } from "react-router";
 import * as z from "zod";
@@ -27,6 +28,7 @@ interface UserContextType {
   setEmail: (email: string) => void;
   login: (e: React.SyntheticEvent<HTMLFormElement>) => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   checkToken: () => Promise<void>;
   signup: (e: SyntheticEvent<HTMLFormElement>) => Promise<void>;
   password: string;
@@ -82,12 +84,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const checkToken = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/checkToken`,
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.get("/users/checkToken");
       if (response.status === 200 && response.data.isLogged) {
         setUser(response.data.user);
         setUserIslogged(true);
@@ -113,11 +110,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         onError("Email ou mot de passe absent.");
         return;
       }
-      const result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/login`,
-        { email, password },
-        { withCredentials: true },
-      );
+      const result = await api.post("/users/login", { email, password });
+      
       if (result.status === 200 && result.data.isLogged) {
         setUser(result.data.user);
         setUserIslogged(true);
@@ -138,9 +132,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const signup = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage("");
-console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
 
-    // Validation avec Zod
     const validation = signupSchema.safeParse({
       username,
       email,
@@ -157,12 +149,7 @@ console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`,
-        { email, password, passwordConfirmation, username },
-        { withCredentials: true },
-      );
-
+      const response = await api.post("/users/signup", { email, password, passwordConfirmation, username });
       if (response.status === 409) {
         onError("Email existant, merci de vous connecter");
       }
@@ -185,11 +172,7 @@ console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
 
   const logout = async () => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/logout`,
-        {},
-        { withCredentials: true },
-      );
+      await api.post("/users/logout", {});
       onSuccess("Déconnexion réussie");
     } catch (error) {
       console.error("Erreur lors de la déconnexion API", error);
@@ -199,6 +182,27 @@ console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
       setEmail("");
       setPassword("");
       navigate("/");
+    }
+  };
+
+  const deleteAccount = async () => {
+    try {
+      const res = await api.delete("/users/me");
+      if (res.status === 200) {
+        onSuccess("Compte supprimé. Collection purgée, vinyles anonymisés.");
+        setUser(null);
+        setUserIslogged(false);
+        setEmail("");
+        setPassword("");
+        navigate("/");
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        onError(error.response?.data?.message || "Erreur lors de la suppression du compte.");
+      } else {
+        onError("Erreur lors de la suppression du compte.");
+      }
+      throw error;
     }
   };
 
@@ -222,6 +226,7 @@ console.log(`${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`);
     errorMessage,
     signup,
     logout,
+    deleteAccount,
   };
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

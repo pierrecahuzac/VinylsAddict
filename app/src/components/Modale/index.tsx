@@ -15,8 +15,8 @@ const Modale = ({
  
   
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-gray-950/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+      <div className="bg-white/5 w-full max-w-lg rounded-2xl border border-white/10 shadow-2xl my-8">
        
         
         <form onSubmit={submitNewAlbum} className="p-6 space-y-5">
@@ -31,7 +31,7 @@ const Modale = ({
                 value={album.title}
                 onChange={changeDataAlbum}
                 required
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
             </div>
             <div className="space-y-1">
@@ -43,7 +43,7 @@ const Modale = ({
                 value={album.artist}
                 onChange={changeDataAlbum}
                 required
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
             </div>
           </div>
@@ -56,7 +56,7 @@ const Modale = ({
               name="coverUrl"
               value={album.coverUrl}
               onChange={changeDataAlbum}
-              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
             />
           </div>
           <div className="space-y-1">
@@ -67,7 +67,7 @@ const Modale = ({
               name="barCode"
               value={album.barCode?.toString() || ""}
               onChange={changeDataAlbum}
-              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
             />
           </div>
 
@@ -80,7 +80,7 @@ const Modale = ({
                 name="year"
                 value={album.year}
                 onChange={changeDataAlbum}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
             </div>
             <div className="space-y-1">
@@ -91,7 +91,7 @@ const Modale = ({
                 name="trackCount"
                 value={album.trackCount}
                 onChange={changeDataAlbum}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
             </div>
             <div className="space-y-1">
@@ -102,7 +102,7 @@ const Modale = ({
                 name="diskCount"
                 value={album.diskCount}
                 onChange={changeDataAlbum}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
             </div>
           </div>
@@ -115,7 +115,7 @@ const Modale = ({
                 name="formatId"
                 value={album.formatId}
                 onChange={changeDataAlbum}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               >
                 <option value="">-- Format --</option>
                 {allMetadata?.formats?.map((f: MetadataItem) => (
@@ -129,7 +129,7 @@ const Modale = ({
                 name="variantId"
                 value={album.variantId}
                 onChange={changeDataAlbum}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               >
                 <option value="">-- Variante --</option>
                 {allMetadata?.variants?.map((v: MetadataItem) => (
@@ -146,7 +146,7 @@ const Modale = ({
                 name="genreId"
                 value={album.genreId}
                 onChange={changeDataAlbum}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               >
                 <option value="">-- Genre --</option>
                 {allMetadata?.genres?.map((g: MetadataItem) => (
@@ -160,10 +160,10 @@ const Modale = ({
                 name="styleId"
                 value={album.styleId}
                 onChange={changeDataAlbum}
-                className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               >
                 <option value="">-- Style --</option>
-                {allMetadata?.style?.map((s: MetadataItem) => (
+                {allMetadata?.styles?.map((s: MetadataItem) => (
                   <option key={s.id} value={s.id}>{s.nameFR || s.name}</option>
                 ))}
               </select>
@@ -178,19 +178,19 @@ const Modale = ({
               name="color"
               value={album.color}
               onChange={changeDataAlbum}
-              className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+              className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
             />
           </div>
 
           {/* Collection Checkbox */}
           {!isCollectionContext && (
-            <label className="flex items-center gap-3 p-4 bg-gray-900/50 rounded-xl border border-gray-700 cursor-pointer group">
+            <label className="flex items-center gap-3 p-4 bg-[#0a0a0a]/50 rounded-xl border border-white/10 cursor-pointer group">
               <input
                 type="checkbox"
                 name="addToCollection"
                 checked={addAlbumToCollection}
                 onChange={() => setAddAlbumToCollection(!addAlbumToCollection)}
-                className="w-5 h-5 rounded border-gray-700 text-[#f1c40f] focus:ring-[#f1c40f] bg-gray-950"
+                className="w-5 h-5 rounded border-white/10 text-[#8b5cf6] focus:ring-[#8b5cf6] bg-black"
               />
               <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Je possède cet album</span>
             </label>
@@ -198,9 +198,9 @@ const Modale = ({
 
           {/* Price & Condition */}
           {(addAlbumToCollection || isCollectionContext) && (
-            <div className="grid grid-cols-2 gap-4 p-4 bg-amber-500/5 rounded-xl border border-amber-500/20">
+            <div className="grid grid-cols-2 gap-4 p-4 bg-[#8b5cf6]/5 rounded-xl border border-amber-500/20">
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-amber-500/70 ml-1">Prix (€)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Prix (€)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -208,16 +208,16 @@ const Modale = ({
                   name="price"
                   value={album.price}
                   onChange={changeDataAlbum}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 />
               </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-amber-500/70 ml-1">État</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">État</label>
                 <select
                   name="conditionId"
                   value={album.conditionId}
                   onChange={changeDataAlbum}
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#f1c40f] transition-all"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 >
                   <option value="">-- État --</option>
                   {allMetadata?.conditions?.map((c: MetadataItem) => (
@@ -229,7 +229,7 @@ const Modale = ({
           )}
 
           {/* Form Actions */}
-          <div className="flex gap-4 pt-4 sticky bottom-0 bg-gray-800 pb-2">
+          <div className="flex gap-4 pt-4 sticky bottom-0 bg-white/5 pb-2">
             <button
               type="button"
               className="flex-1 px-4 py-4 bg-gray-700 text-white font-bold rounded-2xl hover:bg-gray-600 transition-colors"
@@ -239,7 +239,7 @@ const Modale = ({
             </button>
             <button 
               type="submit" 
-              className="flex-1 px-4 py-4 bg-[#f1c40f] text-gray-950 font-black rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#f1c40f]/10"
+              className="flex-1 px-4 py-4 bg-[#8b5cf6] text-gray-950 font-black rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#8b5cf6]/10"
             >
               ENREGISTRER
             </button>
