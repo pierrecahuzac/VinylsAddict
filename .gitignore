@@ -47,3 +47,6 @@ INCOHERENCES.md
 # Uploads (vinyle photos)
 api/uploads/*
 !api/uploads/.gitkeep
+
+# Astro build output
+landing/.astro/
