@@ -3,6 +3,7 @@
 
 @theme {
   --color-primary: #8b5cf6;
+
 }
 
 @layer base {
@@ -16,6 +17,14 @@
   #root {
      
     @apply h-svh ;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 
   /* Custom scrollbar for a more premium look */
