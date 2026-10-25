@@ -48,6 +48,8 @@ model Album {
   format         Format        @relation(fields: [formatId], references: [id])
   userAlbums     UserAlbum[]
   wishlistedBy   Wishlist[]
+
+  @@index([userId])
 }
 
 model UserAlbum {
@@ -66,7 +68,8 @@ model UserAlbum {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  
+  @@unique([userId, albumId])
+  @@index([userId])
 }
 
 model Wishlist {
