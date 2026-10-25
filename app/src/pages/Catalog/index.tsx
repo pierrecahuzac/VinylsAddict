@@ -117,6 +117,35 @@ const Catalog = () => {
             Aucun album dans les derniers ajouts.
           </p>
         )}
+        {!isLoading && albums.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="text-lg font-bold text-white tracking-tight">Récemment ajoutés</h2>
+            <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
+              {albums.slice(0, 10).map((item: any) => (
+                <button
+                  key={`carousel-${item.id}`}
+                  onClick={() => openAlbumDetails(item.id)}
+                  className="snap-start shrink-0 w-36 sm:w-44 group"
+                >
+                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-gray-800 shadow-lg ring-1 ring-white/5 transition-transform group-hover:scale-[1.02]">
+                    <img
+                      src={item.coverUrl || "/placeholder.jpg"}
+                      alt={item.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  </div>
+                  <p className="mt-2 text-xs font-semibold text-white line-clamp-1 group-hover:text-[#f1c40f]">
+                    {item.title}
+                  </p>
+                  <p className="text-[10px] text-gray-400 truncate">{item.artist}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <h2 className="text-lg font-bold text-white tracking-tight">Tous les albums</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {albums.length > 0 &&
             albums?.map((item: any) => (
