@@ -48,3 +48,5 @@ api/uploads/*
 
 # Astro build output
 landing/.astro/
+
+dev-dist/
