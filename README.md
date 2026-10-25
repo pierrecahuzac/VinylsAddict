@@ -234,9 +234,20 @@ Authentification : cookie `va_token` (JWT httpOnly). Les routes admin nécessite
 
 - **API** : Render (branche `main`, Dockerfile `api/`). La commande `npm start` résout les migrations éventuellement échouées puis exécute `prisma migrate deploy` avant de lancer `server.js`.
 - **Base** : PostgreSQL managé (Neon).
-- **Frontend / landing** : build statique (Docker ou hébergeur statique).
+- **Frontend** : Vercel (dossier racine `app`, framework Vite, build `npm run build`, sortie `dist`, Node 22).
+- **Landing** : build statique Astro (`landing/`).
 
-Variables à définir en production : `POSTGRES_URL`, `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`, `NODE_ENV=production`, `SYSTEM_USER_EMAIL`, `SYSTEM_USERNAME`.
+### Vercel
+
+Le frontend et l'API sont deux domaines distincts : Vercel héberge le front, Render héberge l'API. Aucune URL de backend n'est codée en dur dans le dépôt ; elle est fournie à Vercel via une variable d'environnement de build :
+
+- `VITE_BACKEND_URL_DEV=https://<api>.onrender.com/api` (ou le domaine API personnalisé)
+
+Côté Render, ajouter le domaine Vercel à `FRONTEND_URL` (valeurs séparées par des virgules si plusieurs origines). L'API accepte les cookies cross-origin (`SameSite=None; Secure`) et CORS avec credentials.
+
+`app/vercel.json` ne contient que la fallback SPA vers `index.html` ; il ne référence pas le backend.
+
+Variables à définir en production : `POSTGRES_URL`, `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL`, `NODE_ENV=production`, `SYSTEM_USER_EMAIL`, `SYSTEM_USERNAME` côté Render, et `VITE_BACKEND_URL_DEV` côté Vercel.
 
 ## Documentation
 
