@@ -375,7 +375,7 @@ const MyAlbumDetails = () => {
                     <button
                       onClick={() => handleImageDelete(img.id)}
                       disabled={deletingImageId === img.id}
-                      className="absolute top-1.5 right-1.5 p-1.5 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50 flex items-center justify-center min-w-[28px] min-h-[28px]"
+                      className="absolute top-1.5 right-1.5 p-1.5 bg-black/60 hover:bg-red-500 text-white rounded-lg backdrop-blur-sm transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 disabled:opacity-50 flex items-center justify-center min-w-[28px] min-h-[28px]"
                       title="Supprimer cette photo"
                     >
                       {deletingImageId === img.id ? (
