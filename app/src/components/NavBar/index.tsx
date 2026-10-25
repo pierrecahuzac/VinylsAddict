@@ -22,21 +22,21 @@ const NavBar = () => {
   const { pathname } = useLocation();
 
   return (
-    <nav className="w-full h-16 bg-black/80 backdrop-blur-md flex items-center justify-around text-xl z-10 border-t border-white/10/60 shrink-0">
+    <nav className="w-full h-[60px] bg-black/90 backdrop-blur-md flex items-center justify-around text-xl z-10 border-t border-white/10/60 shrink-0">
       <Link to="/" className={navItem(pathname === "/")}>
-        <IoHome size={20} />
-        <span className="text-[10px] font-medium">Accueil</span>
+        <IoHome size={18} />
+        <span className="text-[9px] font-medium">Accueil</span>
       </Link>
 
       {!userIsLogged && (
         <>
           <Link to="/login" className={navItem(pathname === "/login")}>
-            <IoLogIn size={20} />
-            <span className="text-[10px] font-medium">Connexion</span>
+            <IoLogIn size={18} />
+            <span className="text-[9px] font-medium">Connexion</span>
           </Link>
           <Link to="/signup" className={navItem(pathname === "/signup")}>
-            <IoPersonAddOutline size={20} />
-            <span className="text-[10px] font-medium">Inscription</span>
+            <IoPersonAddOutline size={18} />
+            <span className="text-[9px] font-medium">Inscription</span>
           </Link>
         </>
       )}
@@ -44,16 +44,16 @@ const NavBar = () => {
       {userIsLogged && (
         <>
           <Link to="/collection" className={navItem(pathname.startsWith("/collection"))}>
-            <IoLibraryOutline size={20} />
-            <span className="text-[10px] font-medium">Collection</span>
+            <IoLibraryOutline size={18} />
+            <span className="text-[9px] font-medium">Collection</span>
           </Link>
           <Link to="/wishlist" className={navItem(pathname === "/wishlist")}>
-            <IoHeartOutline size={20} />
-            <span className="text-[10px] font-medium">Wishlist</span>
+            <IoHeartOutline size={18} />
+            <span className="text-[9px] font-medium">Wishlist</span>
           </Link>
           <Link to="/my-stats" className={navItem(pathname === "/my-stats")}>
-            <IoStatsChartOutline size={20} />
-            <span className="text-[10px] font-medium">Stats</span>
+            <IoStatsChartOutline size={18} />
+            <span className="text-[9px] font-medium">Stats</span>
           </Link>
         </>
       )}
