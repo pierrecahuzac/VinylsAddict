@@ -29,13 +29,17 @@ describe('CollectionController', () => {
     expect(res.status).toHaveBeenCalledWith(400);
   });
 
-  it('addAlbumToCollection returns 409 on duplicate', async () => {
+  it('addAlbumToCollection allows the same album twice', async () => {
     req.body = { price: '10' };
-    const err = new Error('duplicate');
-    err.code = 'P2002';
-    prisma.userAlbum.create.mockRejectedValue(err);
+    prisma.userAlbum.create
+      .mockResolvedValueOnce({ id: 'ua1' })
+      .mockResolvedValueOnce({ id: 'ua2' });
+
     await CollectionController.addAlbumToCollection(req, res);
-    expect(res.status).toHaveBeenCalledWith(409);
+    await CollectionController.addAlbumToCollection(req, res);
+
+    expect(prisma.userAlbum.create).toHaveBeenCalledTimes(2);
+    expect(res.status).toHaveBeenCalledWith(201);
   });
 
   it('addAlbumToCollection creates successfully', async () => {

@@ -69,8 +69,8 @@ model UserAlbum {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  @@unique([userId, albumId])
   @@index([userId])
+  @@index([albumId])
 }
 
 model Wishlist {
