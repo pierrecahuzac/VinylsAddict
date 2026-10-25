@@ -142,9 +142,9 @@ const MasterAlbum = () => {
   };
 
   return (
-    <div className="min-h-full bg-gray-900 text-white">
+    <div className="min-h-full bg-gray-900 text-white pb-20">
       {/* Cover Image with Overlay Header - responsive: square mobile, limité sur PC */}
-      <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/10] max-h-[65vh] md:max-h-[480px] overflow-hidden group md:rounded-b-2xl">
+      <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/10] max-h-[65vh] md:max-h-[480px] overflow-hidden group md:rounded-b-2xl shrink-0">
         <img
           src={masterAlbumDetails?.coverUrl || "/placeholder.jpg"}
           alt={masterAlbumDetails?.title}
