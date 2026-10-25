@@ -3,7 +3,7 @@ import { useUser } from "../../contexts/userContext";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router";
 import useToast from "../../hooks/useToast";
-import { IoBuild } from "react-icons/io5";
+import { IoBuild, IoTrashOutline, IoWarningOutline } from "react-icons/io5";
 import type { AlbumData } from "../../types/album";
 
 interface User {
@@ -200,8 +200,11 @@ const Dashboard = () => {
 };
 
 const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
+  const { user: currentUser } = useUser();
   const { onError, onSuccess } = useToast();
   const [userData, setUserData] = useState<User | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const userToFetch = async () => {
     try {      
@@ -253,6 +256,30 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
     } catch (error) {
       onError("Erreur lors du changement de rôle");
       console.error(error);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    try {
+      setDeleting(true);
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/${userId}`,
+        { withCredentials: true }
+      );
+      onSuccess("Utilisateur supprimé, données anonymisées");
+      setModaleUser(false);
+      await refresh();
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message?: string }>;
+      onError(axiosError.response?.data?.message || "Erreur lors de la suppression de l'utilisateur");
+      console.error(error);
+    } finally {
+      setDeleting(false);
+      setConfirmDelete(false);
     }
   };
 
@@ -315,6 +342,47 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
               )}
             </div>
           </div>
+
+          {currentUser?.id !== userId && (
+            <div className="border-t border-red-500/20 pt-5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-red-400 flex items-center gap-2 mb-3">
+                <IoWarningOutline size={14} /> Zone dangereuse
+              </p>
+              {confirmDelete ? (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 space-y-3">
+                  <p className="text-sm text-gray-300">
+                    Supprimer définitivement cet utilisateur ? Sa collection, sa wishlist et ses photos seront effacées. Ses vinyles créés resteront au catalogue, anonymisés.
+                  </p>
+                  <div className="flex gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDelete(false)}
+                      disabled={deleting}
+                      className="flex-1 px-4 py-3 bg-white/5 text-white font-bold rounded-xl hover:bg-white/10 transition-colors disabled:opacity-50"
+                    >
+                      ANNULER
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleDeleteUser}
+                      disabled={deleting}
+                      className="flex-1 px-4 py-3 bg-red-600 text-white font-black rounded-xl hover:bg-red-700 transition-colors disabled:opacity-50"
+                    >
+                      {deleting ? "SUPPRESSION..." : "CONFIRMER"}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleDeleteUser}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors"
+                >
+                  <IoTrashOutline size={18} /> SUPPRIMER L'UTILISATEUR
+                </button>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-4 pt-4 sticky bottom-0 bg-white/5 pb-2">
             <button
