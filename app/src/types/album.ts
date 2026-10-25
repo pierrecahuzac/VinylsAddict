@@ -86,6 +86,7 @@ export interface CollectionImageData {
 export interface UserAlbumData {
   id: string;
   price?: number;
+  signed?: boolean;
   notes?: string;
   condition?: MetadataItem;
   album: AlbumData;
