@@ -142,52 +142,60 @@ const MasterAlbum = () => {
   };
 
   return (
-    <div className="min-h-full bg-[#0a0a0a] text-white pb-20">
-      {/* Cover Image with Overlay Header - responsive: square mobile, limité sur PC */}
-      <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/9] max-h-[70vh] md:max-h-[520px] overflow-hidden md:rounded-3xl shrink-0 shadow-2xl">
-        <img
-          src={masterAlbumDetails?.coverUrl || "/placeholder.jpg"}
-          alt={masterAlbumDetails?.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent opacity-90" />
-        
-        <div className="absolute bottom-0 left-0 p-6 w-full">
+    <div className="relative min-h-full text-white pb-20 overflow-hidden">
+      {/* Blurred backdrop */}
+      <div
+        className="fixed inset-0 -z-10 scale-110 blur-3xl opacity-40"
+        style={{
+          backgroundImage: `url(${masterAlbumDetails?.coverUrl || "/placeholder.jpg"})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 -z-10 bg-black/70" />
+
+      <div className="relative z-10 p-6 space-y-8 max-w-3xl mx-auto w-full flex flex-col items-center">
+        {/* Artwork */}
+        <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0">
+          <img
+            src={masterAlbumDetails?.coverUrl || "/placeholder.jpg"}
+            alt={masterAlbumDetails?.title}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        {/* Title / Artist */}
+        <div className="text-center space-y-2">
           <button
             onClick={() => masterAlbumDetails?.title && navigate(`/versions/${encodeURIComponent(masterAlbumDetails.title)}`)}
-            className="text-3xl font-bold leading-tight drop-shadow-lg hover:underline text-left"
+            className="text-2xl sm:text-3xl font-bold leading-tight hover:text-[#8b5cf6] transition-colors"
           >
             {masterAlbumDetails?.title}
           </button>
           <button
             onClick={() => masterAlbumDetails?.artist && navigate(`/artist/${encodeURIComponent(masterAlbumDetails.artist)}`)}
-            className="text-xl text-[#8b5cf6] font-semibold drop-shadow-md mt-1 hover:underline text-left block"
+            className="text-[#8b5cf6] font-semibold text-lg hover:underline block mx-auto"
           >
             {masterAlbumDetails?.artist}
           </button>
         </div>
-      </div>
 
-      {/* Main Content Area - centré et limité sur PC */}
-      <div className="p-6 space-y-8 max-w-5xl mx-auto w-full">
-        
-        {/* Action Buttons */}
+        {/* Actions */}
         {userIsLogged && (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-wrap justify-center gap-3 w-full">
             <button
               onClick={() => setModalAddAlbumToUserCollection(true)}
-              className="flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all shadow-lg bg-[#8b5cf6] text-white hover:bg-[#7c3aed] active:scale-95"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-lg bg-[#8b5cf6] text-white hover:bg-[#7c3aed] active:scale-95"
             >
               <IoLibraryOutline size={20} />
               <span className="text-sm">Posséder</span>
             </button>
-
             <button
               onClick={isWishlisted ? deleteAlbumFromWishlist : addAlbumToWishlist}
-              className={`flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all shadow-lg ${
-                isWishlisted 
-                ? "bg-red-500/20 text-red-500 border border-red-500/50 hover:bg-red-500/30" 
-                : "bg-red-500 text-white hover:bg-red-400 active:scale-95"
+              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-lg ${
+                isWishlisted
+                ? "bg-red-500/20 text-red-500 border border-red-500/50 hover:bg-red-500/30"
+                : "bg-white/10 text-white hover:bg-white/20 active:scale-95"
               }`}
             >
               {isWishlisted ? <IoHeart size={20} /> : <IoHeartOutline size={20} />}
@@ -196,17 +204,16 @@ const MasterAlbum = () => {
           </div>
         )}
 
-        {/* Info Grid */}
-        <div className="grid grid-cols-1 gap-6 bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/10 shadow-xl">
-          <div className="flex items-start gap-4">
+        {/* Info */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 flex items-start gap-4">
             <IoCalendarOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
             <div>
-              <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Année de sortie</p>
+              <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Année</p>
               <p className="text-gray-100">{masterAlbumDetails?.releaseDate || "Non précisée"}</p>
             </div>
           </div>
-
-          <div className="flex items-start gap-4">
+          <div className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 flex items-start gap-4">
             <IoDiscOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
             <div>
               <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Format</p>
@@ -215,9 +222,8 @@ const MasterAlbum = () => {
               </p>
             </div>
           </div>
-
           {masterAlbumDetails?.color && (
-            <div className="flex items-start gap-4">
+            <div className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 flex items-start gap-4">
               <IoDiscOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Couleur</p>
@@ -225,44 +231,41 @@ const MasterAlbum = () => {
               </div>
             </div>
           )}
-
-          <div className="flex items-start gap-4">
+          <div className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 flex items-start gap-4">
             <IoBarcodeOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
             <div>
               <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Code-barre</p>
               <p className="text-gray-100 font-mono text-sm">{masterAlbumDetails?.barCode || "Non disponible"}</p>
             </div>
           </div>
+        </div>
 
-          {/* Tags Section */}
-          <div className="pt-4 border-t border-gray-700 space-y-4">
-            <div className="flex flex-wrap gap-2">
-              {masterAlbumDetails?.genres?.map((g) => (
-                <span key={g.id} className="bg-gray-700 text-gray-300 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
-                  {g.nameFR || g.name}
-                </span>
-              ))}
-              {masterAlbumDetails?.styles?.map((s) => (
-                <span key={s.id} className="bg-[#0a0a0a] text-[#8b5cf6] border border-[#8b5cf6]/30 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
-                  {s.nameFR || s.name}
-                </span>
-              ))}
-            </div>
-          </div>
+        {/* Tags */}
+        <div className="flex flex-wrap justify-center gap-2">
+          {masterAlbumDetails?.genres?.map((g) => (
+            <span key={g.id} className="bg-white/10 text-gray-300 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
+              {g.nameFR || g.name}
+            </span>
+          ))}
+          {masterAlbumDetails?.styles?.map((s) => (
+            <span key={s.id} className="bg-[#8b5cf6]/20 text-[#8b5cf6] border border-[#8b5cf6]/30 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
+              {s.nameFR || s.name}
+            </span>
+          ))}
         </div>
       </div>
 
-      {/* Modal - Improved UI */}
+      {/* Modal */}
       {modalAddAlbumToUserCollection && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
-            <div className="flex justify-between items-center p-5 border-b border-gray-700">
+          <div className="bg-[#18181b] w-full max-w-sm rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+            <div className="flex justify-between items-center p-5 border-b border-white/10">
               <h2 className="text-lg font-bold text-white">Ajouter à ma collection</h2>
               <button onClick={() => setModalAddAlbumToUserCollection(false)} className="text-gray-400 hover:text-white transition-colors">
                 <IoCloseOutline size={24} />
               </button>
             </div>
-            
+
             <form onSubmit={addAlbumToUserCollection} className="p-6 space-y-5">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-300">Prix d'achat (€)</label>
@@ -272,7 +275,7 @@ const MasterAlbum = () => {
                   value={albumAddedToCollection.price}
                   onChange={changeDataAlbum}
                   placeholder="20.00"
-                  className="w-full bg-[#0a0a0a] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
                 />
               </div>
 
@@ -283,7 +286,7 @@ const MasterAlbum = () => {
                   value={albumAddedToCollection.conditionId}
                   onChange={changeDataAlbum}
                   required
-                  className="w-full bg-[#0a0a0a] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
                 >
                   <option value="">-- Choisir un état --</option>
                   {allMetadata?.conditions?.map((c: any) => (
