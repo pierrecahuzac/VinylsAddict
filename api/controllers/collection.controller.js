@@ -49,6 +49,37 @@ const CollectionController = {
       return res.status(500).json({ error: "Impossible d'ajouter l'album à la collection." });
     }
   },
+  updateAlbumInCollection: async (req, res) => {
+    try {
+      const { userAlbumId } = req.params;
+      const userId = req.userId;
+      const { price, conditionId } = req.body;
+
+      const existing = await prisma.userAlbum.findUnique({ where: { id: userAlbumId } });
+      if (!existing || existing.userId !== userId) {
+        return res.status(404).json({ message: "Album non trouvé dans votre collection." });
+      }
+
+      const parsedPrice = price === undefined ? existing.price : (price ? Number(price) : null);
+      if (parsedPrice !== null && Number.isNaN(parsedPrice)) {
+        return res.status(400).json({ message: "price doit être numérique." });
+      }
+
+      const updated = await prisma.userAlbum.update({
+        where: { id: userAlbumId },
+        data: {
+          price: parsedPrice,
+          conditionId: conditionId === undefined ? existing.conditionId : (conditionId ? conditionId : null),
+        },
+      });
+
+      return res.status(200).json({ message: "Album mis à jour.", userAlbum: updated });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Erreur serveur lors de la mise à jour." });
+    }
+  },
+
   deleteAlbumFromCollection: async (req, res) => {
     try {
       const { userAlbumId } = req.params;

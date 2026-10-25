@@ -7,6 +7,7 @@ const CollectionRouter = Router();
 
 CollectionRouter.post('/:albumId', AuthMiddleWare.checkToken, CollectionController.addAlbumToCollection);
 CollectionRouter.delete('/:userAlbumId', AuthMiddleWare.checkToken, CollectionController.deleteAlbumFromCollection);
+CollectionRouter.put('/:userAlbumId', AuthMiddleWare.checkToken, CollectionController.updateAlbumInCollection);
 CollectionRouter.post('/:userAlbumId/images', AuthMiddleWare.checkToken, upload.single('image'), CollectionController.addImageToUserAlbum);
 CollectionRouter.delete('/:userAlbumId/images/:imageId', AuthMiddleWare.checkToken, CollectionController.deleteImageFromUserAlbum);
 
