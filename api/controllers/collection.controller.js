@@ -15,14 +15,30 @@ const CollectionController = {
       const { albumId } = req.params;
       const { price, conditionId } = req.body;
 
-      const userAlbum = await prisma.userAlbum.create({
+      if (!albumId) {
+        return res.status(400).json({ message: "albumId requis." });
+      }
+      const parsedPrice = price ? Number(price) : null;
+      if (parsedPrice !== null && Number.isNaN(parsedPrice)) {
+        return res.status(400).json({ message: "price doit être numérique." });
+      }
+
+      let userAlbum;
+      try {
+        userAlbum = await prisma.userAlbum.create({
         data: {
           user: { connect: { id: userId } },
           album: { connect: { id: albumId } },
-          price: price ? parseFloat(price) : null,
+          price: parsedPrice,
           condition: conditionId ? { connect: { id: conditionId } } : undefined,
         },
       });
+      } catch (error) {
+        if (error?.code === 'P2002') {
+          return res.status(409).json({ message: "Cet album est déjà dans votre collection." });
+        }
+        throw error;
+      }
   
 
       return res

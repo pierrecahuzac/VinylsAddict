@@ -84,7 +84,20 @@ const AlbumController = {
         trackCount,
         formatId,
       } = req.body;
-   
+
+      if (!title || !artist || !formatId) {
+        return res.status(400).json({ message: "title, artist et formatId sont requis." });
+      }
+      const parsedYear = year ? Number(year) : null;
+      const parsedDiskNumber = diskNumber ? Number(diskNumber) : null;
+      const parsedTrackCount = trackCount ? Number(trackCount) : null;
+      if ([parsedYear, parsedDiskNumber, parsedTrackCount].some((v) => v !== null && Number.isNaN(v))) {
+        return res.status(400).json({ message: "year, diskNumber et trackCount doivent être numériques." });
+      }
+      const parsedPrice = price ? Number(price) : null;
+      if (parsedPrice !== null && Number.isNaN(parsedPrice)) {
+        return res.status(400).json({ message: "price doit être numérique." });
+      }
 
       // Utilisation d'une transaction pour garantir l'intégrité des données
       const result = await prisma.$transaction(async (tx) => {
@@ -94,11 +107,11 @@ const AlbumController = {
             title,
             color,
             artist,
-            releaseDate: year ? parseInt(year) : null,
+            releaseDate: parsedYear,
             coverUrl,
             creator: { connect: { id: userId } },
-            diskNumber: diskNumber ? parseInt(diskNumber) : null,
-            trackCount: trackCount ? parseInt(trackCount) : null,
+            diskNumber: parsedDiskNumber,
+            trackCount: parsedTrackCount,
             vinylVariant: variantId
               ? { connect: { id: variantId } }
               : undefined,
@@ -116,7 +129,7 @@ const AlbumController = {
             data: {
               userId: userId,
               albumId: album.id,
-              price: price ? parseFloat(price) : null,
+              price: parsedPrice,
               // Si conditionId est vide, on ne connecte rien
               conditionId: conditionId ? conditionId : null,
             },
