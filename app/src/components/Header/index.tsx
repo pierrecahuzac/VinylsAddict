@@ -7,7 +7,7 @@ const Header = () => {
   const { user, userIsLogged, logout } = useUser();
 
   return (
-    <header className="w-full h-16 bg-black border-b border-gray-800 shrink-0">
+    <header className="w-full h-16 bg-black border-b border-white/10 shrink-0">
       <div className="w-full h-full px-4 flex justify-between items-center">
         <div
           className="text-primary font-black italic text-lg tracking-tighter cursor-pointer select-none"

@@ -113,7 +113,7 @@ const Dashboard = () => {
         <Modale setModaleUser={setModaleUser} userId={userToModify} refresh={fetchDatas} />
       )}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-[#0a0a0a] p-4 rounded-2xl border border-gray-800 shadow-lg">
+        <div className="bg-[#0a0a0a] p-4 rounded-2xl border border-white/10 shadow-lg">
           <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold">
             Utilisateurs
           </p>
@@ -121,7 +121,7 @@ const Dashboard = () => {
             {users?.length || 0}
           </p>
         </div>
-        <div className="bg-[#0a0a0a] p-4 rounded-2xl border border-gray-800 shadow-lg">
+        <div className="bg-[#0a0a0a] p-4 rounded-2xl border border-white/10 shadow-lg">
           <p className="text-gray-500 text-xs uppercase tracking-wider font-semibold">
             Albums
           </p>
@@ -146,7 +146,7 @@ const Dashboard = () => {
                 onClick={() => {
                   openUserDatas(u.id);
                 }}
-                className="bg-[#0a0a0a] p-4 rounded-xl border border-gray-800 flex items-center justify-between hover:border-[#8b5cf6]/50 transition-colors group"
+                className="bg-[#0a0a0a] p-4 rounded-xl border border-white/10 flex items-center justify-between hover:border-[#8b5cf6]/50 transition-colors group"
               >
                 <div className="flex flex-col">
                   <span className="font-bold text-white group-hover:text-[#8b5cf6] transition-colors">
@@ -167,13 +167,13 @@ const Dashboard = () => {
                   </span>
 
                   <div
-                    className={`h-3 w-3 rounded-full border-2 border-gray-950 ${u.canConnect ? "bg-green-500" : "bg-red-500"}`}
+                    className={`h-3 w-3 rounded-full border-2 border-white/10 ${u.canConnect ? "bg-green-500" : "bg-red-500"}`}
                     title={u.canConnect ? "Accès autorisé" : "Accès bloqué"}
                   ></div>
                 </div>
               </div>
             ))}
-          <div className="bg-[#0a0a0a] p-4 rounded-xl border border-gray-800 flex items-center justify-between border-dotted hover:border-[#8b5cf6]/50 transition-colors group">
+          <div className="bg-[#0a0a0a] p-4 rounded-xl border border-white/10 flex items-center justify-between border-dotted hover:border-[#8b5cf6]/50 transition-colors group">
             <div className="flex flex-col">
               <span className="font-bold text-white group-hover:text-[#8b5cf6] transition-colors"></span>
               <span className="text-gray-500 text-xs"></span>
@@ -187,7 +187,7 @@ const Dashboard = () => {
               </span>
 
               <div
-                className="h-3 w-3 rounded-full border-2 border-gray-950 border-dotted"
+                className="h-3 w-3 rounded-full border-2 border-white/10 border-dotted"
               ></div>
             </div>
           </div>
