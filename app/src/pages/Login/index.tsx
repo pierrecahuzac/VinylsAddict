@@ -6,7 +6,7 @@ const Login = () => {
   const { email, setEmail, login, password, setPassword } = useUser();
   const [isVisible, setIsVisible] = useState(false);
   return (
-    <div className="flex flex-col items-center justify-center min-h-full p-6 bg-gray-900">
+    <div className="flex flex-col items-center justify-center min-h-full p-6 bg-[#0a0a0a]">
       <div className="w-full max-w-sm space-y-8">
         <header className="text-center space-y-2">
           <h1 className="text-4xl font-black text-white tracking-tighter italic">

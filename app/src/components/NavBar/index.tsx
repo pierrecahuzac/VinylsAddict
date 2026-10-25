@@ -22,7 +22,7 @@ const NavBar = () => {
   const { pathname } = useLocation();
 
   return (
-    <nav className="w-full h-16 bg-gray-950/80 backdrop-blur-md flex items-center justify-around text-xl z-10 border-t border-gray-800/60 shrink-0">
+    <nav className="w-full h-16 bg-black/80 backdrop-blur-md flex items-center justify-around text-xl z-10 border-t border-gray-800/60 shrink-0">
       <Link to="/" className={navItem(pathname === "/")}>
         <IoHome size={20} />
         <span className="text-[10px] font-medium">Accueil</span>

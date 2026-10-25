@@ -7,7 +7,7 @@
 
 @layer base {
   body {
-    @apply bg-gray-950 text-white min-h-screen;
+    @apply bg-black text-white min-h-screen;
     font-family: 'Montserrat', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -24,7 +24,7 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-950;
+    @apply bg-black;
   }
 
   ::-webkit-scrollbar-thumb {

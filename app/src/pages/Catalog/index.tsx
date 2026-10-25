@@ -167,7 +167,7 @@ const Catalog = () => {
               className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-gray-800/30 border-2 border-dashed border-gray-700 hover:border-[#8b5cf6] hover:bg-gray-800/60 rounded-xl transition-all group overflow-hidden"
               onClick={openModaleAddNewAlbum}
             >
-              <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-500 group-hover:text-[#8b5cf6] group-hover:scale-110 transition-all">
+              <div className="w-10 h-10 rounded-full bg-[#0a0a0a] flex items-center justify-center text-gray-500 group-hover:text-[#8b5cf6] group-hover:scale-110 transition-all">
                 <IoAddOutline size={24} />
               </div>
               <span className="font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest text-xs">

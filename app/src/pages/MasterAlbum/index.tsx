@@ -142,7 +142,7 @@ const MasterAlbum = () => {
   };
 
   return (
-    <div className="min-h-full bg-gray-900 text-white pb-20">
+    <div className="min-h-full bg-[#0a0a0a] text-white pb-20">
       {/* Cover Image with Overlay Header - responsive: square mobile, limité sur PC */}
       <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/9] max-h-[70vh] md:max-h-[520px] overflow-hidden md:rounded-3xl shrink-0 shadow-2xl">
         <img
@@ -243,7 +243,7 @@ const MasterAlbum = () => {
                 </span>
               ))}
               {masterAlbumDetails?.styles?.map((s) => (
-                <span key={s.id} className="bg-gray-900 text-[#8b5cf6] border border-[#8b5cf6]/30 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
+                <span key={s.id} className="bg-[#0a0a0a] text-[#8b5cf6] border border-[#8b5cf6]/30 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
                   {s.nameFR || s.name}
                 </span>
               ))}
@@ -254,7 +254,7 @@ const MasterAlbum = () => {
 
       {/* Modal - Improved UI */}
       {modalAddAlbumToUserCollection && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/80 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
           <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
             <div className="flex justify-between items-center p-5 border-b border-gray-700">
               <h2 className="text-lg font-bold text-white">Ajouter à ma collection</h2>
@@ -272,7 +272,7 @@ const MasterAlbum = () => {
                   value={albumAddedToCollection.price}
                   onChange={changeDataAlbum}
                   placeholder="20.00"
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                  className="w-full bg-[#0a0a0a] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
                 />
               </div>
 
@@ -283,7 +283,7 @@ const MasterAlbum = () => {
                   value={albumAddedToCollection.conditionId}
                   onChange={changeDataAlbum}
                   required
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                  className="w-full bg-[#0a0a0a] border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
                 >
                   <option value="">-- Choisir un état --</option>
                   {allMetadata?.conditions?.map((c: any) => (

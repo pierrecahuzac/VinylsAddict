@@ -97,7 +97,7 @@ const MyCollection = () => {
   };
 
   return (
-    <div className="p-4 flex flex-col gap-6 bg-gray-900 min-h-full max-w-6xl mx-auto w-full">
+    <div className="p-4 flex flex-col gap-6 bg-[#0a0a0a] min-h-full max-w-6xl mx-auto w-full">
       <header className="text-center space-y-2">
         <h1 className="text-3xl font-bold text-white">Ma Collection</h1>
         {!isLoading && (

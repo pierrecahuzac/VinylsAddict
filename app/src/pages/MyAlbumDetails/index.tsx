@@ -188,7 +188,7 @@ const MyAlbumDetails = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full bg-gray-900 text-white pb-20">
+    <div className="flex flex-col min-h-full bg-[#0a0a0a] text-white pb-20">
       {/* Hero Image Section - responsive max-h sur PC */}
       <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/10] max-h-[65vh] md:max-h-[480px] overflow-hidden shadow-2xl md:rounded-b-2xl">
         <img
@@ -342,7 +342,7 @@ const MyAlbumDetails = () => {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {userAlbum.images.map((img) => (
-                  <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-gray-900">
+                  <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-[#0a0a0a]">
                     <button
                       onClick={() => setLightboxUrl(getImageUrl(img.url))}
                       className="w-full h-full"
@@ -400,7 +400,7 @@ const MyAlbumDetails = () => {
 
       {/* Delete Modal */}
       {modaleDeleteAlbum && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-950/90 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
           <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center p-5 border-b border-gray-700">
               <h2 className="text-lg font-bold text-white">Retirer du bac ?</h2>

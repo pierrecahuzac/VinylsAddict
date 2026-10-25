@@ -105,7 +105,7 @@ const Versions = () => {
                 {/* Variante badge */}
                 <div className="absolute top-2 right-2 flex gap-1">
                   {item.color && (
-                    <span className="bg-gray-900/80 backdrop-blur text-white text-[10px] px-2 py-1 rounded-full border border-white/20">
+                    <span className="bg-[#0a0a0a]/80 backdrop-blur text-white text-[10px] px-2 py-1 rounded-full border border-white/20">
                       {item.color}
                     </span>
                   )}
