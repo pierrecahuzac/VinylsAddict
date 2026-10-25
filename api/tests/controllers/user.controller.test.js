@@ -8,6 +8,7 @@ vi.mock('../../database/prismaClient.js', () => ({
   default: {
     user: {
       findUnique: vi.fn(),
+      create: vi.fn(),
     },
   },
 }));
@@ -62,5 +63,52 @@ describe('Usercontroller.login', () => {
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ message: "Combinaison email / password incorrecte" });
+  });
+});
+
+
+describe('Usercontroller.signup', () => {
+  let req, res;
+
+  beforeEach(() => {
+    req = {
+      body: { email: 'new@example.com', password: 'Password1!', passwordConfirmation: 'Password1!', username: 'newuser' },
+    };
+    res = {
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn(),
+    };
+    vi.clearAllMocks();
+  });
+
+  it('retourne 400 si email/password manquants', async () => {
+    req.body = { email: '', password: '' };
+    await Usercontroller.signup(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('retourne 400 si mot de passe trop court', async () => {
+    req.body = { email: 'a@b.com', password: 'short', passwordConfirmation: 'short', username: 'u' };
+    await Usercontroller.signup(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('retourne 400 si les mots de passe ne correspondent pas', async () => {
+    req.body = { email: 'a@b.com', password: 'Password1!', passwordConfirmation: 'Password2!', username: 'u' };
+    await Usercontroller.signup(req, res);
+    expect(res.status).toHaveBeenCalledWith(400);
+  });
+
+  it('retourne 409 si l\'email existe déjà', async () => {
+    prisma.user.findUnique.mockResolvedValue({ id: '1', email: 'new@example.com' });
+    await Usercontroller.signup(req, res);
+    expect(res.status).toHaveBeenCalledWith(409);
+  });
+
+  it('crée un utilisateur et retourne 201', async () => {
+    prisma.user.findUnique.mockResolvedValue(null);
+    prisma.user.create.mockResolvedValue({ id: '2', email: 'new@example.com', username: 'newuser' });
+    await Usercontroller.signup(req, res);
+    expect(res.status).toHaveBeenCalledWith(201);
   });
 });
