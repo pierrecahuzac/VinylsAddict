@@ -13,7 +13,7 @@ const CollectionController = {
 
     try {
       const { albumId } = req.params;
-      const { price, conditionId } = req.body;
+      const { price, conditionId, signed } = req.body;
 
       if (!albumId) {
         return res.status(400).json({ message: "albumId requis." });
@@ -30,6 +30,7 @@ const CollectionController = {
           user: { connect: { id: userId } },
           album: { connect: { id: albumId } },
           price: parsedPrice,
+          signed: signed === true || signed === "true" || signed === 1 || signed === "1",
           condition: conditionId ? { connect: { id: conditionId } } : undefined,
         },
       });
@@ -53,7 +54,7 @@ const CollectionController = {
     try {
       const { userAlbumId } = req.params;
       const userId = req.userId;
-      const { price, conditionId } = req.body;
+      const { price, conditionId, signed } = req.body;
 
       const existing = await prisma.userAlbum.findUnique({ where: { id: userAlbumId } });
       if (!existing || existing.userId !== userId) {
@@ -70,6 +71,7 @@ const CollectionController = {
         data: {
           price: parsedPrice,
           conditionId: conditionId === undefined ? existing.conditionId : (conditionId ? conditionId : null),
+          signed: signed === undefined ? existing.signed : (signed === true || signed === "true" || signed === 1 || signed === "1"),
         },
       });
 

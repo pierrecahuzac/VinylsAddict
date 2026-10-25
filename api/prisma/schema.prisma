@@ -62,6 +62,7 @@ model UserAlbum {
   boughtAt    DateTime?
   notes       String?
   copyNumber  String?
+  signed      Boolean   @default(false)
   conditionId String?
   condition   Condition?        @relation(fields: [conditionId], references: [id])
   images      CollectionImage[]

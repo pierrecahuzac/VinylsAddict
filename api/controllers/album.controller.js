@@ -79,6 +79,7 @@ const AlbumController = {
         color,
         price,
         addAlbumToCollection,
+        signed,
         diskNumber,
         trackCount,
         formatId,
@@ -129,6 +130,7 @@ const AlbumController = {
               userId: userId,
               albumId: album.id,
               price: parsedPrice,
+              signed: signed === true || signed === "true" || signed === 1 || signed === "1",
               // Si conditionId est vide, on ne connecte rien
               conditionId: conditionId ? conditionId : null,
             },
