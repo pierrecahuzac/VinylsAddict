@@ -6,7 +6,7 @@ const Layout = () => {
   return (
     <div className="flex flex-col h-svh w-full  bg-black  shadow-2xl">
       <Header />      
-      <main className="flex-1 w-full overflow-y-auto bg-[#0a0a0a]">        
+      <main className="flex-1 w-full overflow-y-auto bg-[#0a0a0a] scrollbar-hide">        
         <Outlet />
       </main>
       <NavBar />
