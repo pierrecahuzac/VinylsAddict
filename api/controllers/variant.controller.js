@@ -1,9 +1,9 @@
-import prisma from "../database/prismaClient.js";
+import { VariantService } from "../services/variant.service.js";
 
 const VariantController = {
   getAllVariants: async (req, res) => {
     try {
-      const variants = await prisma.vinylVariant.findMany();
+      const variants = await VariantService.getAll();
       return res.status(200).json(variants);
     } catch (error) {
       console.error(error);
@@ -12,7 +12,7 @@ const VariantController = {
   },
   getVariantById: async (req, res) => {
     try {
-      const variant = await prisma.vinylVariant.findUnique({ where: { id: req.params.id } });
+      const variant = await VariantService.getById(req.params.id);
       if (!variant) {
         return res.status(404).json({ message: "Variante non trouvée." });
       }
@@ -28,7 +28,7 @@ const VariantController = {
       if (!nameEN) {
         return res.status(400).json({ message: "nameEN est requis." });
       }
-      const variant = await prisma.vinylVariant.create({ data: { nameEN, nameFR } });
+      const variant = await VariantService.create(nameEN, nameFR);
       return res.status(201).json(variant);
     } catch (error) {
       if (error?.code === "P2002") {
@@ -41,16 +41,13 @@ const VariantController = {
   updateVariant: async (req, res) => {
     try {
       const { nameEN, nameFR } = req.body;
-      const existing = await prisma.vinylVariant.findUnique({ where: { id: req.params.id } });
+      const existing = await VariantService.getById(req.params.id);
       if (!existing) {
         return res.status(404).json({ message: "Variante non trouvée." });
       }
-      const variant = await prisma.vinylVariant.update({
-        where: { id: req.params.id },
-        data: {
-          nameEN: nameEN ?? existing.nameEN,
-          nameFR: nameFR === undefined ? existing.nameFR : nameFR,
-        },
+      const variant = await VariantService.update(req.params.id, {
+        nameEN: nameEN ?? existing.nameEN,
+        nameFR: nameFR === undefined ? existing.nameFR : nameFR,
       });
       return res.status(200).json(variant);
     } catch (error) {
@@ -63,11 +60,11 @@ const VariantController = {
   },
   deleteVariant: async (req, res) => {
     try {
-      const existing = await prisma.vinylVariant.findUnique({ where: { id: req.params.id } });
+      const existing = await VariantService.getById(req.params.id);
       if (!existing) {
         return res.status(404).json({ message: "Variante non trouvée." });
       }
-      await prisma.vinylVariant.delete({ where: { id: req.params.id } });
+      await VariantService.delete(req.params.id);
       return res.status(200).json({ message: "Variante supprimée." });
     } catch (error) {
       console.error(error);
