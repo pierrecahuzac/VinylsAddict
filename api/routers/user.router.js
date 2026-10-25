@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import UserController from '../controllers/user.controller.js';
 import { AuthMiddleWare } from '../middleware/auth.middleware.js';
+import { AdminMiddleWare } from '../middleware/admin.middleware.js';
 const UserRouter = Router();
 
 
@@ -18,10 +19,10 @@ UserRouter.get('/albums/check/:id', AuthMiddleWare.checkToken, UserController.ch
 
 UserRouter.delete('/me', AuthMiddleWare.checkToken, UserController.deleteAccount);
 
-UserRouter.get('/', AuthMiddleWare.checkToken,UserController.getAllUsers);
-UserRouter.get('/:id', AuthMiddleWare.checkToken,UserController.getById);
-UserRouter.put('/:id/status', AuthMiddleWare.checkToken,UserController.changeAuthorizationToConnect);
-UserRouter.put('/:id/role', AuthMiddleWare.checkToken,UserController.changeUserRole);
+UserRouter.get('/', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.getAllUsers);
+UserRouter.get('/:id', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.getById);
+UserRouter.put('/:id/status', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.changeAuthorizationToConnect);
+UserRouter.put('/:id/role', AuthMiddleWare.checkToken, AdminMiddleWare.requireAdmin, UserController.changeUserRole);
 
 
 
