@@ -1,4 +1,5 @@
 import { ConditionService } from "../services/condition.service.js";
+import { isPrismaError, PRISMA_ERROR_CODES } from "../utils/prismaErrors.js";
 
 const ConditionController = {
   getAllConditions: async (req, res) => {
@@ -67,6 +68,9 @@ const ConditionController = {
       await ConditionService.delete(req.params.id);
       return res.status(200).json({ message: "Condition supprimée." });
     } catch (error) {
+      if (isPrismaError(error, PRISMA_ERROR_CODES.FOREIGN_KEY_CONSTRAINT)) {
+        return res.status(409).json({ message: "Suppression impossible : cet élément est encore utilisé." });
+      }
       console.error(error);
       return res.status(500).json({ error: "Erreur serveur lors de la suppression de la condition." });
     }
