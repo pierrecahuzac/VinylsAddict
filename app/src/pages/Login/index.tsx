@@ -29,7 +29,7 @@ const Login = () => {
               value={email}
               autoComplete="email"
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
@@ -46,7 +46,7 @@ const Login = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 

@@ -127,7 +127,7 @@ const Catalog = () => {
                   onClick={() => openAlbumDetails(item.id)}
                   className="snap-start shrink-0 w-36 sm:w-44 group"
                 >
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-gray-800 shadow-lg ring-1 ring-white/5 transition-transform group-hover:scale-[1.02]">
+                  <div className="aspect-square w-full overflow-hidden rounded-2xl bg-white/5 shadow-lg ring-1 ring-white/5 transition-transform group-hover:scale-[1.02]">
                     <img
                       src={item.coverUrl || "/placeholder.jpg"}
                       alt={item.title}
@@ -164,7 +164,7 @@ const Catalog = () => {
 
           {userIsLogged && (
             <button
-              className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-gray-800/30 border-2 border-dashed border-gray-700 hover:border-[#8b5cf6] hover:bg-gray-800/60 rounded-xl transition-all group overflow-hidden"
+              className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-white/5/30 border-2 border-dashed border-white/10 hover:border-[#8b5cf6] hover:bg-white/5/60 rounded-xl transition-all group overflow-hidden"
               onClick={openModaleAddNewAlbum}
             >
               <div className="w-10 h-10 rounded-full bg-[#0a0a0a] flex items-center justify-center text-gray-500 group-hover:text-[#8b5cf6] group-hover:scale-110 transition-all">

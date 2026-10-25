@@ -71,7 +71,7 @@ const Profile = () => {
             placeholder="Email"
             value={user?.email}
             readOnly
-            className="bg-gray-800 border border-gray-700 text-gray-400 p-3 rounded-lg cursor-not-allowed focus:outline-none"
+            className="bg-white/5 border border-white/10 text-gray-400 p-3 rounded-lg cursor-not-allowed focus:outline-none"
             name="email"
           />
         </div>
@@ -85,12 +85,12 @@ const Profile = () => {
         </button>
 
         {changePassword && (
-          <div className="flex flex-col gap-4 p-4 border border-gray-700 rounded-xl bg-gray-800/50">
+          <div className="flex flex-col gap-4 p-4 border border-white/10 rounded-xl bg-white/5/50">
             <input
               type="password"
               placeholder="Mot de passe actuel"
               name="currentPassword"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
+              className="bg-white/5 border border-white/10 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
@@ -98,7 +98,7 @@ const Profile = () => {
               type="password"
               placeholder="Nouveau mot de passe"
               name="newPassword"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
+              className="bg-white/5 border border-white/10 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
@@ -106,7 +106,7 @@ const Profile = () => {
               type="password"
               placeholder="Confirmation du nouveau mot de passe"
               name="newPasswordConfirmation"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
+              className="bg-white/5 border border-white/10 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPasswordConfirmation}
               onChange={(e) => setNewPasswordConfirmation(e.target.value)}
             />
@@ -121,7 +121,7 @@ const Profile = () => {
         )}
 
         {/* Zone dangereuse */}
-        <div className="w-full max-w-md mt-10 pt-8 border-t border-gray-700">
+        <div className="w-full max-w-md mt-10 pt-8 border-t border-white/10">
           <h3 className="text-sm font-black uppercase tracking-widest text-red-400 flex items-center gap-2 mb-3">
             <IoWarningOutline size={16} /> Zone dangereuse
           </h3>
@@ -143,8 +143,8 @@ const Profile = () => {
       {/* Modal confirmation delete */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-          <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center p-5 border-b border-gray-700">
+          <div className="bg-white/5 w-full max-w-sm rounded-2xl border border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-between items-center p-5 border-b border-white/10">
               <h2 className="text-lg font-bold text-white flex items-center gap-2">
                 <IoWarningOutline className="text-red-500" size={20} /> Supprimer le compte ?
               </h2>

@@ -16,7 +16,7 @@ const Album = ({
       className={`group cursor-pointer ${className}`}
       onClick={() => onClick()}
     >
-      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-gray-800 shadow-lg ring-1 ring-white/5 transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-2xl">
+      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-white/5 shadow-lg ring-1 ring-white/5 transition-transform duration-300 group-hover:scale-[1.02] group-hover:shadow-2xl">
         <img
           src={cover || "/placeholder.jpg"}
           alt={title}

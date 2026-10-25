@@ -233,8 +233,8 @@ const MyAlbumDetails = () => {
         <div className="grid grid-cols-1 gap-4">
           
           {/* Purchase Info Card */}
-          <div className="bg-gray-800/40 p-5 rounded-2xl border border-gray-700/50 space-y-4">
-            <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 border-b border-gray-700 pb-2">Infos d'acquisition</h3>
+          <div className="bg-white/5/40 p-5 rounded-2xl border border-white/10/50 space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 border-b border-white/10 pb-2">Infos d'acquisition</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <p className="text-[10px] text-gray-400 font-bold uppercase flex items-center gap-1">
@@ -252,8 +252,8 @@ const MyAlbumDetails = () => {
           </div>
 
           {/* Technical Details Card */}
-          <div className="bg-gray-800/40 p-5 rounded-2xl border border-gray-700/50 space-y-4">
-            <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 border-b border-gray-700 pb-2">Fiche Technique</h3>
+          <div className="bg-white/5/40 p-5 rounded-2xl border border-white/10/50 space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 border-b border-white/10 pb-2">Fiche Technique</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
               <div className="flex items-center gap-3 text-sm">
@@ -288,7 +288,7 @@ const MyAlbumDetails = () => {
           <div className="space-y-3 pt-2">
             <div className="flex flex-wrap gap-2">
               {album?.genres?.map((g) => (
-                <span key={g.id} className="bg-gray-800 text-gray-300 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight border border-gray-700">
+                <span key={g.id} className="bg-white/5 text-gray-300 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight border border-white/10">
                   {g.nameFR || g.name}
                 </span>
               ))}
@@ -302,16 +302,16 @@ const MyAlbumDetails = () => {
 
           {/* Notes Section */}
           {userAlbum?.notes && (
-            <div className="mt-4 p-4 bg-amber-500/5 border-l-4 border-amber-500 rounded-r-xl">
-              <p className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-1">Mes notes</p>
+            <div className="mt-4 p-4 bg-[#8b5cf6]/5 border-l-4 border-amber-500 rounded-r-xl">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500 mb-1">Mes notes</p>
               <p className="text-gray-300 italic text-sm">"{userAlbum.notes}"</p>
             </div>
           )}
 
           {/* Photos Collection Section */}
-          <div className="bg-gray-800/40 p-5 rounded-2xl border border-gray-700/50 space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-700 pb-2">
-              <h3 className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 ${isAtLimit ? "text-amber-500" : "text-gray-500"}`}>
+          <div className="bg-white/5/40 p-5 rounded-2xl border border-white/10/50 space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2">
+              <h3 className={`text-xs font-black uppercase tracking-widest flex items-center gap-2 ${isAtLimit ? "text-[#8b5cf6]-500" : "text-gray-500"}`}>
                 <IoImagesOutline size={14} /> Mes photos ({userAlbum?.images?.length || 0}/10)
               </h3>
               <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isAtLimit || uploading ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-[#8b5cf6] text-gray-900 hover:bg-amber-400 cursor-pointer"}`}>
@@ -332,7 +332,7 @@ const MyAlbumDetails = () => {
             </div>
 
             {isAtLimit && (
-              <p className="text-amber-500/80 text-xs text-center -mt-2">Limite de 10 photos atteinte.</p>
+              <p className="text-[#8b5cf6]-500/80 text-xs text-center -mt-2">Limite de 10 photos atteinte.</p>
             )}
 
             {(!userAlbum?.images || userAlbum.images.length === 0) ? (
@@ -342,7 +342,7 @@ const MyAlbumDetails = () => {
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {userAlbum.images.map((img) => (
-                  <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-gray-700 bg-[#0a0a0a]">
+                  <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-white/10 bg-[#0a0a0a]">
                     <button
                       onClick={() => setLightboxUrl(getImageUrl(img.url))}
                       className="w-full h-full"
@@ -401,8 +401,8 @@ const MyAlbumDetails = () => {
       {/* Delete Modal */}
       {modaleDeleteAlbum && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-          <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="flex justify-between items-center p-5 border-b border-gray-700">
+          <div className="bg-white/5 w-full max-w-sm rounded-2xl border border-white/10 shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-between items-center p-5 border-b border-white/10">
               <h2 className="text-lg font-bold text-white">Retirer du bac ?</h2>
               <button 
                 onClick={() => setModaleDeleteAlbum(false)} 

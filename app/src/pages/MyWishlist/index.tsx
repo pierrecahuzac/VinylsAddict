@@ -119,8 +119,8 @@ const MyWishlist = () => {
       {/* Modal Confirmation de suppression */}
       {modaleDeleteFromWishlist && albumToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-gray-800 w-full max-w-sm rounded-2xl border border-gray-700 shadow-2xl overflow-hidden">
-            <div className="flex justify-between items-center p-5 border-b border-gray-700">
+          <div className="bg-white/5 w-full max-w-sm rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+            <div className="flex justify-between items-center p-5 border-b border-white/10">
               <h2 className="text-lg font-bold text-white">Supprimer l'album ?</h2>
               <button 
                 onClick={() => {

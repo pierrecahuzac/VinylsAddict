@@ -35,7 +35,7 @@ const MyStats = () => {
 
       <main className="grid grid-cols-1 gap-4">
         {/* Collection Stat */}
-        <div className="bg-gray-800 border border-gray-700 p-6 rounded-3xl flex items-center gap-5 shadow-lg">
+        <div className="bg-white/5 border border-white/10 p-6 rounded-3xl flex items-center gap-5 shadow-lg">
           <div className="w-14 h-14 bg-blue-500/20 text-blue-400 rounded-2xl flex items-center justify-center shrink-0">
             <IoLibraryOutline size={30} />
           </div>
@@ -46,7 +46,7 @@ const MyStats = () => {
         </div>
 
         {/* Wishlist Stat */}
-        <div className="bg-gray-800 border border-gray-700 p-6 rounded-3xl flex items-center gap-5 shadow-lg">
+        <div className="bg-white/5 border border-white/10 p-6 rounded-3xl flex items-center gap-5 shadow-lg">
           <div className="w-14 h-14 bg-red-500/20 text-red-400 rounded-2xl flex items-center justify-center shrink-0">
             <IoHeartOutline size={30} />
           </div>
@@ -57,7 +57,7 @@ const MyStats = () => {
         </div>
 
         {/* Value Stat */}
-        <div className="bg-gray-800 border border-gray-700 p-6 rounded-3xl flex items-center gap-5 shadow-lg">
+        <div className="bg-white/5 border border-white/10 p-6 rounded-3xl flex items-center gap-5 shadow-lg">
           <div className="w-14 h-14 bg-green-500/20 text-green-400 rounded-2xl flex items-center justify-center shrink-0">
             <IoStatsChartOutline size={30} />
           </div>

@@ -160,7 +160,7 @@ const Dashboard = () => {
                     className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
                       u.role === "ADMIN"
                         ? "bg-[#8b5cf6] text-gray-950"
-                        : "bg-gray-800 text-gray-400"
+                        : "bg-white/5 text-gray-400"
                     }`}
                   >
                     {u.role}
@@ -254,7 +254,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-gray-800 w-full max-w-lg rounded-2xl border border-gray-700 shadow-2xl my-8">
+      <div className="bg-white/5 w-full max-w-lg rounded-2xl border border-white/10 shadow-2xl my-8">
         <div className="p-6 space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-1">
@@ -285,7 +285,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
                 <select
                   value={userData.role || "USER"}
                   onChange={(e) => handleUserRole(e.target.value)}
-                  className="w-full bg-[#0a0a0a] border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 >
                   <option value="ADMIN">Administrateur</option>
                   <option value="USER">Utilisateur</option>
@@ -303,7 +303,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
                 <select
                   value={userData.canConnect ? "true" : "false"}
                   onChange={(e) => handleUserConnection(e.target.value === "true")}
-                  className="w-full bg-[#0a0a0a] border border-gray-700 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 >
                   <option value="true">Autorisé (Oui)</option>
                   <option value="false">Bloqué (Non)</option>
@@ -312,7 +312,7 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
             </div>
           </div>
 
-          <div className="flex gap-4 pt-4 sticky bottom-0 bg-gray-800 pb-2">
+          <div className="flex gap-4 pt-4 sticky bottom-0 bg-white/5 pb-2">
             <button
               type="button"
               onClick={() => setModaleUser(false)}
