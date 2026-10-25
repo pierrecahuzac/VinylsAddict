@@ -176,7 +176,7 @@ const MasterAlbum = () => {
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setModalAddAlbumToUserCollection(true)}
-              className="flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all shadow-lg bg-amber-500 text-gray-950 hover:bg-amber-400 active:scale-95"
+              className="flex items-center justify-center gap-2 p-3 rounded-xl font-bold transition-all shadow-lg bg-[#8b5cf6] text-white hover:bg-[#7c3aed] active:scale-95"
             >
               <IoLibraryOutline size={20} />
               <span className="text-sm">Posséder</span>
@@ -294,7 +294,7 @@ const MasterAlbum = () => {
                 </select>
               </div>
 
-              <button type="submit" className="w-full bg-[#8b5cf6] text-gray-950 font-bold py-4 rounded-xl hover:bg-amber-400 transition-colors shadow-lg mt-4">
+              <button type="submit" className="w-full bg-[#8b5cf6] text-white font-bold py-4 rounded-xl hover:bg-[#7c3aed] transition-colors shadow-lg mt-4">
                 Confirmer l'ajout
               </button>
             </form>
