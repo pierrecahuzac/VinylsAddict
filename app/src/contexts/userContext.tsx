@@ -7,6 +7,7 @@ import {
   type SyntheticEvent,
 } from "react";
 import axios from "axios";
+import api from "../lib/axios";
 import useToast from "../hooks/useToast";
 import { useNavigate } from "react-router";
 import * as z from "zod";
@@ -83,12 +84,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const checkToken = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/checkToken`,
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.get("/users/checkToken");
       if (response.status === 200 && response.data.isLogged) {
         setUser(response.data.user);
         setUserIslogged(true);
@@ -114,11 +110,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         onError("Email ou mot de passe absent.");
         return;
       }
-      const result = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/login`,
-        { email, password },
-        { withCredentials: true },
-      );
+      const result = await api.post("/users/login", { email, password });
       
       if (result.status === 200 && result.data.isLogged) {
         setUser(result.data.user);
@@ -157,11 +149,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/signup`,
-        { email, password, passwordConfirmation, username },
-        { withCredentials: true },
-      );
+      const response = await api.post("/users/signup", { email, password, passwordConfirmation, username });
       if (response.status === 409) {
         onError("Email existant, merci de vous connecter");
       }
@@ -184,11 +172,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/logout`,
-        {},
-        { withCredentials: true },
-      );
+      await api.post("/users/logout", {});
       onSuccess("Déconnexion réussie");
     } catch (error) {
       console.error("Erreur lors de la déconnexion API", error);
@@ -203,10 +187,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteAccount = async () => {
     try {
-      const res = await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/me`,
-        { withCredentials: true },
-      );
+      const res = await api.delete("/users/me");
       if (res.status === 200) {
         onSuccess("Compte supprimé. Collection purgée, vinyles anonymisés.");
         setUser(null);

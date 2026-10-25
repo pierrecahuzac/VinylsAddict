@@ -13,6 +13,7 @@ import Artist from "./pages/Artist";
 import Versions from "./pages/Versions";
 
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import MyStats from "./pages/MyStats";
 import Dashboard from "./pages/Dashboard";
 
@@ -23,17 +24,17 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Catalog />} />
-          <Route path="/collection" element={<MyCollection />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/wishlist" element={<MyWishlist />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/collection" element={<ProtectedRoute><MyCollection /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/wishlist" element={<ProtectedRoute><MyWishlist /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/album/:id" element={<MasterAlbum />} />
           <Route path="/artist/:name" element={<Artist />} />
           <Route path="/versions/:title" element={<Versions />} />
-          <Route path="/my-stats" element={<MyStats />} />
-          <Route path="/collection/album/:albumId" element={<UserDetailsAlbum />} />
+          <Route path="/my-stats" element={<ProtectedRoute><MyStats /></ProtectedRoute>} />
+          <Route path="/collection/album/:albumId" element={<ProtectedRoute><UserDetailsAlbum /></ProtectedRoute>} />
         </Route>
       </Routes>     
     </>
