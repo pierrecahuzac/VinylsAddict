@@ -144,7 +144,7 @@ const MasterAlbum = () => {
   return (
     <div className="min-h-full bg-gray-900 text-white pb-20">
       {/* Cover Image with Overlay Header - responsive: square mobile, limité sur PC */}
-      <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/10] max-h-[65vh] md:max-h-[480px] overflow-hidden group md:rounded-b-2xl shrink-0">
+      <div className="relative w-full max-w-5xl mx-auto aspect-square md:aspect-[16/9] max-h-[70vh] md:max-h-[520px] overflow-hidden md:rounded-3xl shrink-0 shadow-2xl">
         <img
           src={masterAlbumDetails?.coverUrl || "/placeholder.jpg"}
           alt={masterAlbumDetails?.title}
@@ -197,7 +197,7 @@ const MasterAlbum = () => {
         )}
 
         {/* Info Grid */}
-        <div className="grid grid-cols-1 gap-6 bg-gray-800/50 p-6 rounded-2xl border border-gray-700">
+        <div className="grid grid-cols-1 gap-6 bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/10 shadow-xl">
           <div className="flex items-start gap-4">
             <IoCalendarOutline className="text-[#f1c40f] mt-1 shrink-0" size={20} />
             <div>
