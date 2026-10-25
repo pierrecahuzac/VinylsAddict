@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
+import PasswordInput from "../../components/PasswordInput";
 
 const Signup = () => {
   const {
@@ -49,25 +50,25 @@ const Signup = () => {
 
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Mot de passe</label>
-            <input
-              type="password"
+            <PasswordInput
               placeholder="••••••••"
               value={password}
+              autoComplete="new-password"
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
+              className="bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">Confirmation</label>
-            <input
-              type="password"
+            <PasswordInput
               placeholder="••••••••"
               value={passwordConfirmation}
+              autoComplete="new-password"
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               required
-              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
+              className="bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 

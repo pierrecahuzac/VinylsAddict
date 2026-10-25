@@ -3,6 +3,7 @@ import { useUser } from "../../contexts/userContext";
 import axios from "axios";
 import useToast from "../../hooks/useToast";
 import { IoWarningOutline, IoCloseOutline, IoTrashOutline } from "react-icons/io5";
+import PasswordInput from "../../components/PasswordInput";
 
 const Profile = () => {
   const { user, deleteAccount } = useUser();
@@ -86,26 +87,26 @@ const Profile = () => {
 
         {changePassword && (
           <div className="flex flex-col gap-4 p-4 border border-white/10 rounded-xl bg-white/5/50">
-            <input
-              type="password"
+            <PasswordInput
               placeholder="Mot de passe actuel"
               name="currentPassword"
+              autoComplete="current-password"
               className="bg-white/5 border border-white/10 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
-            <input
-              type="password"
+            <PasswordInput
               placeholder="Nouveau mot de passe"
               name="newPassword"
+              autoComplete="new-password"
               className="bg-white/5 border border-white/10 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
-            <input
-              type="password"
+            <PasswordInput
               placeholder="Confirmation du nouveau mot de passe"
               name="newPasswordConfirmation"
+              autoComplete="new-password"
               className="bg-white/5 border border-white/10 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPasswordConfirmation}
               onChange={(e) => setNewPasswordConfirmation(e.target.value)}
