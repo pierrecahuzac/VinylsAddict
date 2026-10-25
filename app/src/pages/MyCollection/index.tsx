@@ -59,6 +59,7 @@ const MyCollection = () => {
 
   useEffect(() => {
     getAllUserAlbums();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const openModaleAddNewAlbum = () => {

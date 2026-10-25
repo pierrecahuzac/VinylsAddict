@@ -54,6 +54,7 @@ const Catalog = () => {
 
   useEffect(() => {
     getAllAlbums();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submitNewAlbum = async (e: SyntheticEvent<HTMLFormElement>) => {

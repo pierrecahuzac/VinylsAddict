@@ -7,11 +7,6 @@ const MyStats = () => {
   const { albums, getAllUserAlbums } = useCollection();
   const [wishlistCount, setWishlistCount] = useState(0);
 
-  useEffect(() => {
-    getAllUserAlbums();
-    fetchWishlistCount();
-  }, []);
-
   const fetchWishlistCount = async () => {
     try {
       const response = await axios.get(
@@ -23,6 +18,13 @@ const MyStats = () => {
       console.error("Error fetching wishlist count:", error);
     }
   };
+
+  useEffect(() => {
+    getAllUserAlbums();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchWishlistCount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const totalValue = albums.reduce((acc: number, item: { price?: number }) => acc + (item.price || 0), 0);
 

@@ -29,16 +29,6 @@ const Dashboard = () => {
   const [userToModify, setUserToModify] = useState("");
   const { onError } = useToast();
 
-  useEffect(() => {
-    verifyUserRole();
-  }, []);
-
-  useEffect(() => {
-    if (user && user.role === "ADMIN") {
-      fetchDatas();
-    }
-  }, [user]);
-
   const fetchDatas = async () => {
     try {
       await Promise.all([getAllAbums(), getAllUsers()]);
@@ -91,6 +81,18 @@ const Dashboard = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    verifyUserRole();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (user && user.role === "ADMIN") {
+      fetchDatas();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const openUserDatas = (userId: string) => {
     setUserToModify(userId);
@@ -201,10 +203,6 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
   const { onError, onSuccess } = useToast();
   const [userData, setUserData] = useState<User | null>(null);
 
-  useEffect(() => {
-    userToFetch();
-  }, [userId]);
-
   const userToFetch = async () => {
     try {      
       const response = await axios.get<User>(
@@ -219,6 +217,12 @@ const Modale = ({ setModaleUser, userId, refresh }: ModaleProps) => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    userToFetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId]);
 
   const handleUserConnection = async (canConnect: boolean) => {
     try {
