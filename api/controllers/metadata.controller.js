@@ -18,7 +18,7 @@ const MetadataController = {
         conditions,
         variants,
         formats,
-        style
+        styles: style
       });
     } catch (error) {
       return res
