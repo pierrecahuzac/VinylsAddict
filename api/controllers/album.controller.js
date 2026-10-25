@@ -33,6 +33,8 @@ const AlbumController = {
   getAllAlbums: async (req, res) => {
     try {
       const { artist, title } = req.query;
+      const take = Math.min(Math.max(parseInt(req.query.take) || 100, 1), 200);
+      const skip = Math.max(parseInt(req.query.skip) || 0, 0);
       const where = {};
       if (artist) where.artist = { equals: String(artist), mode: "insensitive" };
       if (title) where.title = { equals: String(title), mode: "insensitive" };
@@ -46,6 +48,8 @@ const AlbumController = {
         orderBy: {
           createdAt: "desc",
         },
+        take,
+        skip,
       });
       // Masquer le créateur : on garde title/artist mais on n'expose jamais userId/creator
       const sanitized = albums.map((a) => {
