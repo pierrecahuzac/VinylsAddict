@@ -388,7 +388,6 @@ const MyAlbumDetails = () => {
                 ))}
               </div>
             )}
-            <p className="text-[10px] text-gray-500 italic">Les images sont nettoyées côté serveur (EXIF/GPS supprimés) avant stockage. JPEG/PNG→WebP, max 5MB.</p>
           </div>
         </div>
       </div>
