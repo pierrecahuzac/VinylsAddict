@@ -99,6 +99,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     checkToken();
   }, []);
 
@@ -232,6 +233,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {

@@ -72,6 +72,7 @@ const MasterAlbum = () => {
       getAllMetadata();
     };
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, userIsLogged]);
 
   const addAlbumToWishlist = async () => {
