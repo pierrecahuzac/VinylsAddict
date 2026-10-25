@@ -20,7 +20,7 @@ const CollectionController = {
           user: { connect: { id: userId } },
           album: { connect: { id: albumId } },
           price: price ? parseFloat(price) : null,
-          condition: { connect: { id: conditionId } },
+          condition: conditionId ? { connect: { id: conditionId } } : undefined,
         },
       });
   
