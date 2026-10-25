@@ -5,6 +5,7 @@ import cors, { CorsOptions } from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { errorHandler } from "./middleware/error.middleware.js";
 
 const app: Application = express();
 
@@ -49,18 +50,7 @@ app.use(globalLimiter);
 
 app.use(mainRouter);
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  if (err) {
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ message: 'Image trop lourde (max 5MB).' });
-    }
-    if (err.message?.includes('Type de fichier non autorisé')) {
-      return res.status(400).json({ message: err.message });
-    }
-    return res.status(400).json({ message: err.message || 'Erreur lors de l\'upload.' });
-  }
-  next();
-});
+app.use(errorHandler);
 
 const port: number = Number(process.env.PORT) || 33000;
 app.listen(port, () => {

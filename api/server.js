@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from "express";
 import mainRouter from "./routers/index.js";
+import { errorHandler } from "./middleware/error.middleware.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
@@ -51,20 +52,7 @@ app.use(globalLimiter);
 
 app.use(mainRouter);
 
-// Gestion d'erreurs multer / sharp (fileSize, mimetype)
-app.use((err, req, res, next) => {
-  if (err) {
-    if (err.code === 'LIMIT_FILE_SIZE') {
-      return res.status(400).json({ message: 'Image trop lourde (max 5MB).' });
-    }
-    if (err.message?.includes('Type de fichier non autorisé')) {
-      return res.status(400).json({ message: err.message });
-    }
-    // Multer / sharp generic
-    return res.status(400).json({ message: err.message || 'Erreur lors de l\'upload.' });
-  }
-  next();
-});
+app.use(errorHandler);
 
 const port = process.env.PORT || 33000;
 app.listen(port, () => {
