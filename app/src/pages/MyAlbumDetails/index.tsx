@@ -36,6 +36,7 @@ const MyAlbumDetails = () => {
   const [uploading, setUploading] = useState(false);
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [updatingSigned, setUpdatingSigned] = useState(false);
   const navigate = useNavigate();
   const { onSuccess, onError } = useToast();
 
@@ -102,8 +103,6 @@ const MyAlbumDetails = () => {
 
   const isAtLimit = (userAlbum?.images?.length || 0) >= 5;
 
-  const [updatingSigned, setUpdatingSigned] = useState(false);
-
   const handleToggleSigned = async () => {
     if (!userAlbum) return;
     setUpdatingSigned(true);
@@ -114,7 +113,7 @@ const MyAlbumDetails = () => {
         { withCredentials: true },
       );
       await refreshDetails();
-    } catch (err) {
+    } catch {
       onError("Erreur lors de la mise à jour.");
     } finally {
       setUpdatingSigned(false);

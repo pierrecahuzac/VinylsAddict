@@ -24,7 +24,7 @@ const MyStats = () => {
     }
   };
 
-  const totalValue = albums.reduce((acc: number, item: any) => acc + (item.price || 0), 0);
+  const totalValue = albums.reduce((acc: number, item: { price?: number }) => acc + (item.price || 0), 0);
 
   return (
     <div className="p-6 flex flex-col gap-8 bg-[#0a0a0a] min-h-full">

@@ -14,7 +14,7 @@ import Album from "../../components/Album/index.tsx";
 import Modale from "../../components/Modale/index.tsx";
 import { IoAddOutline } from "react-icons/io5";
 
-import type { AlbumState } from "../../types/album.ts";
+import type { AlbumState, AlbumData } from "../../types/album.ts";
 
 const initialAlbumState: AlbumState = {
   artist: "",
@@ -121,7 +121,7 @@ const Catalog = () => {
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-white tracking-tight">Récemment ajoutés</h2>
             <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-hide">
-              {albums.slice(0, 10).map((item: any) => (
+              {albums.slice(0, 10).map((item: AlbumData) => (
                 <button
                   key={`carousel-${item.id}`}
                   onClick={() => openAlbumDetails(item.id)}
@@ -148,7 +148,7 @@ const Catalog = () => {
         <h2 className="text-lg font-bold text-white tracking-tight">Tous les albums</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {albums.length > 0 &&
-            albums?.map((item: any) => (
+            albums?.map((item: AlbumData) => (
               <Album
                 id={item.id}
                 key={item.id}

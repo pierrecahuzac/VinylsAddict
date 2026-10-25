@@ -47,7 +47,7 @@ const MasterAlbum = () => {
         return true;
       }
       return false;
-    } catch (error) {
+    } catch {
       setIsWishlisted(false);
       return false;
     }
@@ -289,7 +289,7 @@ const MasterAlbum = () => {
                   className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
                 >
                   <option value="">-- Choisir un état --</option>
-                  {allMetadata?.conditions?.map((c: any) => (
+                  {allMetadata?.conditions?.map((c: { id: string; nameFR?: string; name?: string }) => (
                     <option key={c.id} value={c.id}>
                       {c.nameFR || c.name}
                     </option>
