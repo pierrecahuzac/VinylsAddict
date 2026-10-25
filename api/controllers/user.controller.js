@@ -89,8 +89,6 @@ const Usercontroller = {
         });
       }
       const comparePassword = await bcryptjs.compare(password, user.password);
-      console.log("Tentative de login pour:", email);
-      console.log("Résultat comparaison:", comparePassword);
 
       if (!comparePassword) {
         return res
