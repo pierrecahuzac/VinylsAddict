@@ -8,7 +8,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "start": "npx prisma migrate resolve --rolled-back 20261025200000_add_useralbum_unique_index || true; npx prisma migrate deploy && node server.js",
+    "start": "npx prisma migrate resolve --rolled-back 20261025200000_add_useralbum_unique_index || true; npx prisma migrate resolve --rolled-back 20261026000000_fix_useralbum_duplicates_and_unique || true; npx prisma migrate deploy && node server.js",
     "nodemon": "nodemon -L server.js",
     "seed": "tsx prisma/seed.ts"
   },
