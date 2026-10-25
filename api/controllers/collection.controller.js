@@ -20,21 +20,13 @@ const CollectionController = {
         return res.status(400).json({ message: "price doit être numérique." });
       }
 
-      let userAlbum;
-      try {
-        userAlbum = await CollectionService.create(
-          userId,
-          albumId,
-          parsedPrice,
-          conditionId ? conditionId : null,
-          signed === true || signed === "true" || signed === 1 || signed === "1"
-        );
-      } catch (error) {
-        if (error?.code === 'P2002') {
-          return res.status(409).json({ message: "Cet album est déjà dans votre collection." });
-        }
-        throw error;
-      }
+      const userAlbum = await CollectionService.create(
+        userId,
+        albumId,
+        parsedPrice,
+        conditionId ? conditionId : null,
+        signed === true || signed === "true" || signed === 1 || signed === "1"
+      );
 
       return res
         .status(201)
