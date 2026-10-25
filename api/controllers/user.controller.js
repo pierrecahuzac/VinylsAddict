@@ -31,6 +31,16 @@ const Usercontroller = {
     try {
       const { email, password, passwordConfirmation, username } = req.body;
 
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email et mot de passe requis." });
+      }
+      if (password.length < 8) {
+        return res.status(400).json({ message: "Le mot de passe doit faire au moins 8 caractères." });
+      }
+      if (password !== passwordConfirmation) {
+        return res.status(400).json({ message: "Passwords do not match" });
+      }
+
       const foundUser = await prisma.user.findUnique({
         where: {
           email,
@@ -43,9 +53,6 @@ const Usercontroller = {
         });
       }
 
-      if (password !== passwordConfirmation) {
-        return res.status(400).json({ message: "Passwords do not match" });
-      }
       const hashedPassword = await bcryptjs.hash(password, 10);
       const newUser = await prisma.user.create({
         data: {
@@ -72,6 +79,9 @@ const Usercontroller = {
     
     try {
       const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ message: "Email et mot de passe requis." });
+      }
       const user = await prisma.user.findUnique({
         where: {
           email,
