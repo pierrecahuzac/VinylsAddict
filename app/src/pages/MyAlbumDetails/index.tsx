@@ -12,7 +12,8 @@ import {
   IoMusicalNotesOutline,
   IoCloseOutline,
   IoImagesOutline,
-  IoCloudUploadOutline
+  IoCloudUploadOutline,
+  IoCameraOutline,
 } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 import useToast from "../../hooks/useToast";
@@ -324,6 +325,22 @@ const MyAlbumDetails = () => {
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={uploading || isAtLimit}
+                />
+              </label>
+              <label className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isAtLimit || uploading ? "bg-gray-700 text-gray-400 cursor-not-allowed" : "bg-white/10 text-white hover:bg-white/20 cursor-pointer"}`}>
+                {uploading ? (
+                  <span className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <IoCameraOutline size={16} />
+                )}
+                Photo
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
                   className="hidden"
                   onChange={handleImageUpload}
                   disabled={uploading || isAtLimit}
