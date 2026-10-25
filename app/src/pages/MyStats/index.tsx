@@ -68,8 +68,8 @@ const MyStats = () => {
         </div>
 
         {/* Placeholder for future growth */}
-        <div className="bg-[#f1c40f]/5 border border-[#f1c40f]/20 p-6 rounded-3xl flex flex-col gap-4 shadow-lg mt-4 italic text-sm text-gray-400">
-           <div className="flex items-center gap-2 text-[#f1c40f]">
+        <div className="bg-[#8b5cf6]/5 border border-[#8b5cf6]/20 p-6 rounded-3xl flex flex-col gap-4 shadow-lg mt-4 italic text-sm text-gray-400">
+           <div className="flex items-center gap-2 text-[#8b5cf6]">
               <IoTrendingUpOutline size={20} />
               <span className="font-bold uppercase tracking-widest text-[10px]">Prochainement</span>
            </div>

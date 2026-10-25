@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #f1c40f;
+  --color-primary: #8b5cf6;
 }
 
 @layer base {

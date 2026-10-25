@@ -79,7 +79,7 @@ const Profile = () => {
         <button 
           type="button" 
           onClick={() => setChangePassword(!changePassword)} 
-          className="text-[#f1c40f] hover:underline text-left w-fit transition-colors"
+          className="text-[#8b5cf6] hover:underline text-left w-fit transition-colors"
         >
           {changePassword ? "Annuler le changement" : "Changer mon mot de passe ?"}
         </button>
@@ -90,7 +90,7 @@ const Profile = () => {
               type="password"
               placeholder="Mot de passe actuel"
               name="currentPassword"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#f1c40f] focus:outline-none"
+              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
@@ -98,7 +98,7 @@ const Profile = () => {
               type="password"
               placeholder="Nouveau mot de passe"
               name="newPassword"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#f1c40f] focus:outline-none"
+              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
@@ -106,7 +106,7 @@ const Profile = () => {
               type="password"
               placeholder="Confirmation du nouveau mot de passe"
               name="newPasswordConfirmation"
-              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#f1c40f] focus:outline-none"
+              className="bg-gray-800 border border-gray-700 p-3 rounded-lg focus:border-[#8b5cf6] focus:outline-none"
               value={newPasswordConfirmation}
               onChange={(e) => setNewPasswordConfirmation(e.target.value)}
             />

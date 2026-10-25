@@ -10,7 +10,7 @@ const Login = () => {
       <div className="w-full max-w-sm space-y-8">
         <header className="text-center space-y-2">
           <h1 className="text-4xl font-black text-white tracking-tighter italic">
-            VINYLS<span className="text-[#f1c40f]">ADDICT</span>
+            VINYLS<span className="text-[#8b5cf6]">ADDICT</span>
           </h1>
           <h2 className="text-gray-400 text-sm font-medium">
             Content de te revoir ! Connecte-toi.
@@ -29,7 +29,7 @@ const Login = () => {
               value={email}
               autoComplete="email"
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#f1c40f] transition-all placeholder:text-gray-600"
+              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
@@ -46,14 +46,14 @@ const Login = () => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#f1c40f] transition-all placeholder:text-gray-600"
+              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
           <div className="flex flex-col gap-3 pt-4">
             <button
               type="submit"
-              className="w-full bg-primary text-gray-950 font-black py-4 rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#f1c40f]/10"
+              className="w-full bg-primary text-gray-950 font-black py-4 rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#8b5cf6]/10"
             >
               SE CONNECTER
             </button>

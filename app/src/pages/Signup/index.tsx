@@ -18,7 +18,7 @@ const Signup = () => {
     <div className="flex flex-col items-center justify-center min-h-full p-6 bg-gray-900">
       <div className="w-full max-w-sm space-y-8">
         <header className="text-center space-y-2">
-          <h1 className="text-4xl font-black text-white tracking-tighter italic">REJOINS <span className="text-[#f1c40f]">L'AVENTURE</span></h1>
+          <h1 className="text-4xl font-black text-white tracking-tighter italic">REJOINS <span className="text-[#8b5cf6]">L'AVENTURE</span></h1>
           <h2 className="text-gray-400 text-sm font-medium">Crée ton compte et commence ta collection.</h2>
         </header>
 
@@ -31,7 +31,7 @@ const Signup = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#f1c40f] transition-all placeholder:text-gray-600"
+              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
@@ -43,7 +43,7 @@ const Signup = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#f1c40f] transition-all placeholder:text-gray-600"
+              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
@@ -55,7 +55,7 @@ const Signup = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#f1c40f] transition-all placeholder:text-gray-600"
+              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
@@ -67,14 +67,14 @@ const Signup = () => {
               value={passwordConfirmation}
               onChange={(e) => setPasswordConfirmation(e.target.value)}
               required
-              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#f1c40f] transition-all placeholder:text-gray-600"
+              className="w-full bg-gray-800 border border-gray-700 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />
           </div>
 
           <div className="flex flex-col gap-3 pt-4">
             <button 
               type="submit" 
-              className="w-full bg-[#f1c40f] text-gray-950 font-black py-4 rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#f1c40f]/10"
+              className="w-full bg-[#8b5cf6] text-gray-950 font-black py-4 rounded-2xl hover:bg-amber-400 active:scale-95 transition-all shadow-xl shadow-[#8b5cf6]/10"
             >
               CRÉER MON COMPTE
             </button>
@@ -89,7 +89,7 @@ const Signup = () => {
         </form>
 
         <footer className="text-center pt-2">
-          <Link to={"/login"} className="text-sm text-gray-400 hover:text-[#f1c40f] transition-colors">
+          <Link to={"/login"} className="text-sm text-gray-400 hover:text-[#8b5cf6] transition-colors">
             Déjà un compte ? <span className="font-bold underline">Connecte-toi !</span>
           </Link>
         </footer>

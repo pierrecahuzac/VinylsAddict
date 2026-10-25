@@ -81,7 +81,7 @@ const MyWishlist = () => {
             <p className="italic">Ta liste d'envies est vide pour le moment.</p>
             <button 
               onClick={() => navigate("/")}
-              className="text-[#f1c40f] hover:underline font-medium"
+              className="text-[#8b5cf6] hover:underline font-medium"
             >
               Parcourir le catalogue →
             </button>

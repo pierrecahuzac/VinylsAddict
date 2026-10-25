@@ -13,7 +13,7 @@ import { useUser } from "../../contexts/userContext";
 const navItem = (active: boolean) =>
   `flex flex-col items-center justify-center gap-0.5 px-3 py-1.5 rounded-xl transition-all ${
     active
-      ? "text-[#f1c40f] bg-[#f1c40f]/10"
+      ? "text-[#8b5cf6] bg-[#8b5cf6]/10"
       : "text-gray-400 hover:text-white hover:bg-white/5"
   }`;
 

@@ -99,7 +99,7 @@ const Catalog = () => {
         </h1>
         <div className="text-gray-400 text-sm font-medium">
           Il y a{" "}
-          <span className="text-[#f1c40f] font-bold">{albums.length}</span>{" "}
+          <span className="text-[#8b5cf6] font-bold">{albums.length}</span>{" "}
           album{albums.length > 1 ? "s" : ""} dans les derniers ajouts.
         </div>
       </header>
@@ -107,7 +107,7 @@ const Catalog = () => {
       <main className="w-full">
         {isLoading && (
           <div className="flex justify-center py-10">
-            <p className="text-[#f1c40f] animate-pulse font-medium">
+            <p className="text-[#8b5cf6] animate-pulse font-medium">
               Ouverture des bacs...
             </p>
           </div>
@@ -135,7 +135,7 @@ const Catalog = () => {
                       loading="lazy"
                     />
                   </div>
-                  <p className="mt-2 text-xs font-semibold text-white line-clamp-1 group-hover:text-[#f1c40f]">
+                  <p className="mt-2 text-xs font-semibold text-white line-clamp-1 group-hover:text-[#8b5cf6]">
                     {item.title}
                   </p>
                   <p className="text-[10px] text-gray-400 truncate">{item.artist}</p>
@@ -164,10 +164,10 @@ const Catalog = () => {
 
           {userIsLogged && (
             <button
-              className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-gray-800/30 border-2 border-dashed border-gray-700 hover:border-[#f1c40f] hover:bg-gray-800/60 rounded-xl transition-all group overflow-hidden"
+              className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-gray-800/30 border-2 border-dashed border-gray-700 hover:border-[#8b5cf6] hover:bg-gray-800/60 rounded-xl transition-all group overflow-hidden"
               onClick={openModaleAddNewAlbum}
             >
-              <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-500 group-hover:text-[#f1c40f] group-hover:scale-110 transition-all">
+              <div className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-500 group-hover:text-[#8b5cf6] group-hover:scale-110 transition-all">
                 <IoAddOutline size={24} />
               </div>
               <span className="font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest text-xs">

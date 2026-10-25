@@ -26,7 +26,7 @@ const Album = ({
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
       <div className="mt-3 px-1">
-        <h3 className="text-white font-semibold text-sm leading-tight line-clamp-1 group-hover:text-[#f1c40f] transition-colors">
+        <h3 className="text-white font-semibold text-sm leading-tight line-clamp-1 group-hover:text-[#8b5cf6] transition-colors">
           {title}
         </h3>
         <p className="text-gray-400 text-xs truncate mt-0.5">{artist}</p>

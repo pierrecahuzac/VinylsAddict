@@ -161,7 +161,7 @@ const MasterAlbum = () => {
           </button>
           <button
             onClick={() => masterAlbumDetails?.artist && navigate(`/artist/${encodeURIComponent(masterAlbumDetails.artist)}`)}
-            className="text-xl text-[#f1c40f] font-semibold drop-shadow-md mt-1 hover:underline text-left block"
+            className="text-xl text-[#8b5cf6] font-semibold drop-shadow-md mt-1 hover:underline text-left block"
           >
             {masterAlbumDetails?.artist}
           </button>
@@ -199,7 +199,7 @@ const MasterAlbum = () => {
         {/* Info Grid */}
         <div className="grid grid-cols-1 gap-6 bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/10 shadow-xl">
           <div className="flex items-start gap-4">
-            <IoCalendarOutline className="text-[#f1c40f] mt-1 shrink-0" size={20} />
+            <IoCalendarOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
             <div>
               <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Année de sortie</p>
               <p className="text-gray-100">{masterAlbumDetails?.releaseDate || "Non précisée"}</p>
@@ -207,7 +207,7 @@ const MasterAlbum = () => {
           </div>
 
           <div className="flex items-start gap-4">
-            <IoDiscOutline className="text-[#f1c40f] mt-1 shrink-0" size={20} />
+            <IoDiscOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
             <div>
               <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Format</p>
               <p className="text-gray-100 uppercase">
@@ -218,7 +218,7 @@ const MasterAlbum = () => {
 
           {masterAlbumDetails?.color && (
             <div className="flex items-start gap-4">
-              <IoDiscOutline className="text-[#f1c40f] mt-1 shrink-0" size={20} />
+              <IoDiscOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Couleur</p>
                 <p className="text-gray-100">{masterAlbumDetails.color}</p>
@@ -227,7 +227,7 @@ const MasterAlbum = () => {
           )}
 
           <div className="flex items-start gap-4">
-            <IoBarcodeOutline className="text-[#f1c40f] mt-1 shrink-0" size={20} />
+            <IoBarcodeOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
             <div>
               <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Code-barre</p>
               <p className="text-gray-100 font-mono text-sm">{masterAlbumDetails?.barCode || "Non disponible"}</p>
@@ -243,7 +243,7 @@ const MasterAlbum = () => {
                 </span>
               ))}
               {masterAlbumDetails?.styles?.map((s) => (
-                <span key={s.id} className="bg-gray-900 text-[#f1c40f] border border-[#f1c40f]/30 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
+                <span key={s.id} className="bg-gray-900 text-[#8b5cf6] border border-[#8b5cf6]/30 text-[10px] px-3 py-1 rounded-full uppercase font-bold tracking-tight">
                   {s.nameFR || s.name}
                 </span>
               ))}
@@ -272,7 +272,7 @@ const MasterAlbum = () => {
                   value={albumAddedToCollection.price}
                   onChange={changeDataAlbum}
                   placeholder="20.00"
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#f1c40f] text-white"
+                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
                 />
               </div>
 
@@ -283,7 +283,7 @@ const MasterAlbum = () => {
                   value={albumAddedToCollection.conditionId}
                   onChange={changeDataAlbum}
                   required
-                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#f1c40f] text-white"
+                  className="w-full bg-gray-900 border border-gray-700 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
                 >
                   <option value="">-- Choisir un état --</option>
                   {allMetadata?.conditions?.map((c: any) => (
@@ -294,7 +294,7 @@ const MasterAlbum = () => {
                 </select>
               </div>
 
-              <button type="submit" className="w-full bg-[#f1c40f] text-gray-950 font-bold py-4 rounded-xl hover:bg-amber-400 transition-colors shadow-lg mt-4">
+              <button type="submit" className="w-full bg-[#8b5cf6] text-gray-950 font-bold py-4 rounded-xl hover:bg-amber-400 transition-colors shadow-lg mt-4">
                 Confirmer l'ajout
               </button>
             </form>
