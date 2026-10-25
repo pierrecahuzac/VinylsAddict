@@ -1,9 +1,9 @@
-import prisma from "../database/prismaClient.js";
+import { FormatService } from "../services/format.service.js";
 
 const FormatController = {
   getAllFormats: async (req, res) => {
     try {
-      const formats = await prisma.format.findMany();
+      const formats = await FormatService.getAll();
       return res.status(200).json(formats);
     } catch (error) {
       console.error(error);
@@ -12,7 +12,7 @@ const FormatController = {
   },
   getFormatById: async (req, res) => {
     try {
-      const format = await prisma.format.findUnique({ where: { id: req.params.id } });
+      const format = await FormatService.getById(req.params.id);
       if (!format) {
         return res.status(404).json({ message: "Format non trouvé." });
       }
@@ -28,7 +28,7 @@ const FormatController = {
       if (!name) {
         return res.status(400).json({ message: "name est requis." });
       }
-      const format = await prisma.format.create({ data: { name, speed, description } });
+      const format = await FormatService.create(name, speed, description);
       return res.status(201).json(format);
     } catch (error) {
       if (error?.code === "P2002") {
@@ -41,17 +41,14 @@ const FormatController = {
   updateFormat: async (req, res) => {
     try {
       const { name, speed, description } = req.body;
-      const existing = await prisma.format.findUnique({ where: { id: req.params.id } });
+      const existing = await FormatService.getById(req.params.id);
       if (!existing) {
         return res.status(404).json({ message: "Format non trouvé." });
       }
-      const format = await prisma.format.update({
-        where: { id: req.params.id },
-        data: {
-          name: name ?? existing.name,
-          speed: speed === undefined ? existing.speed : speed,
-          description: description === undefined ? existing.description : description,
-        },
+      const format = await FormatService.update(req.params.id, {
+        name: name ?? existing.name,
+        speed: speed === undefined ? existing.speed : speed,
+        description: description === undefined ? existing.description : description,
       });
       return res.status(200).json(format);
     } catch (error) {
@@ -64,11 +61,11 @@ const FormatController = {
   },
   deleteFormat: async (req, res) => {
     try {
-      const existing = await prisma.format.findUnique({ where: { id: req.params.id } });
+      const existing = await FormatService.getById(req.params.id);
       if (!existing) {
         return res.status(404).json({ message: "Format non trouvé." });
       }
-      await prisma.format.delete({ where: { id: req.params.id } });
+      await FormatService.delete(req.params.id);
       return res.status(200).json({ message: "Format supprimé." });
     } catch (error) {
       console.error(error);

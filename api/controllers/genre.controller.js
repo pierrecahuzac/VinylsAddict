@@ -1,9 +1,9 @@
-import prisma from "../database/prismaClient.js";
+import { GenreService } from "../services/genre.service.js";
 
 const GenreController = {
   getAllGenres: async (req, res) => {
     try {
-      const genres = await prisma.genre.findMany({ include: { styles: true } });
+      const genres = await GenreService.getAll();
       return res.status(200).json(genres);
     } catch (error) {
       console.error(error);
@@ -12,10 +12,7 @@ const GenreController = {
   },
   getGenreById: async (req, res) => {
     try {
-      const genre = await prisma.genre.findUnique({
-        where: { id: req.params.id },
-        include: { styles: true },
-      });
+      const genre = await GenreService.getById(req.params.id);
       if (!genre) {
         return res.status(404).json({ message: "Genre non trouvé." });
       }
@@ -31,7 +28,7 @@ const GenreController = {
       if (!name) {
         return res.status(400).json({ message: "name est requis." });
       }
-      const genre = await prisma.genre.create({ data: { name } });
+      const genre = await GenreService.create(name);
       return res.status(201).json(genre);
     } catch (error) {
       if (error?.code === "P2002") {
@@ -44,14 +41,11 @@ const GenreController = {
   updateGenre: async (req, res) => {
     try {
       const { name } = req.body;
-      const existing = await prisma.genre.findUnique({ where: { id: req.params.id } });
+      const existing = await GenreService.getById(req.params.id);
       if (!existing) {
         return res.status(404).json({ message: "Genre non trouvé." });
       }
-      const genre = await prisma.genre.update({
-        where: { id: req.params.id },
-        data: { name: name ?? existing.name },
-      });
+      const genre = await GenreService.update(req.params.id, name ?? existing.name);
       return res.status(200).json(genre);
     } catch (error) {
       if (error?.code === "P2002") {
@@ -63,11 +57,11 @@ const GenreController = {
   },
   deleteGenre: async (req, res) => {
     try {
-      const existing = await prisma.genre.findUnique({ where: { id: req.params.id } });
+      const existing = await GenreService.getById(req.params.id);
       if (!existing) {
         return res.status(404).json({ message: "Genre non trouvé." });
       }
-      await prisma.genre.delete({ where: { id: req.params.id } });
+      await GenreService.delete(req.params.id);
       return res.status(200).json({ message: "Genre supprimé." });
     } catch (error) {
       console.error(error);

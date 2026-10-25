@@ -1,4 +1,4 @@
-import prisma from "../database/prismaClient.js";
+import { CollectionService } from "../services/collection.service.js";
 import sharp from "sharp";
 import { randomUUID } from "node:crypto";
 import fs from "node:fs/promises";
@@ -7,9 +7,6 @@ import path from "node:path";
 const CollectionController = {
   addAlbumToCollection: async (req, res) => {
     const userId = req.userId;
-    
-    
-
 
     try {
       const { albumId } = req.params;
@@ -25,22 +22,19 @@ const CollectionController = {
 
       let userAlbum;
       try {
-        userAlbum = await prisma.userAlbum.create({
-        data: {
-          user: { connect: { id: userId } },
-          album: { connect: { id: albumId } },
-          price: parsedPrice,
-          signed: signed === true || signed === "true" || signed === 1 || signed === "1",
-          condition: conditionId ? { connect: { id: conditionId } } : undefined,
-        },
-      });
+        userAlbum = await CollectionService.create(
+          userId,
+          albumId,
+          parsedPrice,
+          conditionId ? conditionId : null,
+          signed === true || signed === "true" || signed === 1 || signed === "1"
+        );
       } catch (error) {
         if (error?.code === 'P2002') {
           return res.status(409).json({ message: "Cet album est déjà dans votre collection." });
         }
         throw error;
       }
-  
 
       return res
         .status(201)
@@ -56,7 +50,7 @@ const CollectionController = {
       const userId = req.userId;
       const { price, conditionId, signed } = req.body;
 
-      const existing = await prisma.userAlbum.findUnique({ where: { id: userAlbumId } });
+      const existing = await CollectionService.getById(userAlbumId);
       if (!existing || existing.userId !== userId) {
         return res.status(404).json({ message: "Album non trouvé dans votre collection." });
       }
@@ -66,13 +60,10 @@ const CollectionController = {
         return res.status(400).json({ message: "price doit être numérique." });
       }
 
-      const updated = await prisma.userAlbum.update({
-        where: { id: userAlbumId },
-        data: {
-          price: parsedPrice,
-          conditionId: conditionId === undefined ? existing.conditionId : (conditionId ? conditionId : null),
-          signed: signed === undefined ? existing.signed : (signed === true || signed === "true" || signed === 1 || signed === "1"),
-        },
+      const updated = await CollectionService.update(userAlbumId, {
+        price: parsedPrice,
+        conditionId: conditionId === undefined ? existing.conditionId : (conditionId ? conditionId : null),
+        signed: signed === undefined ? existing.signed : (signed === true || signed === "true" || signed === 1 || signed === "1"),
       });
 
       return res.status(200).json({ message: "Album mis à jour.", userAlbum: updated });
@@ -87,17 +78,12 @@ const CollectionController = {
       const { userAlbumId } = req.params;
       const userId = req.userId;
 
-      // Vérifier si l'album appartient bien à l'utilisateur
-      const userAlbum = await prisma.userAlbum.findUnique({
-        where: { id: userAlbumId },
-        include: { images: true },
-      });
+      const userAlbum = await CollectionService.getById(userAlbumId);
 
       if (!userAlbum || userAlbum.userId !== userId) {
         return res.status(404).json({ message: "Album non trouvé dans votre collection." });
       }
 
-      // Suppression fichiers associés (best effort)
       for (const img of userAlbum.images) {
         try {
           const filePath = path.join(process.cwd(), img.url.replace(/^\//, ''));
@@ -107,9 +93,7 @@ const CollectionController = {
         }
       }
 
-      await prisma.userAlbum.delete({
-        where: { id: userAlbumId },
-      });
+      await CollectionService.delete(userAlbumId);
 
       return res.status(200).json({ message: "Album supprimé de la collection." });
     } catch (error) {
@@ -127,48 +111,33 @@ const CollectionController = {
         return res.status(400).json({ message: "Aucune image fournie." });
       }
 
-      // Vérifier si l'album appartient bien à l'utilisateur
-      const userAlbum = await prisma.userAlbum.findUnique({
-        where: { id: userAlbumId },
-      });
-
-      if (!userAlbum || userAlbum.userId !== userId) {
+      const ua = await CollectionService.getById(userAlbumId);
+      if (!ua || ua.userId !== userId) {
         return res.status(404).json({ message: "Album non trouvé dans votre collection." });
       }
 
-      // Limite : 5 images max par UserAlbum
-      const imageCount = await prisma.collectionImage.count({
-        where: { userCollectionId: userAlbumId },
-      });
+      const imageCount = await CollectionService.countImages(userAlbumId);
       if (imageCount >= 5) {
         return res.status(400).json({ message: "Limite de 5 photos atteinte pour cet album." });
       }
 
-      // Nettoyage EXIF/GPS + conversion universelle WebP : sharp supprime toutes les métadonnées par défaut
-      // On ré-encode tout en WebP sans withMetadata() -> image anonymisée + léger
       const filename = `${randomUUID()}.webp`;
       const outputPath = path.join('uploads', filename);
 
       await fs.mkdir('uploads', { recursive: true });
 
       await sharp(file.buffer)
-        .rotate() // applique l'orientation EXIF puis la supprime
+        .rotate()
         .webp({ quality: 85 })
         .toFile(outputPath);
 
       const imageUrl = `/uploads/${filename}`;
 
-      const image = await prisma.collectionImage.create({
-        data: {
-          url: imageUrl,
-          userCollection: { connect: { id: userAlbumId } },
-        },
-      });
+      const image = await CollectionService.createImage(userAlbumId, imageUrl);
 
       return res.status(201).json({ message: "Image ajoutée !", image });
     } catch (error) {
       console.error(error);
-      // Multer fileFilter ou sharp
       if (error.message?.includes('Type de fichier non autorisé')) {
         return res.status(400).json({ message: error.message });
       }
@@ -180,36 +149,24 @@ const CollectionController = {
       const { userAlbumId, imageId } = req.params;
       const userId = req.userId;
 
-      // Vérifier ownership du UserAlbum
-      const userAlbum = await prisma.userAlbum.findUnique({
-        where: { id: userAlbumId },
-      });
-
+      const userAlbum = await CollectionService.getById(userAlbumId);
       if (!userAlbum || userAlbum.userId !== userId) {
         return res.status(404).json({ message: "Album non trouvé dans votre collection." });
       }
 
-      // Vérifier que l'image appartient bien à ce UserAlbum
-      const image = await prisma.collectionImage.findUnique({
-        where: { id: imageId },
-      });
-
+      const image = await CollectionService.findImage(imageId);
       if (!image || image.userCollectionId !== userAlbumId) {
         return res.status(404).json({ message: "Image non trouvée pour cet album." });
       }
 
-      // Supprimer fichier disque (best effort)
       try {
         const filePath = path.join(process.cwd(), image.url.replace(/^\//, ''));
         await fs.unlink(filePath);
       } catch (e) {
-        // fichier déjà absent ou erreur FS : on log mais on continue la suppression DB
         console.warn(`Fichier non supprimé: ${image.url}`, e.message);
       }
 
-      await prisma.collectionImage.delete({
-        where: { id: imageId },
-      });
+      await CollectionService.deleteImage(imageId);
 
       return res.status(200).json({ message: "Image supprimée !" });
     } catch (error) {
@@ -218,5 +175,6 @@ const CollectionController = {
     }
   },
 };
+
 
 export default CollectionController;
