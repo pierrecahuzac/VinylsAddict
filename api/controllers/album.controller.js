@@ -1,5 +1,4 @@
 import prisma from "../database/prismaClient.js";
-import jwt from "jsonwebtoken";
 const AlbumController = {
   getOneAlbum: async (req, res) => {
     try {
@@ -63,11 +62,7 @@ const AlbumController = {
 
   create: async (req, res) => {
     try {
-      const token = req.cookies.va_token;
-      if (!token) return res.status(401).json({ message: "Non authentifié" });
-
-      const tokenDecoded = jwt.verify(token, process.env.JWT_SECRET);
-      const userId = tokenDecoded.userId;
+      const userId = req.userId;
 
       const {
         title,
@@ -159,6 +154,14 @@ const AlbumController = {
       const { id } = req.params;
       const { title, artist, year, color, coverUrl } = req.body;
 
+      const existing = await prisma.album.findUnique({ where: { id } });
+      if (!existing) return res.status(404).json({ message: "Album introuvable." });
+
+      const requester = await prisma.user.findUnique({ where: { id: req.userId } });
+      if (requester?.role !== "ADMIN" && existing.userId !== req.userId) {
+        return res.status(403).json({ message: "Non autorisé." });
+      }
+
       const album = await prisma.album.update({
         where: { id },
         data: {
@@ -180,6 +183,14 @@ const AlbumController = {
   delete: async (req, res) => {
     try {
       const { id } = req.params;
+
+      const existing = await prisma.album.findUnique({ where: { id } });
+      if (!existing) return res.status(404).json({ message: "Album introuvable." });
+
+      const requester = await prisma.user.findUnique({ where: { id: req.userId } });
+      if (requester?.role !== "ADMIN" && existing.userId !== req.userId) {
+        return res.status(403).json({ message: "Non autorisé." });
+      }
 
       await prisma.album.delete({
         where: { id },
