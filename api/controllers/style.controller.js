@@ -1,4 +1,5 @@
 import { StyleService } from "../services/style.service.js";
+import { isPrismaError, PRISMA_ERROR_CODES } from "../utils/prismaErrors.js";
 
 const StyleController = {
   getAllStyles: async (req, res) => {
@@ -73,6 +74,9 @@ const StyleController = {
       await StyleService.delete(req.params.id);
       return res.status(200).json({ message: "Style supprimé." });
     } catch (error) {
+      if (isPrismaError(error, PRISMA_ERROR_CODES.FOREIGN_KEY_CONSTRAINT)) {
+        return res.status(409).json({ message: "Suppression impossible : cet élément est encore utilisé." });
+      }
       console.error(error);
       return res.status(500).json({ error: "Erreur serveur lors de la suppression du style." });
     }
