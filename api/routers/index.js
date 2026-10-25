@@ -2,6 +2,10 @@ import { Router } from "express";
 //import rateLimit from 'express-rate-limit';
 
 import GenreRouter from "./genre.router.js";
+import StyleRouter from "./style.router.js";
+import ConditionRouter from "./condition.router.js";
+import FormatRouter from "./format.router.js";
+import VariantRouter from "./variant.router.js";
 import AlbumRouter from "./album.router.js";
 import UserRouter from "./user.router.js";
 import MetadataRouter from "./metadata.router.js";
@@ -42,6 +46,10 @@ router.get("/", (req, res) => {
 });
 
 router.use("/api/genres", GenreRouter);
+router.use("/api/styles", StyleRouter);
+router.use("/api/conditions", ConditionRouter);
+router.use("/api/formats", FormatRouter);
+router.use("/api/variants", VariantRouter);
 router.use("/api/albums", AlbumRouter);
 router.use("/api/collections", CollectionRouter);
 router.use("/api/users", UserRouter);

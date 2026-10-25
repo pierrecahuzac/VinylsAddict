@@ -1,0 +1,1 @@
+ALTER TABLE "UserAlbum" ADD COLUMN "signed" BOOLEAN NOT NULL DEFAULT false;
