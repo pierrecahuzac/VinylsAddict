@@ -8,6 +8,7 @@ import {
 } from "react";
 import axios from "axios";
 import api from "../lib/axios";
+import { clearCollectionCache } from "../hooks/useCollection";
 import useToast from "../hooks/useToast";
 import { useNavigate } from "react-router";
 import * as z from "zod";
@@ -69,6 +70,18 @@ const signupSchema = z
     path: ["passwordConfirmation"],
   });
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const loginSchema = z
+  .object({
+    identifier: z.string().min(1, "Email ou nom d'utilisateur requis."),
+    password: z.string().min(1, "Mot de passe requis."),
+  })
+  .refine(
+    (data) => !data.identifier.includes("@") || EMAIL_REGEX.test(data.identifier),
+    { message: "Format d'email invalide.", path: ["identifier"] },
+  );
+
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -88,10 +101,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (response.status === 200 && response.data.isLogged) {
         setUser(response.data.user);
         setUserIslogged(true);
+      } else {
+        clearCollectionCache();
       }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status !== 401) {
         console.error("Erreur technique checkToken");
+      } else {
+        clearCollectionCache();
       }
     } finally {
       setIsLoading(false);
@@ -107,13 +124,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (!email || !password) {
-        onError("Email ou mot de passe absent.");
+      const validation = loginSchema.safeParse({
+        identifier: email.trim(),
+        password,
+      });
+
+      if (!validation.success) {
+        const firstError = validation.error.issues[0].message;
+        onError(firstError);
         return;
       }
-      const result = await api.post("/users/login", { email, password });
+
+      const result = await api.post("/users/login", {
+        identifier: email.trim(),
+        password,
+      });
       
       if (result.status === 200 && result.data.isLogged) {
+        clearCollectionCache();
         setUser(result.data.user);
         setUserIslogged(true);
         setPassword("");
@@ -178,6 +206,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("Erreur lors de la déconnexion API", error);
     } finally {
+      clearCollectionCache();
       setUser(null);
       setUserIslogged(false);
       setEmail("");
@@ -191,6 +220,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       const res = await api.delete("/users/me");
       if (res.status === 200) {
         onSuccess("Compte supprimé. Collection purgée, vinyles anonymisés.");
+        clearCollectionCache();
         setUser(null);
         setUserIslogged(false);
         setEmail("");

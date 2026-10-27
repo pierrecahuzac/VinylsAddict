@@ -19,14 +19,14 @@ const Login = () => {
         <form onSubmit={login} className="space-y-4">
           <div className="space-y-2">
             <label className="text-xs font-bold uppercase tracking-widest text-gray-500 ml-1">
-              Email
+              Email ou nom d'utilisateur
             </label>
             <input
-              type="email"
-              name="email"
-              placeholder="vynils@addict.com"
+              type="text"
+              name="identifier"
+              placeholder="vinyls@addict.com ou votre_username"
               value={email}
-              autoComplete="email"
+              autoComplete="username"
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white focus:outline-none focus:border-[#8b5cf6] transition-all placeholder:text-gray-600"
             />

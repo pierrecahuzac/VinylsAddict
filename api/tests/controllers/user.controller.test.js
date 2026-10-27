@@ -8,6 +8,7 @@ vi.mock('../../database/prismaClient.js', () => ({
   default: {
     user: {
       findUnique: vi.fn(),
+      findFirst: vi.fn(),
       create: vi.fn(),
     },
   },
@@ -48,11 +49,13 @@ describe('Usercontroller.login', () => {
 
   it('devrait retourner 401 si l\'utilisateur n\'existe pas', async () => {
     prisma.user.findUnique.mockResolvedValue(null);
+    prisma.user.findFirst.mockResolvedValue(null);
 
     await Usercontroller.login(req, res);
 
+    expect(prisma.user.findFirst).toHaveBeenCalledWith({ where: { username: 'test@example.com' } });
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ message: "Combinaison email / password incorrecte" });
+    expect(res.json).toHaveBeenCalledWith({ message: "Identifiants incorrects." });
   });
 
   it('devrait retourner 401 si le mot de passe est incorrect', async () => {
@@ -62,7 +65,48 @@ describe('Usercontroller.login', () => {
     await Usercontroller.login(req, res);
 
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith({ message: "Combinaison email / password incorrecte" });
+    expect(res.json).toHaveBeenCalledWith({ message: "Identifiants incorrects." });
+  });
+
+  it('devrait retourner 200 et un token si le login via username est correct', async () => {
+    const mockUser = { id: 2, email: 'testuser@example.com', username: 'testuser', password: 'hashedPassword', canConnect: true };
+    prisma.user.findUnique.mockResolvedValue(null);
+    prisma.user.findFirst.mockResolvedValue(mockUser);
+    bcryptjs.compare.mockResolvedValue(true);
+    jwt.sign.mockReturnValue('fake-jwt-token');
+    req.body = { identifier: 'testuser', password: 'password123' };
+
+    await Usercontroller.login(req, res);
+
+    expect(prisma.user.findFirst).toHaveBeenCalledWith({ where: { username: 'testuser' } });
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.cookie).toHaveBeenCalledWith('va_token', 'fake-jwt-token', expect.any(Object));
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
+      isLogged: true,
+      message: 'Login successful',
+    }));
+  });
+
+  it('devrait retourner 400 si le format de l\'email est invalide', async () => {
+    req.body = { identifier: 'invalid-email@invalid', password: 'password123' };
+
+    await Usercontroller.login(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ message: "Format d'email invalide." });
+  });
+
+  it('devrait retourner 401 si le mot de passe est incorrect lors d\'un login via username', async () => {
+    prisma.user.findUnique.mockResolvedValue(null);
+    prisma.user.findFirst.mockResolvedValue({ id: 2, username: 'testuser', password: 'hashed', canConnect: true });
+    bcryptjs.compare.mockResolvedValue(false);
+
+    req.body = { identifier: 'testuser', password: 'wrongpassword' };
+
+    await Usercontroller.login(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ message: "Identifiants incorrects." });
   });
 });
 
@@ -107,6 +151,7 @@ describe('Usercontroller.signup', () => {
 
   it('crée un utilisateur et retourne 201', async () => {
     prisma.user.findUnique.mockResolvedValue(null);
+    prisma.user.findFirst.mockResolvedValue(null);
     prisma.user.create.mockResolvedValue({ id: '2', email: 'new@example.com', username: 'newuser' });
     await Usercontroller.signup(req, res);
     expect(res.status).toHaveBeenCalledWith(201);

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useCollection } from "../../hooks/useCollection.ts";
+import type { UserAlbumData } from "../../types/album.ts";
 import { IoLibraryOutline, IoHeartOutline, IoStatsChartOutline, IoTrendingUpOutline } from "react-icons/io5";
 
 const MyStats = () => {
-  const { albums, getAllUserAlbums } = useCollection();
-  const [wishlistCount, setWishlistCount] = useState(0);
+  const { albums, getAllUserAlbums, isLoading } =
+    useCollection<UserAlbumData>("userAlbums");
+  const [wishlistCount, setWishlistCount] = useState<number | null>(null);
 
   const fetchWishlistCount = async () => {
     try {
@@ -16,6 +18,7 @@ const MyStats = () => {
       setWishlistCount(response.data.length);
     } catch (error) {
       console.error("Error fetching wishlist count:", error);
+      setWishlistCount(0);
     }
   };
 
@@ -43,7 +46,7 @@ const MyStats = () => {
           </div>
           <div>
             <p className="text-xs font-black uppercase tracking-widest text-gray-500">Ma Collection</p>
-            <p className="text-3xl font-bold text-white">{albums.length} <span className="text-sm font-normal text-gray-400">albums</span></p>
+            <p className="text-3xl font-bold text-white">{isLoading ? "…" : albums.length} <span className="text-sm font-normal text-gray-400">albums</span></p>
           </div>
         </div>
 
@@ -54,7 +57,7 @@ const MyStats = () => {
           </div>
           <div>
             <p className="text-xs font-black uppercase tracking-widest text-gray-500">Ma Wishlist</p>
-            <p className="text-3xl font-bold text-white">{wishlistCount} <span className="text-sm font-normal text-gray-400">souhaits</span></p>
+            <p className="text-3xl font-bold text-white">{wishlistCount === null ? "…" : wishlistCount} <span className="text-sm font-normal text-gray-400">souhaits</span></p>
           </div>
         </div>
 
@@ -65,7 +68,7 @@ const MyStats = () => {
           </div>
           <div>
             <p className="text-xs font-black uppercase tracking-widest text-gray-500">Valeur Totale</p>
-            <p className="text-3xl font-bold text-white">{totalValue.toFixed(2)} <span className="text-sm font-normal text-gray-400">€</span></p>
+            <p className="text-3xl font-bold text-white">{isLoading ? "…" : totalValue.toFixed(2)} <span className="text-sm font-normal text-gray-400">€</span></p>
           </div>
         </div>
 

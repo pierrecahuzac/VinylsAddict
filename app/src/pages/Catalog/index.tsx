@@ -35,7 +35,7 @@ const initialAlbumState: AlbumState = {
 
 const Catalog = () => {
   const { albums, isLoading, getAllAlbums, getAllMetadata, allMetadata } =
-    useCollection();
+    useCollection<AlbumData>("albums");
   const { userIsLogged } = useUser();
 
   const navigate = useNavigate();

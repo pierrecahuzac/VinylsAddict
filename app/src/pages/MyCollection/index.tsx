@@ -43,7 +43,7 @@ const initialAlbumState: AlbumState = {
 
 const MyCollection = () => {
   const { albums, getAllUserAlbums, isLoading, getAllMetadata, allMetadata } =
-    useCollection();
+    useCollection<UserAlbumData>("userAlbums");
   const navigate = useNavigate();
   const [modaleAddNewAlbum, setModaleAddNewAlbum] = useState(false);
   const [album, setAlbum] = useState<AlbumState>(initialAlbumState);

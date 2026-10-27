@@ -3,6 +3,8 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { deleteUserAndAnonymize } from "../services/user.service.js";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const Usercontroller = {
   signup: async (req, res) => {
     
@@ -31,6 +33,18 @@ const Usercontroller = {
         });
       }
 
+      if (username) {
+        const foundUsername = await prisma.user.findFirst({
+          where: { username },
+        });
+
+        if (foundUsername) {
+          return res.status(409).json({
+            message: "Ce nom d'utilisateur est déjà utilisé.",
+          });
+        }
+      }
+
       const hashedPassword = await bcryptjs.hash(password, 10);
       const newUser = await prisma.user.create({
         data: {
@@ -56,20 +70,37 @@ const Usercontroller = {
   login: async (req, res) => {
     
     try {
-      const { email, password } = req.body;
-      if (!email || !password) {
-        return res.status(400).json({ message: "Email et mot de passe requis." });
+      const { identifier, email, username, password } = req.body;
+      const loginIdentifier = (identifier ?? email ?? username ?? "").trim();
+
+      if (!loginIdentifier || !password) {
+        return res
+          .status(400)
+          .json({ message: "Email/nom d'utilisateur et mot de passe requis." });
       }
-      const user = await prisma.user.findUnique({
+
+      if (loginIdentifier.includes("@") && !EMAIL_REGEX.test(loginIdentifier)) {
+        return res.status(400).json({ message: "Format d'email invalide." });
+      }
+
+      let user = await prisma.user.findUnique({
         where: {
-          email,
+          email: loginIdentifier,
         },
       });
 
       if (!user) {
+        user = await prisma.user.findFirst({
+          where: {
+            username: loginIdentifier,
+          },
+        });
+      }
+
+      if (!user) {
         return res
           .status(401)
-          .json({ message: "Combinaison email / password incorrecte" });
+          .json({ message: "Identifiants incorrects." });
       }
       if (!user.canConnect) {
         return res.status(401).json({
@@ -81,7 +112,7 @@ const Usercontroller = {
       if (!comparePassword) {
         return res
           .status(401)
-          .json({ message: "Combinaison email / password incorrecte" });
+          .json({ message: "Identifiants incorrects." });
       }
       delete user.password;
       const jwtToken = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
