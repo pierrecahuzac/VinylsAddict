@@ -7,18 +7,24 @@ import bcrypt from "bcryptjs";
 const seedDB = async () => {
   
   for (const genreData of datas.genres) {
-    await prisma.genre.upsert({
+    const genre = await prisma.genre.upsert({
       where: { name: genreData.name },
       update: {},
       create: {
         name: genreData.name,
-        styles: {
-          create: genreData.styles.map((styleName) => ({
-            name: styleName,
-          })),
-        },
       },
     });
+
+    for (const styleName of genreData.styles) {
+      await prisma.style.upsert({
+        where: { name: styleName },
+        update: { genreId: genre.id },
+        create: {
+          name: styleName,
+          genreId: genre.id,
+        },
+      });
+    }
   }
 
  

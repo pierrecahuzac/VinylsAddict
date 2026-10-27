@@ -1,16 +1,16 @@
 {
   "genres": [
-    { "name": "rock", "styles": ["punk", "grunge", "psychedelic", "metal"] },
-    { "name": "pop", "styles": ["synth-pop", "indie pop", "dream pop"] },
-    { "name": "jazz", "styles": ["bebop", "cool jazz", "fusion"] },
-    { "name": "hip-hop", "styles": ["boom bap", "trap", "gangsta rap"] },
-    { "name": "electronic", "styles": ["techno", "house", "ambient", "drum n bass"] },
-    { "name": "blues", "styles": ["delta blues", "chicago blues"] },
-    { "name": "classical", "styles": ["baroque", "romantic", "modern"] },
-    { "name": "reggae", "styles": ["dub", "dancehall", "roots"] },
-    { "name": "soul", "styles": ["neo-soul", "motown"] },
-    { "name": "funk", "styles": ["p-funk", "jazz-funk"] },
-    { "name": "disco", "styles": ["italo-disco", "euro-disco"] }
+    { "name": "rock", "styles": ["punk", "grunge", "psychedelic", "metal", "hard rock", "alternative rock", "indie rock", "progressive rock", "classic rock", "garage rock", "post-punk", "new wave", "shoegaze", "death metal", "black metal", "thrash metal", "heavy metal", "doom metal", "sludge metal", "hardcore", "emo", "math rock", "post-rock", "surf rock", "rockabilly"] },
+    { "name": "pop", "styles": ["synth-pop", "indie pop", "dream pop", "pop rock", "dance-pop", "electropop", "ballad", "chanson"] },
+    { "name": "jazz", "styles": ["bebop", "cool jazz", "fusion", "swing", "big band", "hard bop", "post-bop", "free jazz", "smooth jazz", "bossa nova"] },
+    { "name": "hip-hop", "styles": ["boom bap", "trap", "gangsta rap", "conscious", "g-funk", "east coast", "west coast", "experimental hip hop", "crunk", "grime"] },
+    { "name": "electronic", "styles": ["techno", "house", "ambient", "drum n bass", "electro", "trance", "dubstep", "idm", "breakbeat", "synthwave", "vaporwave", "downtempo", "deep house", "tech house", "minimal"] },
+    { "name": "blues", "styles": ["delta blues", "chicago blues", "electric blues", "country blues", "jump blues", "rhythm and blues"] },
+    { "name": "classical", "styles": ["baroque", "romantic", "modern", "contemporary", "opera", "choral"] },
+    { "name": "reggae", "styles": ["dub", "dancehall", "roots", "ska", "rocksteady", "ragga"] },
+    { "name": "soul", "styles": ["neo-soul", "motown", "northern soul", "southern soul", "psychedelic soul"] },
+    { "name": "funk", "styles": ["p-funk", "jazz-funk", "afrobeat", "funk rock"] },
+    { "name": "disco", "styles": ["italo-disco", "euro-disco", "nu-disco"] }
   ],
   "conditions": [
     { "nameEN": "mint", "nameFR": "neuf" },

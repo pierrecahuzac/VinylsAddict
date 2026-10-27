@@ -44,6 +44,7 @@ const AlbumController = {
         artist,
         year,
         genreId,
+        styleId,
         conditionId,
         variantId,
         coverUrl,
@@ -52,15 +53,17 @@ const AlbumController = {
         addAlbumToCollection,
         signed,
         diskNumber,
+        diskCount,
         trackCount,
         formatId,
+        barCode,
       } = req.body;
 
       if (!title || !artist || !formatId) {
         return res.status(400).json({ message: "title, artist et formatId sont requis." });
       }
       const parsedYear = year ? Number(year) : null;
-      const parsedDiskNumber = diskNumber ? Number(diskNumber) : null;
+      const parsedDiskNumber = diskNumber || diskCount ? Number(diskNumber || diskCount) : null;
       const parsedTrackCount = trackCount ? Number(trackCount) : null;
       if ([parsedYear, parsedDiskNumber, parsedTrackCount].some((v) => v !== null && Number.isNaN(v))) {
         return res.status(400).json({ message: "year, diskNumber et trackCount doivent être numériques." });
@@ -75,11 +78,13 @@ const AlbumController = {
         artist,
         color,
         coverUrl,
+        barCode,
         parsedYear,
         parsedDiskNumber,
         parsedTrackCount,
         parsedPrice,
         genreId,
+        styleId,
         variantId,
         formatId,
         conditionId,

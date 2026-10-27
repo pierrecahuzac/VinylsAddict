@@ -7,6 +7,7 @@ export interface ModaleProps {
   changeDataAlbum: (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => void;
+  setAlbum?: Dispatch<SetStateAction<any>>;
   allMetadata: AllMetadata | null;
   setModaleAddNewAlbum: Dispatch<SetStateAction<boolean>>;
   addAlbumToCollection: boolean;

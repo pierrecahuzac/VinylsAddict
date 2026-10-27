@@ -18,6 +18,9 @@ services:
       - "33000:33000"
     env_file:
       - ./api/.env
+    environment:
+      - DISCOGS_USER_AGENT=${DISCOGS_USER_AGENT:-VinylsAddict/1.0}
+      - DISCOGS_TOKEN=${DISCOGS_TOKEN:-}
     command: >
       sh -c "if [ ! -f node_modules/.bin/prisma ]; then npm install; fi &&
              npx prisma generate &&

@@ -11,6 +11,7 @@ import UserRouter from "./user.router.js";
 import MetadataRouter from "./metadata.router.js";
 import wishlistRouter from "./wishlist.router.js";
 import CollectionRouter from "./collection.router.js";
+import DiscogsRouter from "./discogs.router.js";
 
 const router = Router();
 const isDev = process.env.NODE_ENV === "development";
@@ -55,5 +56,6 @@ router.use("/api/collections", CollectionRouter);
 router.use("/api/users", UserRouter);
 router.use("/api/metadatas", MetadataRouter);
 router.use("/api/wishlists", wishlistRouter);
+router.use("/api/discogs", DiscogsRouter);
 
 export default router;

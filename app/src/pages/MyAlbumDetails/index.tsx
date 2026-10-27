@@ -384,11 +384,7 @@ const MyAlbumDetails = () => {
               <p className="text-[#8b5cf6]-500/80 text-xs text-center -mt-2">Limite de 5 photos atteinte.</p>
             )}
 
-            {(!userAlbum?.images || userAlbum.images.length === 0) ? (
-              <p className="text-gray-500 text-sm italic text-center py-4">
-                Aucune photo. Ajoute une photo de ta galette — les métadonnées EXIF/GPS seront automatiquement supprimées.
-              </p>
-            ) : (
+            {userAlbum?.images && userAlbum.images.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {userAlbum.images.map((img) => (
                   <div key={img.id} className="relative group aspect-square rounded-xl overflow-hidden border border-white/10 bg-[#0a0a0a]">
