@@ -4,8 +4,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: '#f1c40f',
-      }
+        brand: '#8b5cf6',
+      },
+      fontFamily: {
+        sans: ['Montserrat', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
     },
   },
   plugins: [],
