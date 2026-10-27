@@ -2,6 +2,8 @@
 
 Application web de gestion de collection de vinyles : catalogue communautaire, collection personnelle (état, prix, photos, dédicace) et liste de souhaits.
 
+Fonctionnalités principales : gestion de collection, wishlist, catalogue, scan de codes-barres (camera) avec auto-remplissage Discogs, métadonnées (genre, style, format, variante, condition).
+
 ## Sommaire
 
 - [Stack](#stack)
