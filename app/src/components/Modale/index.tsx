@@ -356,7 +356,7 @@ const Modale = ({
                 value={discogsQuery}
                 onChange={(e) => setDiscogsQuery(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleDiscogsSearch(); } }}
-                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-[#8b5cf6] transition-all"
+                className="flex-1 min-w-0 bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
               <button
                 type="button"
