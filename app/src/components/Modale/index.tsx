@@ -2,6 +2,7 @@ import { useState, type ChangeEvent } from "react";
 import type { ModaleProps } from "../../types/modale";
 import type { MetadataItem } from "../../types/album";
 import api from "../../lib/axios";
+import { useBarcodeScanner } from "../../hooks/useBarcodeScanner";
 
 const proxiedImage = (url?: string) =>
   url
@@ -298,6 +299,29 @@ const Modale = ({
     }
   };
 
+  const { start: startBarcodeScanner, stop: stopBarcodeScanner, isScanning: isScanningBarcode } =
+    useBarcodeScanner(async (code: string) => {
+        try {
+          const res = await api.get(
+            `/discogs/search?q=${encodeURIComponent(code)}&type=release&per_page=5`,
+          );
+          const results = res.data.results || [];
+          if (results.length) {
+            await handleSelectDiscogsRelease(results[0].id);
+          }
+        } catch (err) {
+          console.error("Erreur scan code-barres:", err);
+        }
+    });
+
+  const toggleBarcodeScanner = async () => {
+    if (isScanningBarcode) {
+      await stopBarcodeScanner();
+    } else {
+      await startBarcodeScanner();
+    }
+  };
+
   const handleGenreChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const genreId = e.target.value;
     if (setAlbum) {
@@ -342,7 +366,16 @@ const Modale = ({
               >
                 {isSearchingDiscogs ? "..." : "Chercher"}
               </button>
+              <button
+                type="button"
+                onClick={toggleBarcodeScanner}
+                disabled={isSearchingDiscogs}
+                className="px-4 py-3 bg-[#0a0a0a] border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-white/10 disabled:opacity-50 transition-all shrink-0"
+              >
+                {isScanningBarcode ? "Arrêter" : "Scanner"}
+              </button>
             </div>
+            <div id="barcode-scanner-reader" className="w-full bg-black rounded-xl" />
             {discogsResults.length > 0 && (
               <div className="max-h-60 overflow-y-auto space-y-2 bg-[#0a0a0a] p-2 rounded-xl border border-white/10">
                 {discogsResults.map((item: any) => (
