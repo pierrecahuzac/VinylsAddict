@@ -31,6 +31,8 @@ export interface MetadataItem {
   name?: string;
   nameEN?: string;
   nameFR?: string;
+  genreId?: string;
+  styles?: MetadataItem[];
 }
 
 export interface AllMetadata {

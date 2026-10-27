@@ -158,6 +158,7 @@ const MyCollection = () => {
           submitNewAlbum={submitNewAlbum}
           album={album}
           changeDataAlbum={changeDataAlbum}
+          setAlbum={setAlbum}
           allMetadata={allMetadata}
           setModaleAddNewAlbum={setModaleAddNewAlbum}
           addAlbumToCollection={addAlbumToCollection}
