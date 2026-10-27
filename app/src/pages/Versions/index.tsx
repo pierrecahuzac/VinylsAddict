@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Album from "../../components/Album/index.tsx";
 import { IoArrowBackOutline } from "react-icons/io5";
+import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
 interface VersionAlbum {
   id: string;
@@ -89,7 +90,7 @@ const Versions = () => {
             Aucune version trouvée pour {decodedTitle}.
           </p>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className={ALBUM_GRID_CLASS}>
             {albums.map((item) => (
               <div key={item.id} className="relative">
                 <Album

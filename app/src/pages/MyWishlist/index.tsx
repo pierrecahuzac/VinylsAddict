@@ -4,6 +4,7 @@ import Album from "../../components/Album";
 import { useNavigate } from "react-router";
 import type { AlbumData } from "../../types/album";
 import { IoTrashOutline, IoCloseOutline } from "react-icons/io5";
+import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
 interface WishlistEntry extends AlbumData {
   wishlistId: string;
@@ -88,7 +89,7 @@ const MyWishlist = () => {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className={ALBUM_GRID_CLASS}>
             {userWishlist.map((album) => (
               <div key={album.wishlistId} className="relative group">
                 <Album

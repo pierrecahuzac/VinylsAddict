@@ -13,6 +13,7 @@ import { useUser } from "../../contexts/userContext.tsx";
 import Album from "../../components/Album/index.tsx";
 import Modale from "../../components/Modale/index.tsx";
 import { IoAddOutline } from "react-icons/io5";
+import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
 import type { AlbumState, AlbumData } from "../../types/album.ts";
 
@@ -126,7 +127,7 @@ const Catalog = () => {
                 <button
                   key={`carousel-${item.id}`}
                   onClick={() => openAlbumDetails(item.id)}
-                  className="snap-start shrink-0 w-36 sm:w-44 group"
+                  className="snap-start shrink-0 w-36 group"
                 >
                   <div className="aspect-square w-full overflow-hidden rounded-2xl bg-white/5 shadow-lg ring-1 ring-white/5 transition-transform group-hover:scale-[1.02]">
                     <img
@@ -147,7 +148,7 @@ const Catalog = () => {
         )}
 
         <h2 className="text-lg font-bold text-white tracking-tight">Tous les albums</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className={ALBUM_GRID_CLASS}>
           {albums.length > 0 &&
             albums?.map((item: AlbumData) => (
               <Album
@@ -165,14 +166,14 @@ const Catalog = () => {
 
           {userIsLogged && (
             <button
-              className="w-full h-20 mt-2 flex items-center justify-center gap-3 bg-white/5/30 border-2 border-dashed border-white/10 hover:border-[#8b5cf6] hover:bg-white/5/60 rounded-xl transition-all group overflow-hidden"
+              className="aspect-square w-full flex flex-col items-center justify-center gap-2 bg-white/5/30 border-2 border-dashed border-white/10 hover:border-[#8b5cf6] hover:bg-white/5/60 rounded-2xl transition-all group overflow-hidden"
               onClick={openModaleAddNewAlbum}
             >
               <div className="w-10 h-10 rounded-full bg-[#0a0a0a] flex items-center justify-center text-gray-500 group-hover:text-[#8b5cf6] group-hover:scale-110 transition-all">
                 <IoAddOutline size={24} />
               </div>
-              <span className="font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest text-xs">
-                Ajouter un nouveau vinyle
+              <span className="font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest text-[10px] text-center px-2">
+                Ajouter un vinyle
               </span>
             </button>
           )}

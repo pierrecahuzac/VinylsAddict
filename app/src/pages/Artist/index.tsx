@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Album from "../../components/Album/index.tsx";
 import { IoArrowBackOutline } from "react-icons/io5";
+import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
 interface ArtistAlbum {
   id: string;
@@ -77,7 +78,7 @@ const Artist = () => {
             Aucun album trouvé pour {artistName}.
           </p>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className={ALBUM_GRID_CLASS}>
             {albums.map((item) => (
               <Album
                 id={item.id}

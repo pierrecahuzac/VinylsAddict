@@ -7,6 +7,7 @@ import type { UserAlbumData } from "../../types/album.ts";
 
 import Modale from "../../components/Modale/index.tsx"; 
 import Album from "../../components/Album/index.tsx";
+import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
 interface AlbumState {
   artist: string;
@@ -128,7 +129,7 @@ const MyCollection = () => {
           </div>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className={ALBUM_GRID_CLASS}>
           {albums.length > 0 &&
             albums.map((item: UserAlbumData) => (
               <Album

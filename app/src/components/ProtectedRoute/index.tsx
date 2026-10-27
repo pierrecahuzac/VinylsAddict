@@ -5,7 +5,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { userIsLogged, isLoading } = useUser();
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen text-white">Chargement...</div>;
+    return <div className="flex items-center justify-center min-h-dvh text-white">Chargement...</div>;
   }
 
   if (!userIsLogged) {
