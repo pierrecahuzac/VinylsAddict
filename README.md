@@ -255,5 +255,9 @@ Variables à définir en production : `POSTGRES_URL`, `DATABASE_URL`, `JWT_SECRE
 
 - `CONTEXT.md` : contexte projet et modèles.
 - `CAHIER_DES_CHARGES.md` : cahier des charges fonctionnel.
+- `PERFORMANCE.md` : optimisation des performances serveur (diffusion des photos des vinyles via nginx).
+- `CACHING.md` : cache applicatif avec Redis (données fréquemment consultées, ex : page d'accueil).
+- `CADDY.md` : Caddy comme reverse proxy / serveur de fichiers statiques.
+- `OPTIMISATIONS.md` : optimisations performance complémentaires (cache HTTP/CDN, compression, images).
 
 Les notes personnelles (`TODO.md`, `INCOHERENCES.md`, `REVUE_CODE.md`, `UPDATE.md`) sont volontairement ignorées par Git.
