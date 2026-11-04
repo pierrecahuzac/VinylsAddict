@@ -107,7 +107,7 @@ const MyWishlist = () => {
                     setAlbumToDelete(album.id);
                     setModaleDeleteFromWishlist(true);
                   }}
-                  className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md text-gray-400 hover:text-red-500 rounded-lg opacity-0 group-hover:opacity-100 transition-all z-10 border border-white/5"
+                  className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md text-gray-400 hover:text-red-500 rounded-lg opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all z-10 border border-white/5"
                   aria-label="Supprimer de la wishlist"
                 >
                   <IoTrashOutline size={18} />
