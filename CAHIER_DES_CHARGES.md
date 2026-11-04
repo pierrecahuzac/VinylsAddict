@@ -31,7 +31,7 @@
 ## 1. Objet & Contexte
 
 Plateforme web pour passionnés de vinyle : gérer sa **collection personnelle**, sa **wishlist**, et parcourir un **catalogue mutualisé** d'albums.  
-Le projet existe en MVP Dockerisé (`docker-compose.yml:1-85`) avec backend Express + Prisma et frontend React PWA. La landing Astro (`landing/`) est scaffold vide (`landing/.astro/` seul) — non livrée.
+Le projet existe en MVP Dockerisé (`docker-compose.yml:1-85`) avec backend Express + Prisma et frontend React PWA. La landing Astro (`landing/`) est en scaffold avancé (`landing/Dockerfile`, `landing/astro.config.mjs`, `landing/.astro/`) — contenu marketing à finaliser.
 
 Document source : `CONTEXT.md:1-35`, `api/prisma/schema.prisma:1-141`, `app/src/App.tsx:19-42`.
 
@@ -62,7 +62,7 @@ Document source : `CONTEXT.md:1-35`, `api/prisma/schema.prisma:1-141`, `app/src/
 - Suppression de compte avec anonymisation (`api/controllers/user.controller.js:381-546`)
 
 ### 3.2 Hors périmètre V1
-Voir §16. Recherche Discogs (`app/src/components/SearchBar/index.tsx:1-39` stub), marketplace, messages, OCR barcode.
+Voir §16. Marketplace, messages, OCR barcode — la recherche Discogs auto (scan barcode → `GET /discogs/search?q=<code>`) est livrée (`feat(scan)` + fix, `SearchBar` wireé, debounce ≥3 chars).
 
 ---
 
@@ -253,7 +253,7 @@ BaseURL : `VITE_BACKEND_URL_DEV` (`http://localhost:33000/api`) en dev, `FRONTEN
 - `Header` : logo → `/`, badge ADMIN `/dashboard`, avatar `username[0]` → `/profile`, logout.
 - `NavBar` : bottom fixed 16h, switch `IoHome` | `IoLibrary`/`IoHeart`/`IoStatsChart` (loggé) vs `IoLogIn`/`IoPersonAdd` (visiteur).
 - `Layout` : `flex-col h-svh`, `Header` + `main overflow-y-auto bg-gray-900` + `NavBar`.
-- `SearchBar` : stub Discogs `api.discogs.com/database/search?token=TON_TOKEN` debounce 500ms ≥3 chars — non câblé.
+- `SearchBar` : debounce 500ms ≥3 chars → `GET https://api.discogs.com/database/search?q=<query>&token=TON_TOKEN_DISCOGS` (axios), intégré au scan barcode (`useBarcodeScanner` → sélection release → auto-fill `Modale`).
 
 ### 9.3 State & Data fetching
 - `userContext.tsx:70-225` : god-object (email/password/username/confirmation + login/signup/logout/checkToken/deleteAccount/navigate/toast).
@@ -376,9 +376,9 @@ Aligné `UPDATE.md:31-35` (3 phases) + `REVUE_CODE.md:90-112` + `TODO.md:26-38`.
 
 - Marketplace / vente / paiement
 - Chat / messages entre users
-- Recherche externe Discogs auto (stub `SearchBar` non câblé)
+- ~~Recherche externe Discogs auto~~ → **livrée** (`feat(scan)` + fix mobile, `SearchBar` wireé).
 - OCR barcode / import CSV
-- Landing marketing Astro (à spécifier à part — `landing/` vide)
+- Landing marketing Astro (contenu marketing à finaliser — `landing/` scaffold Docker+config).
 - Multi-langue complet (seuls `nameEN/nameFR` sur Condition/Variant)
 
 ---
