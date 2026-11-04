@@ -76,7 +76,8 @@ const CollectionController = {
         return res.status(404).json({ message: "Album non trouvé dans votre collection." });
       }
 
-      for (const img of userAlbum.images) {
+      const images = userAlbum.images || [];
+      for (const img of images) {
         try {
           const filePath = path.join(process.cwd(), img.url.replace(/^\//, ''));
           await fs.unlink(filePath);
@@ -89,6 +90,9 @@ const CollectionController = {
 
       return res.status(200).json({ message: "Album supprimé de la collection." });
     } catch (error) {
+      if (error?.code === "P2025") {
+        return res.status(404).json({ message: "Album non trouvé dans votre collection." });
+      }
       console.error(error);
       return res.status(500).json({ error: "Erreur serveur lors de la suppression." });
     }

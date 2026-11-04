@@ -48,4 +48,36 @@ describe('CollectionController', () => {
     await CollectionController.addAlbumToCollection(req, res);
     expect(res.status).toHaveBeenCalledWith(201);
   });
+
+  it('deleteAlbumFromCollection returns 404 when album not found', async () => {
+    prisma.userAlbum.findUnique.mockResolvedValue(null);
+    req = { params: { userAlbumId: 'ua1' }, body: {}, userId: 'u1' };
+
+    await CollectionController.deleteAlbumFromCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(prisma.userAlbum.delete).not.toHaveBeenCalled();
+  });
+
+  it('deleteAlbumFromCollection deletes when owned', async () => {
+    prisma.userAlbum.findUnique.mockResolvedValue({ id: 'ua1', userId: 'u1', images: [] });
+    req = { params: { userAlbumId: 'ua1' }, body: {}, userId: 'u1' };
+
+    await CollectionController.deleteAlbumFromCollection(req, res);
+
+    expect(prisma.userAlbum.delete).toHaveBeenCalledWith({ where: { id: 'ua1' } });
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+
+  it('deleteAlbumFromCollection handles P2025 as not found', async () => {
+    const err = new Error('Record not found');
+    err.code = 'P2025';
+    prisma.userAlbum.findUnique.mockResolvedValue({ id: 'ua1', userId: 'u1', images: [] });
+    prisma.userAlbum.delete.mockImplementation(() => Promise.reject(err));
+    req = { params: { userAlbumId: 'ua1' }, body: {}, userId: 'u1' };
+
+    await CollectionController.deleteAlbumFromCollection(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+  });
 });
