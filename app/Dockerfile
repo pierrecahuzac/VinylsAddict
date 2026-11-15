@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-ARG VITE_BACKEND_URL_DEV
+ARG VITE_BACKEND_URL_DEV=https://api.partagetacollection.eu/api
 ENV VITE_BACKEND_URL_DEV=$VITE_BACKEND_URL_DEV
 RUN npm run build
 

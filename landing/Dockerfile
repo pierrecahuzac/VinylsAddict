@@ -5,7 +5,7 @@ COPY package.json ./
 # pas de package-lock.json -> npm install (compatible npm ci si lock présent)
 RUN npm install
 COPY . .
-ARG PUBLIC_APP_URL=https://app.vinyls-addict.eu
+ARG PUBLIC_APP_URL=https://partagetacollection.eu
 ENV PUBLIC_APP_URL=$PUBLIC_APP_URL
 RUN npm run build
 
