@@ -13,32 +13,26 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
-
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Build & push API
         uses: docker/build-push-action@v6
         with:
           context: ./api
           push: true
           tags: ghcr.io/${{ github.repository }}/api:latest
-
       - name: Build & push frontend
         uses: docker/build-push-action@v6
         with:
           context: ./app
           push: true
           tags: ghcr.io/${{ github.repository }}/app:latest
-          build-args:
-            VITE_BACKEND_URL_DEV: "https://api.partagetacollection.eu/api"
-
       - name: Build & push landing
         uses: docker/build-push-action@v6
         with:
           context: ./landing
           push: true
           tags: ghcr.io/${{ github.repository }}/landing:latest
-          build-args:
-            PUBLIC_APP_URL: "https://partagetacollection.eu"
 
   deploy:
     needs: build-and-push
