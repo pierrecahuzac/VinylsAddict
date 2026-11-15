@@ -18,7 +18,7 @@ services:
   api:
     container_name: api
     build: ./api
-    image: ghcr.io/<org>/vinyls_addict/api:latest
+    image: ghcr.io/pierrecahuzac/vinylsaddict/api:latest
     restart: always
     env_file:
       - ./api/.env
@@ -48,7 +48,7 @@ services:
       context: ./app
       args:
         VITE_BACKEND_URL_DEV: ${VITE_BACKEND_URL_DEV}
-    image: ghcr.io/<org>/vinyls_addict/app:latest
+    image: ghcr.io/pierrecahuzac/vinylsaddict/app:latest
     restart: always
 
   landing:
@@ -57,7 +57,7 @@ services:
       context: ./landing
       args:
         PUBLIC_APP_URL: ${PUBLIC_APP_URL:-https://partagetacollection.eu}
-    image: ghcr.io/<org>/vinyls_addict/landing:latest
+    image: ghcr.io/pierrecahuzac/vinylsaddict/landing:latest
     restart: always
 
   caddy:

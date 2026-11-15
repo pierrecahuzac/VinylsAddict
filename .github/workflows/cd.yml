@@ -20,19 +20,23 @@ jobs:
         with:
           context: ./api
           push: true
-          tags: ghcr.io/${{ github.repository }}/api:latest
+          tags: ghcr.io/pierrecahuzac/vinylsaddict/api:latest
       - name: Build & push frontend
         uses: docker/build-push-action@v6
         with:
           context: ./app
           push: true
-          tags: ghcr.io/${{ github.repository }}/app:latest
+          tags: ghcr.io/pierrecahuzac/vinylsaddict/app:latest
+          build-args:
+            VITE_BACKEND_URL_DEV: "https://api.partagetacollection.eu/api"
       - name: Build & push landing
         uses: docker/build-push-action@v6
         with:
           context: ./landing
           push: true
-          tags: ghcr.io/${{ github.repository }}/landing:latest
+          tags: ghcr.io/pierrecahuzac/vinylsaddict/landing:latest
+          build-args:
+            PUBLIC_APP_URL: "https://partagetacollection.eu"
 
   deploy:
     needs: build-and-push
