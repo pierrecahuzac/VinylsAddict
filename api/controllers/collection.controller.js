@@ -127,7 +127,7 @@ const CollectionController = {
         .webp({ quality: 85 })
         .toFile(outputPath);
 
-      const imageUrl = `/uploads/${filename}`;
+      const imageUrl = `${process.env.API_URL}/uploads/${filename}`;
 
       const image = await CollectionService.createImage(userAlbumId, imageUrl);
 

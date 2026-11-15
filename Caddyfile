@@ -1,0 +1,25 @@
+{
+	email admin@partagetacollection.eu
+}
+
+partagetacollection.eu {
+	reverse_proxy landing:80
+}
+
+app.partagetacollection.eu {
+	handle /api/* {
+		reverse_proxy api:33000
+	}
+
+	handle /uploads/* {
+		reverse_proxy api:33000
+	}
+
+	handle {
+		reverse_proxy app:55173
+	}
+}
+
+api.partagetacollection.eu {
+	reverse_proxy api:33000
+}

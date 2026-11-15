@@ -1,69 +1,54 @@
 services:
-  app:
-    container_name: app
-    build: ./app
-    ports:
-      - "55173:55173"
-    volumes:
-      - ./app:/app
-      - /app/node_modules
+  db:
+    container_name: db
+    image: postgres:17-alpine
     restart: always
-    depends_on:
-      - api
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   api:
     container_name: api
     build: ./api
-    ports:
-      - "33000:33000"
+    image: ghcr.io/<org>/vinyls_addict/api:latest
+    restart: always
     env_file:
       - ./api/.env
     environment:
       - DISCOGS_USER_AGENT=${DISCOGS_USER_AGENT:-VinylsAddict/1.0}
       - DISCOGS_TOKEN=${DISCOGS_TOKEN:-}
-    command: >
-      sh -c "if [ ! -f node_modules/.bin/prisma ]; then npm install; fi &&
-             npx prisma generate &&
-             npx prisma migrate deploy &&
-             npx prisma db seed &&
-             npm run nodemon"
+    command: ["npm", "start"]
     volumes:
-      - ./api:/api
-      - /api/node_modules
-    restart: always
+      - api_uploads:/api/uploads
     depends_on:
       db:
         condition: service_healthy
-
-  db:
-    container_name: db
-    image: postgres:17-alpine
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_DB=vinyls_addict
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    ports:
-      - "55432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    restart: always
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:33000/api').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
-
-  db_test:
-    container_name: db_test
-    image: postgres:17-alpine
-    profiles: ["dev"]
-    env_file:
-      - .env.test
-    ports:
-      - "55433:5432"
-    volumes:
-      - db_test_data:/var/lib/postgresql/data
+  app:
+    container_name: app
+    build:
+      context: ./app
+      args:
+        VITE_BACKEND_URL_DEV: ${VITE_BACKEND_URL_DEV}
+    image: ghcr.io/<org>/vinyls_addict/app:latest
     restart: always
 
   landing:
@@ -71,28 +56,31 @@ services:
     build:
       context: ./landing
       args:
-        PUBLIC_APP_URL: ${PUBLIC_APP_URL:-https://app.vinyls-addict.eu}
-    ports:
-      - "44321:80"
+        PUBLIC_APP_URL: ${PUBLIC_APP_URL:-https://partagetacollection.eu}
+    image: ghcr.io/<org>/vinyls_addict/landing:latest
     restart: always
 
-  prisma-studio:
-    container_name: prisma-studio
-    build: ./api 
-    profiles: ["dev"]
-    command: npx prisma studio --port 5555 --hostname 0.0.0.0 --browser none
-    environment:
-      - POSTGRES_URL=postgresql://postgres:password@db:5432/vinyls_addict
-    ports:
-      - "55555:5555"
-    volumes:
-      - ./api:/api
-    working_dir: /api
+  caddy:
+    container_name: caddy
+    image: caddy:2-alpine
     restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
     depends_on:
-      - db
+      api:
+        condition: service_healthy
+      app:
+        condition: service_started
+      landing:
+        condition: service_started
 
 volumes:
   db_data:
-  db_test_data:
-
+  api_uploads:
+  caddy_data:
+  caddy_config:
