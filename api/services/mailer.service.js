@@ -28,12 +28,18 @@ export const sendPasswordResetEmail = async (to, token) => {
     return false;
   }
 
-  await mailer.sendMail({
-    from: process.env.SMTP_FROM || process.env.SMTP_USER || "no-reply@partagetacollection.eu",
-    to,
-    subject: "Réinitialisez votre mot de passe Vinyls Addict",
-    text: `Bonjour,\n\nUtilisez ce lien pour choisir un nouveau mot de passe (valable 1 heure) :\n${link}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet email.\n`,
-    html: `<p>Bonjour,</p><p>Utilisez ce lien pour choisir un nouveau mot de passe (valable 1 heure) :</p><p><a href="${link}">Réinitialiser mon mot de passe</a></p><p>Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>`,
-  });
-  return true;
+  try {
+    await mailer.sendMail({
+      from: process.env.SMTP_FROM || process.env.SMTP_USER || "no-reply@partagetacollection.eu",
+      to,
+      subject: "Réinitialisez votre mot de passe Vinyls Addict",
+      text: `Bonjour,\n\nUtilisez ce lien pour choisir un nouveau mot de passe (valable 1 heure) :\n${link}\n\nSi vous n'êtes pas à l'origine de cette demande, ignorez cet email.\n`,
+      html: `<p>Bonjour,</p><p>Utilisez ce lien pour choisir un nouveau mot de passe (valable 1 heure) :</p><p><a href="${link}">Réinitialiser mon mot de passe</a></p><p>Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.</p>`,
+    });
+    return true;
+  } catch (error) {
+    // On ne fait pas échouer la demande : le lien est logged pour dépannage.
+    console.error("[password-reset] échec envoi email:", error.message, "lien:", link);
+    return false;
+  }
 };

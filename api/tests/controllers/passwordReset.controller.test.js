@@ -63,6 +63,18 @@ describe('PasswordResetController', () => {
     expect(sendPasswordResetEmail).toHaveBeenCalledWith('user@example.com', expect.any(String));
   });
 
+  it('répond 200 même si l’envoi d’email échoue', async () => {
+    req.body = { email: 'user@example.com' };
+    prisma.user.findUnique.mockResolvedValue({ id: 'u1', email: 'user@example.com' });
+    prisma.passwordResetToken.create.mockResolvedValue({});
+    sendPasswordResetEmail.mockRejectedValue(new Error('SMTP indisponible'));
+
+    await PasswordResetController.forgotPassword(req, res);
+
+    expect(prisma.passwordResetToken.create).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(200);
+  });
+
   it('refuse un token manquant', async () => {
     req.body = { password: 'password123', passwordConfirmation: 'password123' };
     await PasswordResetController.resetPassword(req, res);

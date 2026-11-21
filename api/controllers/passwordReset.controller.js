@@ -30,7 +30,12 @@ const PasswordResetController = {
             expiresAt: new Date(Date.now() + TOKEN_TTL_MS),
           },
         });
-        await sendPasswordResetEmail(user.email, token);
+        try {
+          await sendPasswordResetEmail(user.email, token);
+        } catch (emailError) {
+          // L'email peut échouer (SMTP indisponible) : on garde la réponse générique.
+          console.error("[password-reset] envoi impossible:", emailError.message);
+        }
       }
 
       return res.status(200).json({ message: genericMessage });
