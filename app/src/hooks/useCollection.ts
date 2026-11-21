@@ -53,9 +53,10 @@ export const useCollection = <T = AlbumData>(scope?: CollectionScope) => {
     if (!genresCache) setIsLoading(true);
     try {
       const result = await api.get("/genres");
+      const data = Array.isArray(result.data) ? result.data : [];
 
-      genresCache = result.data;
-      setGenres(result.data);
+      genresCache = data;
+      setGenres(data);
     } catch (error) {
       console.error("Erreur Genres:", error);
     } finally {
@@ -67,9 +68,10 @@ export const useCollection = <T = AlbumData>(scope?: CollectionScope) => {
     if (!albumsCache) setIsLoading(true);
     try {
       const result = await api.get("/albums");
+      const data = Array.isArray(result.data) ? result.data : [];
 
-      albumsCache = result.data;
-      setAlbums(result.data);
+      albumsCache = data;
+      setAlbums(data);
     } catch (error) {
       console.error("Erreur Albums:", error);
     } finally {
@@ -81,9 +83,12 @@ export const useCollection = <T = AlbumData>(scope?: CollectionScope) => {
     if (!userAlbumsCache) setIsLoading(true);
     try {
       const result = await api.get("/users/albums");
+      const data = Array.isArray(result.data?.allUserAlbums)
+        ? result.data.allUserAlbums
+        : [];
 
-      userAlbumsCache = result.data.allUserAlbums;
-      setAlbums(result.data.allUserAlbums);
+      userAlbumsCache = data;
+      setAlbums(data);
     } catch (error) {
       console.error("Erreur Collection:", error);
     } finally {

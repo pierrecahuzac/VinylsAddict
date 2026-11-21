@@ -31,6 +31,9 @@ const MasterAlbum = () => {
   const [albumAddedToCollection, setAlbumAddedToCollection] = useState({
     price: "",
     conditionId: "",
+    gifted: false,
+    editionSize: "",
+    copyNumber: "",
   });
 
   const albumIsInUserWishlist = async () => {
@@ -42,11 +45,11 @@ const MasterAlbum = () => {
           withCredentials: true,
         },
       );
-      if (response.data.message === "Album présent dans la wishlist") {
-        setIsWishlisted(true);
-        return true;
-      }
-      return false;
+      const wishlisted =
+        response.data.wishlisted === true ||
+        response.data.message === "Album présent dans la wishlist";
+      setIsWishlisted(wishlisted);
+      return wishlisted;
     } catch {
       setIsWishlisted(false);
       return false;
@@ -118,6 +121,13 @@ const MasterAlbum = () => {
         {
           price: albumAddedToCollection.price,
           conditionId: albumAddedToCollection.conditionId,
+          gifted: albumAddedToCollection.gifted,
+          editionSize: albumAddedToCollection.editionSize
+            ? Number(albumAddedToCollection.editionSize)
+            : null,
+          copyNumber: albumAddedToCollection.copyNumber
+            ? albumAddedToCollection.copyNumber.trim()
+            : null,
         },
         {
           withCredentials: true,
@@ -135,10 +145,18 @@ const MasterAlbum = () => {
   const changeDataAlbum = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setAlbumAddedToCollection((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
     setAlbumAddedToCollection((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "price" && (value === "0" || value === "0.0" || value === "0.00")
+        ? { gifted: true }
+        : {}),
     }));
   };
 
@@ -232,6 +250,15 @@ const MasterAlbum = () => {
               </div>
             </div>
           )}
+          {masterAlbumDetails?.editionSize != null && (
+            <div className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 flex items-start gap-4">
+              <IoDiscOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
+              <div>
+                <p className="text-xs text-gray-400 uppercase tracking-wider font-bold">Édition limitée</p>
+                <p className="text-gray-100">{masterAlbumDetails.editionSize} exemplaires</p>
+              </div>
+            </div>
+          )}
           <div className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 flex items-start gap-4">
             <IoBarcodeOutline className="text-[#8b5cf6] mt-1 shrink-0" size={20} />
             <div>
@@ -297,6 +324,42 @@ const MasterAlbum = () => {
                   ))}
                 </select>
               </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-300">Exemplaires de mon édition (facultatif)</label>
+                <input
+                  type="number"
+                  min="1"
+                  name="editionSize"
+                  value={albumAddedToCollection.editionSize}
+                  onChange={changeDataAlbum}
+                  placeholder="100"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-300">Numéro de mon exemplaire (facultatif)</label>
+                <input
+                  type="text"
+                  name="copyNumber"
+                  value={albumAddedToCollection.copyNumber}
+                  onChange={changeDataAlbum}
+                  placeholder="Ex : 4/10"
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                />
+              </div>
+
+              <label className="flex items-center gap-3 p-3 bg-[#0a0a0a]/60 rounded-xl border border-white/10 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  name="gifted"
+                  checked={albumAddedToCollection.gifted}
+                  onChange={changeDataAlbum}
+                  className="w-5 h-5 rounded border-white/10 text-[#8b5cf6] focus:ring-[#8b5cf6] bg-black"
+                />
+                <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Offert (cadeau)</span>
+              </label>
 
               <button type="submit" className="w-full bg-[#8b5cf6] text-white font-bold py-4 rounded-xl hover:bg-[#7c3aed] transition-colors shadow-lg mt-4">
                 Confirmer l'ajout

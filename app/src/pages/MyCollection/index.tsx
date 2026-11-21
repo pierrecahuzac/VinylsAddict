@@ -5,7 +5,8 @@ import axios from "axios";
 import { useCollection } from "../../hooks/useCollection.ts";
 import type { UserAlbumData } from "../../types/album.ts";
 
-import Modale from "../../components/Modale/index.tsx"; 
+import Modale from "../../components/Modale/index.tsx";
+import AddAlbumFab from "../../components/AddAlbumFab/index.tsx";
 import Album from "../../components/Album/index.tsx";
 import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
@@ -18,6 +19,9 @@ interface AlbumState {
   variantId: string;
   formatId: string;
   price: string;
+  editionSize?: string;
+  copyNumber?: string;
+  gifted: boolean;
   coverUrl: string;
   color: string;
   styleId: string;
@@ -34,11 +38,14 @@ const initialAlbumState: AlbumState = {
   variantId: "",
   formatId: "",
   price: "",
+  gifted: false,
   coverUrl: "",
   color: "",
   styleId: "",
   trackCount: "",
   diskCount: "",
+  editionSize: "",
+  copyNumber: "",
 };
 
 const MyCollection = () => {
@@ -52,10 +59,19 @@ const MyCollection = () => {
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setAlbum({
-      ...album,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setAlbum((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
+    setAlbum((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "price" && (value === "0" || value === "0.0" || value === "0.00")
+        ? { gifted: true }
+        : {}),
+    }));
   };
 
   useEffect(() => {
@@ -74,10 +90,13 @@ const MyCollection = () => {
     const payload = {
       ...album,
       year: album.year ? parseInt(album.year) : null,
-      price: album.price ? parseFloat(album.price) : null,
+      price: album.price !== "" ? parseFloat(album.price) : null,
       trackCount: album.trackCount ? parseInt(album.trackCount) : null,
       diskCount: album.diskCount ? parseInt(album.diskCount) : null,
+      editionSize: album.editionSize ? parseInt(album.editionSize) : null,
+      copyNumber: album.copyNumber ? album.copyNumber.trim() : null,
       addAlbumToCollection: true,
+      gifted: album.gifted,
     };
 
     try {
@@ -146,13 +165,7 @@ const MyCollection = () => {
         </div>
       </main>
 
-      <button
-        className="fixed bottom-24 right-6 w-14 h-14 bg-[#8b5cf6] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
-        onClick={openModaleAddNewAlbum}
-        aria-label="Ajouter un album"
-      >
-        +
-      </button>
+      <AddAlbumFab onClick={openModaleAddNewAlbum} />
 
       {modaleAddNewAlbum && (
         <Modale

@@ -52,11 +52,14 @@ const AlbumController = {
         price,
         addAlbumToCollection,
         signed,
+        gifted,
         diskNumber,
         diskCount,
         trackCount,
         formatId,
         barCode,
+        editionSize,
+        copyNumber,
       } = req.body;
 
       if (!title || !artist || !formatId) {
@@ -68,9 +71,13 @@ const AlbumController = {
       if ([parsedYear, parsedDiskNumber, parsedTrackCount].some((v) => v !== null && Number.isNaN(v))) {
         return res.status(400).json({ message: "year, diskNumber et trackCount doivent être numériques." });
       }
-      const parsedPrice = price ? Number(price) : null;
+      const parsedPrice = price !== undefined && price !== null && price !== "" ? Number(price) : null;
       if (parsedPrice !== null && Number.isNaN(parsedPrice)) {
         return res.status(400).json({ message: "price doit être numérique." });
+      }
+      const parsedEditionSize = editionSize !== undefined && editionSize !== null && editionSize !== "" ? Number(editionSize) : null;
+      if (parsedEditionSize !== null && (!Number.isInteger(parsedEditionSize) || parsedEditionSize < 1)) {
+        return res.status(400).json({ message: "editionSize doit être un entier positif." });
       }
 
       const result = await AlbumService.create(userId, {
@@ -90,6 +97,9 @@ const AlbumController = {
         conditionId,
         addAlbumToCollection,
         signed,
+        gifted,
+        parsedEditionSize,
+        copyNumber: copyNumber ? String(copyNumber).trim() : null,
       });
 
       return res.status(201).json({
@@ -110,7 +120,7 @@ const AlbumController = {
   update: async (req, res) => {
     try {
       const { id } = req.params;
-      const { title, artist, year, color, coverUrl } = req.body;
+      const { title, artist, year, color, coverUrl, editionSize } = req.body;
 
       const existing = await AlbumService.getById(id);
       if (!existing) return res.status(404).json({ message: "Album introuvable." });
@@ -120,12 +130,18 @@ const AlbumController = {
         return res.status(403).json({ message: "Non autorisé." });
       }
 
+      const parsedEditionSize = editionSize !== undefined && editionSize !== null && editionSize !== "" ? Number(editionSize) : null;
+      if (parsedEditionSize !== null && (!Number.isInteger(parsedEditionSize) || parsedEditionSize < 1)) {
+        return res.status(400).json({ message: "editionSize doit être un entier positif." });
+      }
+
       const album = await AlbumService.update(id, {
         title,
         artist,
         releaseDate: year ? parseInt(year) : null,
         color,
         coverUrl,
+        editionSize: editionSize === undefined ? undefined : parsedEditionSize,
       });
 
       return res.status(200).json({ message: "Album mis à jour.", album });

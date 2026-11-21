@@ -349,7 +349,7 @@ const Modale = ({
         <form onSubmit={submitNewAlbum} className="p-6 space-y-5">
           {/* Discogs Auto-fill Widget */}
           <div className="p-4 bg-[#8b5cf6]/10 rounded-xl border border-[#8b5cf6]/30 space-y-3">
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2">
               <input
                 type="text"
                 placeholder="Ex: Daft Punk Discovery..."
@@ -358,22 +358,24 @@ const Modale = ({
                 onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleDiscogsSearch(); } }}
                 className="flex-1 min-w-0 bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
-              <button
-                type="button"
-                onClick={handleDiscogsSearch}
-                disabled={isSearchingDiscogs || !discogsQuery.trim()}
-                className="px-4 py-3 bg-[#8b5cf6] text-gray-950 font-bold text-sm rounded-xl hover:bg-amber-400 disabled:opacity-50 transition-all shrink-0"
-              >
-                {isSearchingDiscogs ? "..." : "Chercher"}
-              </button>
-              <button
-                type="button"
-                onClick={toggleBarcodeScanner}
-                disabled={isSearchingDiscogs}
-                className="px-4 py-3 bg-[#0a0a0a] border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-white/10 disabled:opacity-50 transition-all shrink-0"
-              >
-                {isScanningBarcode ? "Arrêter" : "Scanner"}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={handleDiscogsSearch}
+                  disabled={isSearchingDiscogs || !discogsQuery.trim()}
+                  className="flex-1 sm:flex-none px-4 py-3 bg-[#8b5cf6] text-gray-950 font-bold text-sm rounded-xl hover:bg-amber-400 disabled:opacity-50 transition-all"
+                >
+                  {isSearchingDiscogs ? "..." : "Chercher"}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleBarcodeScanner}
+                  disabled={isSearchingDiscogs}
+                  className="flex-1 sm:flex-none px-4 py-3 bg-[#0a0a0a] border border-white/10 text-white font-bold text-sm rounded-xl hover:bg-white/10 disabled:opacity-50 transition-all"
+                >
+                  {isScanningBarcode ? "Arrêter" : "Scanner"}
+                </button>
+              </div>
             </div>
             <div id="barcode-scanner-reader" className="w-full bg-black rounded-xl" />
             {discogsResults.length > 0 && (
@@ -508,6 +510,18 @@ const Modale = ({
                 className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
             </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Exemplaires (édition)</label>
+              <input
+                type="number"
+                min="1"
+                placeholder="100"
+                name="editionSize"
+                value={album.editionSize ?? ""}
+                onChange={changeDataAlbum}
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+              />
+            </div>
           </div>
 
           {/* Technical Selects */}
@@ -602,33 +616,57 @@ const Modale = ({
 
           {/* Price & Condition */}
           {(addAlbumToCollection || isCollectionContext) && (
-            <div className="grid grid-cols-2 gap-4 p-4 bg-[#8b5cf6]/5 rounded-xl border border-amber-500/20">
+            <div className="space-y-4 p-4 bg-[#8b5cf6]/5 rounded-xl border border-amber-500/20">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Prix (€)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="20.00"
+                    name="price"
+                    value={album.price}
+                    onChange={changeDataAlbum}
+                    className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">État</label>
+                  <select
+                    name="conditionId"
+                    value={album.conditionId}
+                    onChange={changeDataAlbum}
+                    className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+                  >
+                    <option value="">-- État --</option>
+                    {allMetadata?.conditions?.map((c: MetadataItem) => (
+                      <option key={c.id} value={c.id}>{c.nameFR || c.nameEN || c.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Prix (€)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Numéro de l'exemplaire (facultatif)</label>
                 <input
-                  type="number"
-                  step="0.01"
-                  placeholder="20.00"
-                  name="price"
-                  value={album.price}
+                  type="text"
+                  placeholder="Ex : 4/10"
+                  name="copyNumber"
+                  value={album.copyNumber ?? ""}
                   onChange={changeDataAlbum}
                   className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 />
               </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">État</label>
-                <select
-                  name="conditionId"
-                  value={album.conditionId}
+              <label className="flex items-center gap-3 p-3 bg-[#0a0a0a]/60 rounded-xl border border-white/10 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  name="gifted"
+                  checked={album.gifted === true}
                   onChange={changeDataAlbum}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
-                >
-                  <option value="">-- État --</option>
-                  {allMetadata?.conditions?.map((c: MetadataItem) => (
-                    <option key={c.id} value={c.id}>{c.nameFR || c.nameEN || c.name}</option>
-                  ))}
-                </select>
-              </div>
+                  className="w-5 h-5 rounded border-white/10 text-[#8b5cf6] focus:ring-[#8b5cf6] bg-black"
+                />
+                <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Offert (cadeau)</span>
+              </label>
             </div>
           )}
 

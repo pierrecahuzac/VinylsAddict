@@ -21,8 +21,15 @@ import useToast from "../../hooks/useToast";
 import type { FullAlbumState } from "../../types/album";
 
 const getImageUrl = (url: string) => {
+  if (!url) return "/placeholder.jpg";
+  // Certaines URLs stockées en BDD sont absolues (parfois avec "https//" sans ":") :
+  // on normalise et on ne préfixe jamais deux fois le domaine de l'API.
+  const fixed = /^https?\/\//i.test(url)
+    ? url.replace(/^(https?)\/\//i, "$1://")
+    : url;
+  if (/^https?:\/\//i.test(fixed) || fixed.startsWith("//")) return fixed;
   const base = (import.meta.env.VITE_BACKEND_URL_DEV as string | undefined)?.replace(/\/api\/?$/, "") || "";
-  return `${base}${url}`;
+  return `${base}${fixed.startsWith("/") ? "" : "/"}${fixed}`;
 };
 
 const MyAlbumDetails = () => {
@@ -37,6 +44,8 @@ const MyAlbumDetails = () => {
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [updatingSigned, setUpdatingSigned] = useState(false);
+  const [updatingGifted, setUpdatingGifted] = useState(false);
+  const [updatingEditionSize, setUpdatingEditionSize] = useState(false);
   const navigate = useNavigate();
   const { onSuccess, onError } = useToast();
 
@@ -101,6 +110,49 @@ const MyAlbumDetails = () => {
     }
   };
 
+  const handleEditionSizeBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+    if (!userAlbum) return;
+    const raw = e.target.value;
+    const value = raw === "" ? null : Number(raw);
+    if (value !== null && (!Number.isInteger(value) || value < 1)) {
+      onError("Le nombre d'exemplaires doit être un entier positif.");
+      return;
+    }
+    if (value === (userAlbum.editionSize ?? null)) return;
+    setUpdatingEditionSize(true);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}`,
+        { editionSize: value },
+        { withCredentials: true },
+      );
+      await refreshDetails();
+    } catch {
+      onError("Erreur lors de la mise à jour.");
+    } finally {
+      setUpdatingEditionSize(false);
+    }
+  };
+
+  const handleCopyNumberBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
+    if (!userAlbum) return;
+    const value = e.target.value.trim() || null;
+    if (value === (userAlbum.copyNumber ?? null)) return;
+    setUpdatingEditionSize(true);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}`,
+        { copyNumber: value },
+        { withCredentials: true },
+      );
+      await refreshDetails();
+    } catch {
+      onError("Erreur lors de la mise à jour.");
+    } finally {
+      setUpdatingEditionSize(false);
+    }
+  };
+
   const isAtLimit = (userAlbum?.images?.length || 0) >= 5;
 
   const handleToggleSigned = async () => {
@@ -117,6 +169,23 @@ const MyAlbumDetails = () => {
       onError("Erreur lors de la mise à jour.");
     } finally {
       setUpdatingSigned(false);
+    }
+  };
+
+  const handleToggleGifted = async () => {
+    if (!userAlbum) return;
+    setUpdatingGifted(true);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}`,
+        { gifted: !userAlbum.gifted },
+        { withCredentials: true },
+      );
+      await refreshDetails();
+    } catch {
+      onError("Erreur lors de la mise à jour.");
+    } finally {
+      setUpdatingGifted(false);
     }
   };
 
@@ -268,6 +337,34 @@ const MyAlbumDetails = () => {
                 <p className="text-gray-100 font-medium">{userAlbum?.condition?.nameFR || "—"}</p>
               </div>
             </div>
+            <div className="space-y-1 pt-2 border-t border-white/10">
+              <p className="text-[10px] text-gray-400 font-bold uppercase">Exemplaires de mon édition (facultatif)</p>
+              <input
+                type="number"
+                min="1"
+                key={`${userAlbum?.id ?? "edition"}-${userAlbum?.editionSize ?? ""}`}
+                defaultValue={userAlbum?.editionSize ?? ""}
+                onBlur={handleEditionSizeBlur}
+                placeholder="Ex : 100"
+                disabled={updatingEditionSize}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-gray-100 focus:outline-none focus:border-[#8b5cf6] disabled:opacity-50"
+              />
+              {album?.editionSize != null && (
+                <p className="text-[10px] text-gray-500">Édition globale : {album.editionSize} exemplaires</p>
+              )}
+            </div>
+            <div className="space-y-1">
+              <p className="text-[10px] text-gray-400 font-bold uppercase">Numéro de mon exemplaire (ex : 4/10)</p>
+              <input
+                type="text"
+                key={`${userAlbum?.id ?? "copy"}-${userAlbum?.copyNumber ?? ""}`}
+                defaultValue={userAlbum?.copyNumber ?? ""}
+                onBlur={handleCopyNumberBlur}
+                placeholder="Ex : 4/10"
+                disabled={updatingEditionSize}
+                className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-sm text-gray-100 focus:outline-none focus:border-[#8b5cf6] disabled:opacity-50"
+              />
+            </div>
             <div className="flex items-center justify-between pt-2 border-t border-white/10">
               <p className="text-[10px] text-gray-400 font-bold uppercase">Dédicassé</p>
               <button
@@ -280,6 +377,20 @@ const MyAlbumDetails = () => {
                 } disabled:opacity-50`}
               >
                 {updatingSigned ? "..." : userAlbum?.signed ? "Oui" : "Non"}
+              </button>
+            </div>
+            <div className="flex items-center justify-between pt-2 border-t border-white/10">
+              <p className="text-[10px] text-gray-400 font-bold uppercase">Offert</p>
+              <button
+                onClick={handleToggleGifted}
+                disabled={updatingGifted}
+                className={`px-3 py-1 rounded-full text-xs font-bold border transition ${
+                  userAlbum?.gifted
+                    ? "bg-pink-500/20 text-pink-400 border-pink-500/40"
+                    : "bg-white/5 text-gray-400 border-white/10"
+                } disabled:opacity-50`}
+              >
+                {updatingGifted ? "..." : userAlbum?.gifted ? "Oui" : "Non"}
               </button>
             </div>
           </div>

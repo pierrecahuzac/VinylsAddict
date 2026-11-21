@@ -9,6 +9,16 @@
     <meta name="description" content="Gérez votre collection de vinyles simplement.">
     <meta name="theme-color" content="#ffffff">
     <title>Vinyls Addict</title>
+    <script>
+      try {
+        document.documentElement.setAttribute(
+          "data-theme",
+          localStorage.getItem("va-theme") === "light" ? "light" : "dark"
+        );
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

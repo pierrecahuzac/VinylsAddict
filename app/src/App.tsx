@@ -9,6 +9,8 @@ import Profile from "./pages/Profile";
 import Catalog from "./pages/Catalog";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Artist from "./pages/Artist";
 import Versions from "./pages/Versions";
 
@@ -16,11 +18,14 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyStats from "./pages/MyStats";
 import Dashboard from "./pages/Dashboard";
+import { useTheme } from "./contexts/themeContext";
 
 const App = () => {
+  const { theme } = useTheme();
+
   return (
     <>
-      <ToastContainer theme="dark" />
+      <ToastContainer theme={theme} />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Catalog />} />
@@ -30,6 +35,8 @@ const App = () => {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/album/:id" element={<MasterAlbum />} />
           <Route path="/artist/:name" element={<Artist />} />
           <Route path="/versions/:title" element={<Versions />} />
