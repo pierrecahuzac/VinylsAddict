@@ -510,6 +510,18 @@ const Modale = ({
                 className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
               />
             </div>
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">Exemplaires (édition)</label>
+              <input
+                type="number"
+                min="1"
+                placeholder="100"
+                name="editionSize"
+                value={album.editionSize ?? ""}
+                onChange={changeDataAlbum}
+                className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+              />
+            </div>
           </div>
 
           {/* Technical Selects */}
@@ -633,6 +645,17 @@ const Modale = ({
                     ))}
                   </select>
                 </div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Numéro de l'exemplaire (facultatif)</label>
+                <input
+                  type="text"
+                  placeholder="Ex : 4/10"
+                  name="copyNumber"
+                  value={album.copyNumber ?? ""}
+                  onChange={changeDataAlbum}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+                />
               </div>
               <label className="flex items-center gap-3 p-3 bg-[#0a0a0a]/60 rounded-xl border border-white/10 cursor-pointer group">
                 <input

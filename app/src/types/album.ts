@@ -13,6 +13,8 @@ export interface AlbumFormState {
   styleId: string;
   trackCount?: string | number;
   diskCount?: string | number;
+  editionSize?: string | number | null;
+  copyNumber?: string;
   barCode?: string | bigint;
 }
 
@@ -59,6 +61,8 @@ export interface AlbumState {
   styleId: string;
   trackCount?: string;
   diskCount?: string;
+  editionSize?: string;
+  copyNumber?: string;
 }
 
 export interface AlbumData {
@@ -70,6 +74,7 @@ export interface AlbumData {
   color?: string;
   trackCount?: number;
   diskNumber?: number;
+  editionSize?: number | null;
   barCode?: string;
   format?: {
     speed?: string;
@@ -90,6 +95,8 @@ export interface CollectionImageData {
 export interface UserAlbumData {
   id: string;
   price?: number;
+  copyNumber?: string | null;
+  editionSize?: number | null;
   signed?: boolean;
   gifted?: boolean;
   notes?: string;
