@@ -52,6 +52,7 @@ const AlbumController = {
         price,
         addAlbumToCollection,
         signed,
+        gifted,
         diskNumber,
         diskCount,
         trackCount,
@@ -68,7 +69,7 @@ const AlbumController = {
       if ([parsedYear, parsedDiskNumber, parsedTrackCount].some((v) => v !== null && Number.isNaN(v))) {
         return res.status(400).json({ message: "year, diskNumber et trackCount doivent être numériques." });
       }
-      const parsedPrice = price ? Number(price) : null;
+      const parsedPrice = price !== undefined && price !== null && price !== "" ? Number(price) : null;
       if (parsedPrice !== null && Number.isNaN(parsedPrice)) {
         return res.status(400).json({ message: "price doit être numérique." });
       }
@@ -90,6 +91,7 @@ const AlbumController = {
         conditionId,
         addAlbumToCollection,
         signed,
+        gifted,
       });
 
       return res.status(201).json({

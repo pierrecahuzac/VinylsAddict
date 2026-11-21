@@ -4,6 +4,7 @@ export interface AlbumFormState {
   coverUrl: string;
   year: string | number;
   price: string | number;
+  gifted?: boolean;
   formatId: string;
   conditionId: string;
   variantId: string;
@@ -52,6 +53,7 @@ export interface AlbumState {
   variantId: string;
   formatId: string;
   price: string;
+  gifted?: boolean;
   coverUrl: string;
   color: string;
   styleId: string;
@@ -89,6 +91,7 @@ export interface UserAlbumData {
   id: string;
   price?: number;
   signed?: boolean;
+  gifted?: boolean;
   notes?: string;
   condition?: MetadataItem;
   album: AlbumData;

@@ -50,7 +50,7 @@ export default defineConfig({
     allowedHosts: [".tail2fc6b2.ts.net", ".partagetacollection.eu"],
     proxy: {
       "/api": {
-        target: "http://localhost:33000",
+        target: process.env.API_PROXY_TARGET || "http://localhost:33000",
         changeOrigin: true,
       },
     },

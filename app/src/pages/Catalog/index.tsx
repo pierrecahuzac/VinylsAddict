@@ -26,6 +26,7 @@ const initialAlbumState: AlbumState = {
   variantId: "",
   formatId: "",
   price: "",
+  gifted: false,
   coverUrl: "",
   color: "",
   styleId: "",
@@ -47,10 +48,19 @@ const Catalog = () => {
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setAlbum({
-      ...album,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setAlbum((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
+    setAlbum((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "price" && (value === "0" || value === "0.0" || value === "0.00")
+        ? { gifted: true }
+        : {}),
+    }));
   };
 
   useEffect(() => {
@@ -64,10 +74,11 @@ const Catalog = () => {
     const payload = {
       ...album,
       year: album.year ? Number(album.year) : null,
-      price: album.price ? Number(album.price) : null,
+      price: album.price !== "" && album.price !== null && album.price !== undefined ? Number(album.price) : null,
       trackCount: album.trackCount ? Number(album.trackCount) : null,
       diskCount: album.diskCount ? Number(album.diskCount) : null,
       addAlbumToCollection,
+      gifted: album.gifted === true,
     };
 
     try {
@@ -115,9 +126,18 @@ const Catalog = () => {
           </div>
         )}
         {!isLoading && albums.length === 0 && (
-          <p className="text-center text-gray-500 py-10 italic">
-            Aucun album dans les derniers ajouts.
-          </p>
+          <div className="text-center text-gray-500 py-10 italic space-y-3">
+            <p>Aucun album dans les derniers ajouts.</p>
+            {userIsLogged && (
+              <button
+                onClick={openModaleAddNewAlbum}
+                className="mx-auto flex items-center gap-2 rounded-full border border-[#8b5cf6]/40 px-4 py-2 text-sm font-semibold text-[#8b5cf6] not-italic transition-colors hover:bg-[#8b5cf6]/10"
+              >
+                <IoAddOutline size={18} />
+                Ajouter un vinyle
+              </button>
+            )}
+          </div>
         )}
         {!isLoading && albums.length > 0 && (
           <section className="space-y-3">
@@ -163,22 +183,19 @@ const Catalog = () => {
                 className="w-full"
               />
             ))}
-
-          {userIsLogged && (
-            <button
-              className="aspect-square w-full flex flex-col items-center justify-center gap-2 bg-white/5/30 border-2 border-dashed border-white/10 hover:border-[#8b5cf6] hover:bg-white/5/60 rounded-2xl transition-all group overflow-hidden"
-              onClick={openModaleAddNewAlbum}
-            >
-              <div className="w-10 h-10 rounded-full bg-[#0a0a0a] flex items-center justify-center text-gray-500 group-hover:text-[#8b5cf6] group-hover:scale-110 transition-all">
-                <IoAddOutline size={24} />
-              </div>
-              <span className="font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-widest text-[10px] text-center px-2">
-                Ajouter un vinyle
-              </span>
-            </button>
-          )}
         </div>
       </main>
+
+      {userIsLogged && (
+        <button
+          className="fixed bottom-24 right-6 w-14 h-14 bg-[#8b5cf6] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
+          onClick={openModaleAddNewAlbum}
+          aria-label="Ajouter un vinyle"
+          title="Ajouter un vinyle"
+        >
+          <IoAddOutline size={28} />
+        </button>
+      )}
 
       {modaleAddNewAlbum && (
         <Modale

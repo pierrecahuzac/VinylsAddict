@@ -63,6 +63,7 @@ model UserAlbum {
   notes       String?
   copyNumber  String?
   signed      Boolean   @default(false)
+  gifted      Boolean   @default(false)
   conditionId String?
   condition   Condition?        @relation(fields: [conditionId], references: [id])
   images      CollectionImage[]

@@ -64,10 +64,15 @@ const WishlistController = {
     }
     try {
       const wishlistedAlbum = await WishlistService.check(userId, albumId);
-      if (!wishlistedAlbum) {
-        return res.status(404).json({ message: "Album non présent dans la wishlist" });
-      }
-      return res.status(200).json({ wishlistedAlbum, message: "Album présent dans la wishlist" });
+      // "Pas dans la wishlist" est un état normal, pas une erreur : on répond 200
+      // avec un booléen pour éviter un 404 dans la console du navigateur.
+      return res.status(200).json({
+        wishlisted: Boolean(wishlistedAlbum),
+        ...(wishlistedAlbum ? { wishlistedAlbum } : {}),
+        message: wishlistedAlbum
+          ? "Album présent dans la wishlist"
+          : "Album non présent dans la wishlist",
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Erreur lors de la vérification de la wishlist." });

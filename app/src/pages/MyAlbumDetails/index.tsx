@@ -21,8 +21,15 @@ import useToast from "../../hooks/useToast";
 import type { FullAlbumState } from "../../types/album";
 
 const getImageUrl = (url: string) => {
+  if (!url) return "/placeholder.jpg";
+  // Certaines URLs stockées en BDD sont absolues (parfois avec "https//" sans ":") :
+  // on normalise et on ne préfixe jamais deux fois le domaine de l'API.
+  const fixed = /^https?\/\//i.test(url)
+    ? url.replace(/^(https?)\/\//i, "$1://")
+    : url;
+  if (/^https?:\/\//i.test(fixed) || fixed.startsWith("//")) return fixed;
   const base = (import.meta.env.VITE_BACKEND_URL_DEV as string | undefined)?.replace(/\/api\/?$/, "") || "";
-  return `${base}${url}`;
+  return `${base}${fixed.startsWith("/") ? "" : "/"}${fixed}`;
 };
 
 const MyAlbumDetails = () => {
@@ -37,6 +44,7 @@ const MyAlbumDetails = () => {
   const [deletingImageId, setDeletingImageId] = useState<string | null>(null);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
   const [updatingSigned, setUpdatingSigned] = useState(false);
+  const [updatingGifted, setUpdatingGifted] = useState(false);
   const navigate = useNavigate();
   const { onSuccess, onError } = useToast();
 
@@ -117,6 +125,23 @@ const MyAlbumDetails = () => {
       onError("Erreur lors de la mise à jour.");
     } finally {
       setUpdatingSigned(false);
+    }
+  };
+
+  const handleToggleGifted = async () => {
+    if (!userAlbum) return;
+    setUpdatingGifted(true);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}`,
+        { gifted: !userAlbum.gifted },
+        { withCredentials: true },
+      );
+      await refreshDetails();
+    } catch {
+      onError("Erreur lors de la mise à jour.");
+    } finally {
+      setUpdatingGifted(false);
     }
   };
 
@@ -280,6 +305,20 @@ const MyAlbumDetails = () => {
                 } disabled:opacity-50`}
               >
                 {updatingSigned ? "..." : userAlbum?.signed ? "Oui" : "Non"}
+              </button>
+            </div>
+            <div className="flex items-center justify-between pt-2 border-t border-white/10">
+              <p className="text-[10px] text-gray-400 font-bold uppercase">Offert</p>
+              <button
+                onClick={handleToggleGifted}
+                disabled={updatingGifted}
+                className={`px-3 py-1 rounded-full text-xs font-bold border transition ${
+                  userAlbum?.gifted
+                    ? "bg-pink-500/20 text-pink-400 border-pink-500/40"
+                    : "bg-white/5 text-gray-400 border-white/10"
+                } disabled:opacity-50`}
+              >
+                {updatingGifted ? "..." : userAlbum?.gifted ? "Oui" : "Non"}
               </button>
             </div>
           </div>
