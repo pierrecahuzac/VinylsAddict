@@ -30,6 +30,7 @@ export const AlbumService = {
           releaseDate: data.parsedYear,
           coverUrl: data.coverUrl,
           barCode: data.barCode || null,
+          editionSize: data.parsedEditionSize,
           creator: { connect: { id: userId } },
           diskNumber: data.parsedDiskNumber,
           trackCount: data.parsedTrackCount,
@@ -51,6 +52,7 @@ export const AlbumService = {
             signed: data.signed === true || data.signed === "true" || data.signed === 1 || data.signed === "1",
             gifted: data.gifted === true || data.gifted === "true" || data.gifted === 1 || data.gifted === "1",
             conditionId: data.conditionId ? data.conditionId : null,
+            copyNumber: data.copyNumber ?? null,
           },
         });
       }

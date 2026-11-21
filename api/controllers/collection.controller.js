@@ -10,7 +10,7 @@ const CollectionController = {
 
     try {
       const { albumId } = req.params;
-      const { price, conditionId, signed, gifted } = req.body;
+      const { price, conditionId, signed, gifted, editionSize, copyNumber } = req.body;
 
       if (!albumId) {
         return res.status(400).json({ message: "albumId requis." });
@@ -20,13 +20,20 @@ const CollectionController = {
         return res.status(400).json({ message: "price doit être numérique." });
       }
 
+      const parsedEditionSize = editionSize !== undefined && editionSize !== null && editionSize !== "" ? Number(editionSize) : null;
+      if (parsedEditionSize !== null && (!Number.isInteger(parsedEditionSize) || parsedEditionSize < 1)) {
+        return res.status(400).json({ message: "editionSize doit être un entier positif." });
+      }
+
       const userAlbum = await CollectionService.create(
         userId,
         albumId,
         parsedPrice,
         conditionId ? conditionId : null,
         signed === true || signed === "true" || signed === 1 || signed === "1",
-        gifted === true || gifted === "true" || gifted === 1 || gifted === "1"
+        gifted === true || gifted === "true" || gifted === 1 || gifted === "1",
+        parsedEditionSize,
+        copyNumber ? String(copyNumber).trim() : null
       );
 
       return res
@@ -41,7 +48,7 @@ const CollectionController = {
     try {
       const { userAlbumId } = req.params;
       const userId = req.userId;
-      const { price, conditionId, signed, gifted } = req.body;
+      const { price, conditionId, signed, gifted, editionSize, copyNumber } = req.body;
 
       const existing = await CollectionService.getById(userAlbumId);
       if (!existing || existing.userId !== userId) {
@@ -55,8 +62,15 @@ const CollectionController = {
         return res.status(400).json({ message: "price doit être numérique." });
       }
 
+      const parsedEditionSize = editionSize === undefined ? existing.editionSize : (editionSize !== null && editionSize !== "" ? Number(editionSize) : null);
+      if (parsedEditionSize !== null && (!Number.isInteger(parsedEditionSize) || parsedEditionSize < 1)) {
+        return res.status(400).json({ message: "editionSize doit être un entier positif." });
+      }
+
       const updated = await CollectionService.update(userAlbumId, {
         price: parsedPrice,
+        editionSize: parsedEditionSize,
+        copyNumber: copyNumber === undefined ? existing.copyNumber : (copyNumber ? String(copyNumber).trim() : null),
         conditionId: conditionId === undefined ? existing.conditionId : (conditionId ? conditionId : null),
         signed: signed === undefined ? existing.signed : (signed === true || signed === "true" || signed === 1 || signed === "1"),
         gifted: gifted === undefined ? existing.gifted : (gifted === true || gifted === "true" || gifted === 1 || gifted === "1"),

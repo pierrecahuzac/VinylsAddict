@@ -5,7 +5,8 @@ import axios from "axios";
 import { useCollection } from "../../hooks/useCollection.ts";
 import type { UserAlbumData } from "../../types/album.ts";
 
-import Modale from "../../components/Modale/index.tsx"; 
+import Modale from "../../components/Modale/index.tsx";
+import AddAlbumFab from "../../components/AddAlbumFab/index.tsx";
 import Album from "../../components/Album/index.tsx";
 import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
@@ -18,6 +19,8 @@ interface AlbumState {
   variantId: string;
   formatId: string;
   price: string;
+  editionSize?: string;
+  copyNumber?: string;
   gifted: boolean;
   coverUrl: string;
   color: string;
@@ -41,6 +44,8 @@ const initialAlbumState: AlbumState = {
   styleId: "",
   trackCount: "",
   diskCount: "",
+  editionSize: "",
+  copyNumber: "",
 };
 
 const MyCollection = () => {
@@ -88,6 +93,8 @@ const MyCollection = () => {
       price: album.price !== "" ? parseFloat(album.price) : null,
       trackCount: album.trackCount ? parseInt(album.trackCount) : null,
       diskCount: album.diskCount ? parseInt(album.diskCount) : null,
+      editionSize: album.editionSize ? parseInt(album.editionSize) : null,
+      copyNumber: album.copyNumber ? album.copyNumber.trim() : null,
       addAlbumToCollection: true,
       gifted: album.gifted,
     };
@@ -158,13 +165,7 @@ const MyCollection = () => {
         </div>
       </main>
 
-      <button
-        className="fixed bottom-24 right-6 w-14 h-14 bg-[#8b5cf6] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
-        onClick={openModaleAddNewAlbum}
-        aria-label="Ajouter un album"
-      >
-        +
-      </button>
+      <AddAlbumFab onClick={openModaleAddNewAlbum} />
 
       {modaleAddNewAlbum && (
         <Modale

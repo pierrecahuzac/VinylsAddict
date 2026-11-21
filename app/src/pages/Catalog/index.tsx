@@ -13,6 +13,7 @@ import { useUser } from "../../contexts/userContext.tsx";
 import Album from "../../components/Album/index.tsx";
 import Modale from "../../components/Modale/index.tsx";
 import { IoAddOutline } from "react-icons/io5";
+import AddAlbumFab from "../../components/AddAlbumFab/index.tsx";
 import { ALBUM_GRID_CLASS } from "../../lib/layout.ts";
 
 import type { AlbumState, AlbumData } from "../../types/album.ts";
@@ -32,6 +33,8 @@ const initialAlbumState: AlbumState = {
   styleId: "",
   trackCount: "",
   diskCount: "",
+  editionSize: "",
+  copyNumber: "",
 };
 
 const Catalog = () => {
@@ -77,6 +80,8 @@ const Catalog = () => {
       price: album.price !== "" && album.price !== null && album.price !== undefined ? Number(album.price) : null,
       trackCount: album.trackCount ? Number(album.trackCount) : null,
       diskCount: album.diskCount ? Number(album.diskCount) : null,
+      editionSize: album.editionSize ? Number(album.editionSize) : null,
+      copyNumber: album.copyNumber ? album.copyNumber.trim() : null,
       addAlbumToCollection,
       gifted: album.gifted === true,
     };
@@ -186,16 +191,7 @@ const Catalog = () => {
         </div>
       </main>
 
-      {userIsLogged && (
-        <button
-          className="fixed bottom-24 right-6 w-14 h-14 bg-[#8b5cf6] text-gray-900 rounded-full text-3xl font-bold shadow-2xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center z-10"
-          onClick={openModaleAddNewAlbum}
-          aria-label="Ajouter un vinyle"
-          title="Ajouter un vinyle"
-        >
-          <IoAddOutline size={28} />
-        </button>
-      )}
+      {userIsLogged && <AddAlbumFab onClick={openModaleAddNewAlbum} />}
 
       {modaleAddNewAlbum && (
         <Modale

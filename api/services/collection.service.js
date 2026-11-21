@@ -2,7 +2,7 @@ import prisma from "../database/prismaClient.js";
 
 export const CollectionService = {
   getById: async (id) => prisma.userAlbum.findUnique({ where: { id }, include: { images: true } }),
-  create: async (userId, albumId, price, conditionId, signed, gifted = false) =>
+  create: async (userId, albumId, price, conditionId, signed, gifted = false, editionSize = null, copyNumber = null) =>
     prisma.userAlbum.create({
       data: {
         user: { connect: { id: userId } },
@@ -10,6 +10,8 @@ export const CollectionService = {
         price,
         signed,
         gifted,
+        editionSize,
+        copyNumber,
         condition: conditionId ? { connect: { id: conditionId } } : undefined,
       },
     }),

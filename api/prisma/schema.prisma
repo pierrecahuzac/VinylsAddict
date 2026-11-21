@@ -34,6 +34,7 @@ model Album {
   coverUrl       String?
   barCode        String?
   color          String?
+  editionSize    Int?
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   userId         String?
@@ -62,6 +63,7 @@ model UserAlbum {
   boughtAt    DateTime?
   notes       String?
   copyNumber  String?
+  editionSize Int?
   signed      Boolean   @default(false)
   gifted      Boolean   @default(false)
   conditionId String?
