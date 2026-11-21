@@ -21,8 +21,15 @@ import useToast from "../../hooks/useToast";
 import type { FullAlbumState } from "../../types/album";
 
 const getImageUrl = (url: string) => {
+  if (!url) return "/placeholder.jpg";
+  // Certaines URLs stockées en BDD sont absolues (parfois avec "https//" sans ":") :
+  // on normalise et on ne préfixe jamais deux fois le domaine de l'API.
+  const fixed = /^https?\/\//i.test(url)
+    ? url.replace(/^(https?)\/\//i, "$1://")
+    : url;
+  if (/^https?:\/\//i.test(fixed) || fixed.startsWith("//")) return fixed;
   const base = (import.meta.env.VITE_BACKEND_URL_DEV as string | undefined)?.replace(/\/api\/?$/, "") || "";
-  return `${base}${url}`;
+  return `${base}${fixed.startsWith("/") ? "" : "/"}${fixed}`;
 };
 
 const MyAlbumDetails = () => {

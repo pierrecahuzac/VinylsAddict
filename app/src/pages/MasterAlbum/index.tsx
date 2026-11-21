@@ -43,11 +43,11 @@ const MasterAlbum = () => {
           withCredentials: true,
         },
       );
-      if (response.data.message === "Album présent dans la wishlist") {
-        setIsWishlisted(true);
-        return true;
-      }
-      return false;
+      const wishlisted =
+        response.data.wishlisted === true ||
+        response.data.message === "Album présent dans la wishlist";
+      setIsWishlisted(wishlisted);
+      return wishlisted;
     } catch {
       setIsWishlisted(false);
       return false;
