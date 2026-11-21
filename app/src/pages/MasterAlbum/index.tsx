@@ -11,6 +11,7 @@ import {
   IoCloseOutline
 } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
+import BackButton from "../../components/BackButton/index.tsx";
 
 import useToast from "../../hooks/useToast";
 import type { AlbumData } from "../../types/album";
@@ -174,6 +175,10 @@ const MasterAlbum = () => {
       <div className="fixed inset-0 -z-10 bg-black/70" />
 
       <div className="relative z-10 p-6 space-y-8 max-w-3xl mx-auto w-full flex flex-col items-center">
+        <div className="w-full">
+          <BackButton />
+        </div>
+
         {/* Artwork */}
         <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10 shrink-0">
           <img

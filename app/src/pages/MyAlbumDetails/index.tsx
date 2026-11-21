@@ -17,6 +17,7 @@ import {
 } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 import useToast from "../../hooks/useToast";
+import BackButton from "../../components/BackButton/index.tsx";
 
 import type { FullAlbumState } from "../../types/album";
 
@@ -285,7 +286,11 @@ const MyAlbumDetails = () => {
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent" />
-        
+
+        <div className="absolute top-4 left-4 z-10 rounded-full bg-black/40 px-3 py-1.5 backdrop-blur-sm">
+          <BackButton fallback="/collection" className="text-white" />
+        </div>
+
         <div className="absolute bottom-0 left-0 p-6 w-full">
           <p className="text-[#8b5cf6] text-sm font-bold uppercase tracking-[0.2em] mb-2 drop-shadow-lg">
             Ma Collection
@@ -307,7 +312,7 @@ const MyAlbumDetails = () => {
 
       <div className="p-6 space-y-8 max-w-5xl mx-auto w-full">
         {/* Quick Actions (Delete) */}
-        <div className="flex justify-end">
+        <div className="flex justify-center">
           <button
             onClick={() => setModaleDeleteAlbum(true)}
             className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/30 rounded-lg hover:bg-red-500 hover:text-white transition-all text-sm font-bold"
