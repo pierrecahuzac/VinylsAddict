@@ -46,6 +46,15 @@ const Login = () => {
             />
           </div>
 
+          <div className="text-right">
+            <Link
+              to="/forgot-password"
+              className="text-xs text-gray-400 hover:text-primary transition-colors"
+            >
+              Mot de passe oublié ?
+            </Link>
+          </div>
+
           <div className="flex flex-col gap-3 pt-4">
             <button
               type="submit"

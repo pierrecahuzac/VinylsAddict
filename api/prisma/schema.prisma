@@ -21,6 +21,7 @@ model User {
   createdAlbums Album[]     @relation("UserCreatedAlbums")
   userAlbums    UserAlbum[]
   wishlists     Wishlist[]
+  resetTokens   PasswordResetToken[]
   canConnect    Boolean     @default(true)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
@@ -135,6 +136,18 @@ model Format {
   albums      Album[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  tokenHash String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
 }
 
 model CollectionImage {
