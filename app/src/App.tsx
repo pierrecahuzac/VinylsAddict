@@ -16,11 +16,14 @@ import Layout from "./components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyStats from "./pages/MyStats";
 import Dashboard from "./pages/Dashboard";
+import { useTheme } from "./contexts/themeContext";
 
 const App = () => {
+  const { theme } = useTheme();
+
   return (
     <>
-      <ToastContainer theme="dark" />
+      <ToastContainer theme={theme} />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Catalog />} />

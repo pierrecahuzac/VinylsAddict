@@ -49,6 +49,7 @@ export const AlbumService = {
             albumId: album.id,
             price: data.parsedPrice,
             signed: data.signed === true || data.signed === "true" || data.signed === 1 || data.signed === "1",
+            gifted: data.gifted === true || data.gifted === "true" || data.gifted === 1 || data.gifted === "1",
             conditionId: data.conditionId ? data.conditionId : null,
           },
         });

@@ -27,7 +27,7 @@ const MyWishlist = () => {
         },
       );
 
-      setUserWishlist(result.data);
+      setUserWishlist(Array.isArray(result.data) ? result.data : []);
     } catch (error) {
       console.error(
         "Erreur lors de la récupération de la liste d'envies",

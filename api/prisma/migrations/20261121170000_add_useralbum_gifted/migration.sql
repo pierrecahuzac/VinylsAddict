@@ -1,0 +1,1 @@
+ALTER TABLE "UserAlbum" ADD COLUMN "gifted" BOOLEAN NOT NULL DEFAULT false;

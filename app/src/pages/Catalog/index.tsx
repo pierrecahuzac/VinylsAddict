@@ -26,6 +26,7 @@ const initialAlbumState: AlbumState = {
   variantId: "",
   formatId: "",
   price: "",
+  gifted: false,
   coverUrl: "",
   color: "",
   styleId: "",
@@ -47,10 +48,19 @@ const Catalog = () => {
   const changeDataAlbum = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    setAlbum({
-      ...album,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setAlbum((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
+    setAlbum((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "price" && (value === "0" || value === "0.0" || value === "0.00")
+        ? { gifted: true }
+        : {}),
+    }));
   };
 
   useEffect(() => {
@@ -64,10 +74,11 @@ const Catalog = () => {
     const payload = {
       ...album,
       year: album.year ? Number(album.year) : null,
-      price: album.price ? Number(album.price) : null,
+      price: album.price !== "" && album.price !== null && album.price !== undefined ? Number(album.price) : null,
       trackCount: album.trackCount ? Number(album.trackCount) : null,
       diskCount: album.diskCount ? Number(album.diskCount) : null,
       addAlbumToCollection,
+      gifted: album.gifted === true,
     };
 
     try {

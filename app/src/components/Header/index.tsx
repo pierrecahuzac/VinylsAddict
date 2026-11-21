@@ -1,10 +1,12 @@
 import { Link, useNavigate } from "react-router";
-import { IoLogOutOutline } from "react-icons/io5";
+import { IoLogOutOutline, IoBuild, IoSunnyOutline, IoMoonOutline } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
-import { IoBuild } from "react-icons/io5";
+import { useTheme } from "../../contexts/themeContext";
+
 const Header = () => {
   const navigate = useNavigate();
   const { user, userIsLogged, logout } = useUser();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="w-full h-16 bg-black border-b border-white/10 shrink-0">
@@ -17,6 +19,14 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          <button
+            onClick={toggleTheme}
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 transition-all"
+            aria-label={theme === "dark" ? "Activer le thème clair" : "Activer le thème sombre"}
+            title={theme === "dark" ? "Thème clair" : "Thème sombre"}
+          >
+            {theme === "dark" ? <IoSunnyOutline size={18} /> : <IoMoonOutline size={18} />}
+          </button>
           {user && user.role === "ADMIN" && (
             <Link
               to="/dashboard"

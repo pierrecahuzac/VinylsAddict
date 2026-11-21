@@ -32,7 +32,7 @@ const Versions = () => {
           `${import.meta.env.VITE_BACKEND_URL_DEV}/albums?title=${encodeURIComponent(decodedTitle)}`,
           { withCredentials: true }
         );
-        setAlbums(res.data || []);
+        setAlbums(Array.isArray(res.data) ? res.data : []);
       } catch (e) {
         console.error("Erreur fetch versions", e);
         setAlbums([]);

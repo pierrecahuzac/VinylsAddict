@@ -30,7 +30,7 @@ const Artist = () => {
           `${import.meta.env.VITE_BACKEND_URL_DEV}/albums?artist=${encodeURIComponent(artistName)}`,
           { withCredentials: true }
         );
-        setAlbums(res.data || []);
+        setAlbums(Array.isArray(res.data) ? res.data : []);
       } catch (e) {
         console.error("Erreur fetch artist", e);
         setAlbums([]);

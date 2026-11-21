@@ -31,6 +31,7 @@ const MasterAlbum = () => {
   const [albumAddedToCollection, setAlbumAddedToCollection] = useState({
     price: "",
     conditionId: "",
+    gifted: false,
   });
 
   const albumIsInUserWishlist = async () => {
@@ -118,6 +119,7 @@ const MasterAlbum = () => {
         {
           price: albumAddedToCollection.price,
           conditionId: albumAddedToCollection.conditionId,
+          gifted: albumAddedToCollection.gifted,
         },
         {
           withCredentials: true,
@@ -135,10 +137,18 @@ const MasterAlbum = () => {
   const changeDataAlbum = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setAlbumAddedToCollection((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
     setAlbumAddedToCollection((prev) => ({
       ...prev,
       [name]: value,
+      ...(name === "price" && (value === "0" || value === "0.0" || value === "0.00")
+        ? { gifted: true }
+        : {}),
     }));
   };
 
@@ -297,6 +307,17 @@ const MasterAlbum = () => {
                   ))}
                 </select>
               </div>
+
+              <label className="flex items-center gap-3 p-3 bg-[#0a0a0a]/60 rounded-xl border border-white/10 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  name="gifted"
+                  checked={albumAddedToCollection.gifted}
+                  onChange={changeDataAlbum}
+                  className="w-5 h-5 rounded border-white/10 text-[#8b5cf6] focus:ring-[#8b5cf6] bg-black"
+                />
+                <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Offert (cadeau)</span>
+              </label>
 
               <button type="submit" className="w-full bg-[#8b5cf6] text-white font-bold py-4 rounded-xl hover:bg-[#7c3aed] transition-colors shadow-lg mt-4">
                 Confirmer l'ajout

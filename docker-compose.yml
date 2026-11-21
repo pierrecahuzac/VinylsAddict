@@ -4,6 +4,9 @@ services:
     build: ./app
     ports:
       - "55173:55173"
+    environment:
+      - API_PROXY_TARGET=http://api:33000
+      - VITE_BACKEND_URL_DEV=/api
     volumes:
       - ./app:/app
       - /app/node_modules

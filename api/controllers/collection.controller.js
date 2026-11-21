@@ -10,12 +10,12 @@ const CollectionController = {
 
     try {
       const { albumId } = req.params;
-      const { price, conditionId, signed } = req.body;
+      const { price, conditionId, signed, gifted } = req.body;
 
       if (!albumId) {
         return res.status(400).json({ message: "albumId requis." });
       }
-      const parsedPrice = price ? Number(price) : null;
+      const parsedPrice = price !== undefined && price !== null && price !== "" ? Number(price) : null;
       if (parsedPrice !== null && Number.isNaN(parsedPrice)) {
         return res.status(400).json({ message: "price doit être numérique." });
       }
@@ -25,7 +25,8 @@ const CollectionController = {
         albumId,
         parsedPrice,
         conditionId ? conditionId : null,
-        signed === true || signed === "true" || signed === 1 || signed === "1"
+        signed === true || signed === "true" || signed === 1 || signed === "1",
+        gifted === true || gifted === "true" || gifted === 1 || gifted === "1"
       );
 
       return res
@@ -40,14 +41,16 @@ const CollectionController = {
     try {
       const { userAlbumId } = req.params;
       const userId = req.userId;
-      const { price, conditionId, signed } = req.body;
+      const { price, conditionId, signed, gifted } = req.body;
 
       const existing = await CollectionService.getById(userAlbumId);
       if (!existing || existing.userId !== userId) {
         return res.status(404).json({ message: "Album non trouvé dans votre collection." });
       }
 
-      const parsedPrice = price === undefined ? existing.price : (price ? Number(price) : null);
+      const parsedPrice = price === undefined
+        ? existing.price
+        : (price !== null && price !== "" ? Number(price) : null);
       if (parsedPrice !== null && Number.isNaN(parsedPrice)) {
         return res.status(400).json({ message: "price doit être numérique." });
       }
@@ -56,6 +59,7 @@ const CollectionController = {
         price: parsedPrice,
         conditionId: conditionId === undefined ? existing.conditionId : (conditionId ? conditionId : null),
         signed: signed === undefined ? existing.signed : (signed === true || signed === "true" || signed === 1 || signed === "1"),
+        gifted: gifted === undefined ? existing.gifted : (gifted === true || gifted === "true" || gifted === 1 || gifted === "1"),
       });
 
       return res.status(200).json({ message: "Album mis à jour.", userAlbum: updated });
