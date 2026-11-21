@@ -21,7 +21,7 @@ services:
     image: ghcr.io/pierrecahuzac/vinylsaddict/api:latest
     restart: always
     env_file:
-      - ./api/.env
+      - .env
     environment:
       - DISCOGS_USER_AGENT=${DISCOGS_USER_AGENT:-VinylsAddict/1.0}
       - DISCOGS_TOKEN=${DISCOGS_TOKEN:-}
