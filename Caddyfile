@@ -2,7 +2,7 @@
 	email admin@partagetacollection.eu
 }
 
-partagetacollection.eu {
+www.partagetacollection.eu {
 	reverse_proxy landing:80
 }
 
