@@ -139,10 +139,16 @@ POSTGRES_DB=
 JWT_SECRET=
 AUTHORIZED_IPS=
 DEV_USER_PASSWORD=
+SMTP_HOST=
+SMTP_PORT=587
+SMTP_USER=
+SMTP_PASS=
+SMTP_FROM=
 ```
 
 `AUTHORIZED_IPS` = origines front autorisées en développement, séparées par des virgules.
 `FRONTEND_URL` = origines autorisées en production.
+Les variables `SMTP_*` servent à l'envoi des liens de réinitialisation de mot de passe ; voir [`EMAIL_SETUP.md`](EMAIL_SETUP.md) pour la configuration complète (Infomaniak + Cloudflare).
 
 ### API (`api/.env`)
 
@@ -259,5 +265,6 @@ Variables à définir en production : `POSTGRES_URL`, `DATABASE_URL`, `JWT_SECRE
 - `CACHING.md` : cache applicatif avec Redis (données fréquemment consultées, ex : page d'accueil).
 - `CADDY.md` : Caddy comme reverse proxy / serveur de fichiers statiques.
 - `OPTIMISATIONS.md` : optimisations performance complémentaires (cache HTTP/CDN, compression, images).
+- `EMAIL_SETUP.md` : configuration SMTP/DKIM/DMARC pour la réinitialisation de mot de passe.
 
 Les notes personnelles (`TODO.md`, `INCOHERENCES.md`, `REVUE_CODE.md`, `UPDATE.md`) sont volontairement ignorées par Git.
