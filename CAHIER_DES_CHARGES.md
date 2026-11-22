@@ -356,6 +356,22 @@ Aligné `UPDATE.md:31-35` (3 phases) + `REVUE_CODE.md:90-112` + `TODO.md:26-38`.
 
 **Backlog détaillé `TODO.md:26-38` :** maj `collection.controller.js`, profil, stats, TS BE, Tailwind consolidation.
 
+### P3 — Fonctionnalités futures : index alphabétique des albums
+
+**Statut : spécifié, non implémenté.**
+
+**Objectif.** Ajouter un index **A → Z** sur le bord **droit** de `MyCollection`, `Catalog` et `MyWishlist` pour sauter directement aux albums dont le titre commence par la lettre cliquée.
+
+**Comportement retenu :**
+- index en `sticky` sur le bord droit, avec défilement interne si la liste dépasse la hauteur d'écran ;
+- albums regroupés sous des en-têtes de lettre, clic sur une lettre → `scrollIntoView` vers le groupe (le reste de la collection reste visible, pas de filtre) ;
+- une lettre sans album correspondant **reste cliquable mais n'a aucun effet** (pas de grisage/désactivation) ;
+- initiales normalisées (accents ramenés à la lettre de base), bucket `#` pour les titres commençant par un chiffre ou un symbole.
+
+**Technique :** extraire un composant partagé `AlphabetIndex` et un utilitaire `groupAlbumsByInitial` ; les 3 pages utilisent actuellement `ALBUM_GRID_CLASS` (`app/src/lib/layout.ts`), prévoir une variante si la zone disponible se réduit.
+
+**À trancher à l'implémentation :** comportement sur mobile (index horizontal ou masqué), éventuel passage à une seule colonne de cartes compactes à gauche de l'index, offset du `scrollIntoView` selon l'en-tête.
+
 ---
 
 ## 15. Critères d'acceptation & Livrables
