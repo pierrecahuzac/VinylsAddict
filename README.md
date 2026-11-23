@@ -260,6 +260,6 @@ Variables à définir en production : `POSTGRES_URL`, `DATABASE_URL`, `JWT_SECRE
 - `CONTEXT.md` : contexte projet et modèles.
 - `CAHIER_DES_CHARGES.md` : cahier des charges fonctionnel.
 - `EMAIL_SETUP.md` : configuration SMTP/DKIM/DMARC pour la réinitialisation de mot de passe.
-- `CGU.md` : projet de Conditions Générales d'Utilisation (à compléter et valider juridiquement).
+- `app/src/content/CGU.md` : projet de Conditions Générales d'Utilisation, affiché dans l'app sur `/cgu` (à compléter et valider juridiquement).
 
 Les notes personnelles (`TODO.md`, `INCOHERENCES.md`, `REVUE_CODE.md`, `UPDATE.md`) sont volontairement ignorées par Git.

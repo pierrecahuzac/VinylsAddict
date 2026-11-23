@@ -19,6 +19,12 @@ const Header = () => {
         </div>
 
         <div className="flex items-center gap-4">
+          <Link
+            to="/cgu"
+            className="text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-[#8b5cf6] transition-colors"
+          >
+            CGU
+          </Link>
           <button
             onClick={toggleTheme}
             className="flex h-9 w-9 items-center justify-center rounded-full bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 transition-all"

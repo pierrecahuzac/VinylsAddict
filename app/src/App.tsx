@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import Catalog from "./pages/Catalog";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import CGU from "./pages/CGU";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Artist from "./pages/Artist";
@@ -35,6 +36,7 @@ const App = () => {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/cgu" element={<CGU />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/album/:id" element={<MasterAlbum />} />

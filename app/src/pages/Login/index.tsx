@@ -76,13 +76,19 @@ const Login = () => {
           </div>
         </form>
 
-        <footer className="text-center pt-6">
+        <footer className="text-center pt-6 space-y-2">
           <Link
             to={"/signup"}
-            className="text-sm text-gray-400 hover:text-primary transition-colors"
+            className="block text-sm text-gray-400 hover:text-primary transition-colors"
           >
             Pas encore de compte ?{" "}
             <span className="font-bold underline">Inscris-toi !</span>
+          </Link>
+          <Link
+            to="/cgu"
+            className="block text-xs text-gray-500 hover:text-primary transition-colors"
+          >
+            Conditions Générales d'Utilisation
           </Link>
         </footer>
       </div>

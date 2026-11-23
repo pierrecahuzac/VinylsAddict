@@ -89,9 +89,12 @@ const Signup = () => {
           </div>
         </form>
 
-        <footer className="text-center pt-2">
-          <Link to={"/login"} className="text-sm text-gray-400 hover:text-[#8b5cf6] transition-colors">
+        <footer className="text-center pt-2 space-y-2">
+          <Link to={"/login"} className="block text-sm text-gray-400 hover:text-[#8b5cf6] transition-colors">
             Déjà un compte ? <span className="font-bold underline">Connecte-toi !</span>
+          </Link>
+          <Link to="/cgu" className="block text-xs text-gray-500 hover:text-[#8b5cf6] transition-colors">
+            Conditions Générales d'Utilisation
           </Link>
         </footer>
       </div>
