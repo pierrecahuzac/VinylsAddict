@@ -89,6 +89,7 @@ Voir §16. Recherche Discogs (`app/src/components/SearchBar/index.tsx:1-39` stub
 | F-AUTH-05 | Changer mdp | `POST /users/changePassword` (auth) | `Profile/index.tsx:60-90` |
 | F-AUTH-06 | Supprimer compte | `DELETE /users/me` : garde `system@va.eu` protégé, `getOrCreateSystemUser()` → `tx.album.updateMany userId→systemId` + `tx.user.delete`, unlink FS `uploads/*`, clear cookie, photos → `SetNull` via anonymisation | `user.controller.js:430-520`, `Profile/index.tsx:140-183` |
 | F-AUTH-07 | Admin membres | Lister, voir détail, bannir (`canConnect=false`), promouvoir/rétrograder (`role`) | `Dashboard/index.tsx:140-280`, `user.controller.js:331-426` |
+| F-AUTH-08 | Mot de passe oublié | `POST /users/forgot-password` (email → token aléatoire hashé SHA-256, 1 h, SMTP Infomaniak via nodemailer, réponse générique) + `POST /users/reset-password` (token + nouveau mot de passe ≥8, bcrypt, invalidation des tokens) | `passwordReset.controller.js`, `mailer.service.js`, pages `/forgot-password` et `/reset-password`, `EMAIL_SETUP.md` |
 
 **Règles :** `Wishlist` `@@unique([userId, albumId])` empêche doublon wishlist (`wishlist.controller.js:34`). `UserAlbum` n'a pas encore `@@unique` (dette `REVUE_CODE.md:51` — risque doublon collection).
 
@@ -97,22 +98,24 @@ Voir §16. Recherche Discogs (`app/src/components/SearchBar/index.tsx:1-39` stub
 |----|----------|--------|
 | F-CAT-01 | Lister | `GET /albums` sans pagination (dette `REVUE_CODE.md:53`), filtre `?artist`/`?title` `mode:insensitive` `album.controller.js:33-50` |
 | F-CAT-02 | Détail | `GET /albums/:id` include `format,genres,styles,vinylVariant` + strip `userId/creator` (anonymat) `album.controller.js:12-30` |
-| F-CAT-03 | Créer | `POST /albums` (cookie `va_token` vérifié dans controller `album.controller.js:55-92`, pas via middleware — dette), tx `album.create` + opt `userAlbum.create` si `addAlbumToCollection:true`, génère `diskNumber/trackCount/formatId/genres/styles` |
+| F-CAT-03 | Créer | `POST /albums` (cookie `va_token` vérifié dans controller, pas via middleware — dette), tx `album.create` + opt `userAlbum.create` si `addAlbumToCollection:true`, génère `diskNumber/trackCount/formatId/genres/styles`, champs optionnels `editionSize`, `copyNumber`, `boughtAt`, `notes`, `signed`, `gifted` |
 | F-CAT-04 | Modifier/Suppr. | `PUT /albums/:id`, `DELETE /albums/:id` (`album.router.js:1-14`) — pas de check auth/owner actuel |
 | F-CAT-05 | Versions | `GET /albums?title=` → groupe par titre (`Versions/index.tsx:1-127`) |
 | F-CAT-06 | Artistes | `GET /albums?artist=` → groupe par artiste (`Artist/index.tsx:1-101`) |
 
-Frontend : `Catalog/index.tsx:1-167` (liste + modale ajout), `MasterAlbum/index.tsx:1-308` (hero, actions Posséder/Wishlist), `Album/index.tsx:1-39` (card 80×80).
+Frontend : `Catalog/index.tsx` (liste + FAB d'ajout + CTA si vide), `MasterAlbum/index.tsx` (hero, actions **Posséder / Dans ma collection** via `GET /users/albums/check/:id`, Wishlist), `Album/index.tsx` (card 9 rem). Grille centrée via `ALBUM_GRID_CLASS` (`app/src/lib/layout.ts`).
 
 ### 5.3 Collection personnelle
 | ID | Fonction | Détail |
 |----|----------|--------|
 | F-COL-01 | Lister | `GET /users/albums` (auth, include `album, images, condition`) `user.controller.js:166-188` → `MyCollection/index.tsx:1-170` |
 | F-COL-02 | Détail | `GET /users/albums/:id` (IDOR-safe `findFirst {id,userId}`) `user.controller.js:122-150` → `MyAlbumDetails/index.tsx:1-442` |
-| F-COL-03 | Ajouter | `POST /collections/:albumId` body `price, conditionId` (`collection.controller.js:11-45`) ; UI via `MasterAlbum` bouton Posséder ou `Modale` `isCollectionContext=true` |
-| F-COL-04 | Retirer | `DELETE /collections/:userAlbumId` (IDOR check + `fs.unlink` best-effort `collection.controller.js:47-78`) → `MyAlbumDetails/index.tsx:164` |
-| F-COL-05 | Photos | `POST /collections/:userAlbumId/images` `upload.single('image')` memory + `sharp.rotate().webp({quality:85}).toFile('uploads/<uuid>.webp')` strip EXIF/GPS, limite 10 (`collection.controller.js:98-150`), `DELETE /collections/:userAlbumId/images/:imageId` ; UI grid 4 cols, lightbox, validation client MIME+5MB (`MyAlbumDetails/index.tsx:22-220`) |
-| F-COL-06 | Check | `GET /users/albums/check/:id` → bool possédé |
+| F-COL-03 | Ajouter | `POST /collections/:albumId` body `price, conditionId, signed, gifted, editionSize, copyNumber, boughtAt, notes` ; UI via `MasterAlbum` bouton Posséder ou `Modale` `isCollectionContext=true` |
+| F-COL-04 | Retirer | `DELETE /collections/:userAlbumId` (IDOR check + `fs.unlink` best-effort) → `MyAlbumDetails` |
+| F-COL-05 | Photos | `POST /collections/:userAlbumId/images` `upload.single('image')` memory + `sharp.rotate().webp({quality:85}).toFile('uploads/<uuid>.webp')` strip EXIF/GPS, **limite 5 photos**, `DELETE /collections/:userAlbumId/images/:imageId` ; UI grid 4 cols, lightbox, validation client MIME+5MB |
+| F-COL-06 | Check | `GET /users/albums/check/:id` → bool possédé + `userAlbum.id` ; utilisé pour afficher « Posséder » ou « Dans ma collection » et ouvrir directement la fiche de l'exemplaire possédé |
+| F-COL-07 | Modifier | `PUT /collections/:userAlbumId` (auth + propriétaire) : `price`, `conditionId`, `signed`, `gifted`, `editionSize`, `copyNumber`, `boughtAt`, `notes` — modale pré-remplie dans `MyAlbumDetails`, rafraîchissement après save |
+| F-COL-08 | Champs collection | `price`, `condition`, `signed`, `gifted`, `editionSize` (nombre d'exemplaires de l'édition, global sur `Album` + valeur perso sur `UserAlbum`), `copyNumber` (ex. `4/10`), `boughtAt` (libellé « Date d'achat » ou « Date du cadeau » si `gifted`), `notes` (« Observation ») |
 
 ### 5.4 Wishlist
 | ID | Fonction | Détail |
@@ -133,14 +136,15 @@ Seed : 11 genres + styles, 8 conditions (Mint→Poor), 13 variants, 5 formats (`
 
 ## 6. Modèle de données
 
-`api/prisma/schema.prisma:1-141` — PostgreSQL, 10 modèles :
+`api/prisma/schema.prisma` — PostgreSQL, 11 modèles :
 
 ```
 User 1—N Album (creator, onDelete:SetNull) // colonnes : id uuid, email @unique, username?, password hash, role USER|ADMIN, canConnect bool, timestamps
 Album N—M Genre (AlbumGenres) , N—M Style (AlbumStyles) , N—1 Format (required), N—1 VinylVariant?, 1—N UserAlbum, 1—N Wishlist
-  champs : title, artist, releaseDate Int?, coverUrl?, barCode?, color?, diskNumber?, trackCount?, userId? (FK creator)
-UserAlbum (collection instance) : id, userId→User Cascade, albumId→Album Cascade, price Float?, boughtAt?, notes?, copyNumber?, conditionId?→Condition, images CollectionImage[] Cascade
+  champs : title, artist, releaseDate Int?, coverUrl?, barCode?, color?, diskNumber?, trackCount?, editionSize Int?, userId? (FK creator)
+UserAlbum (collection instance) : id, userId→User Cascade, albumId→Album Cascade, price Float?, boughtAt?, notes?, copyNumber?, editionSize Int?, signed Boolean @default(false), gifted Boolean @default(false), conditionId?→Condition, images CollectionImage[] Cascade
 Wishlist : id, userId, albumId @@unique([userId,albumId]) Cascade
+PasswordResetToken : id, tokenHash @unique, userId→User Cascade, expiresAt, usedAt?, createdAt — token hashé (SHA-256), 1 h, usage unique
 CollectionImage : id, url, description?, userCollectionId→UserAlbum Cascade
 Genre : id, name @unique, styles Style[]
 Style : id, name @unique, genreId→Genre, albums M:N
@@ -150,6 +154,8 @@ VinylVariant : id, nameEN @unique, nameFR?
 ```
 
 Contraintes manquantes (dette) : `UserAlbum @@unique([userId,albumId])`, index `Album.userId`, `UserAlbum.userId` (`REVUE_CODE.md:66`).
+
+**Migrations récentes (toutes additives)** : `20261121170000_add_useralbum_gifted`, `20261121175000_add_edition_size`, `20261121183000_add_password_reset_tokens`. La base de production contient des données réelles : aucune migration ne doit faire de `DROP`/`TRUNCATE`/`db push --force-reset`.
 
 ---
 
@@ -235,25 +241,32 @@ BaseURL : `VITE_BACKEND_URL_DEV` (`http://localhost:33000/api`) en dev, `FRONTEN
 | `/` | `Catalog` | public | `GET /albums`, `getAllMetadata` |
 | `/artist/:name` | `Artist` | public | `GET /albums?artist=` |
 | `/versions/:title` | `Versions` | public | `GET /albums?title=` |
-| `/album/:id` | `MasterAlbum` | public (+actions si loggé) | `GET /albums/:id` + wishlist check |
+| `/album/:id` | `MasterAlbum` | public (+actions si loggé) | `GET /albums/:id` + wishlist check + collection check |
 | `/collection` | `MyCollection` | privé* | `GET /users/albums` |
-| `/collection/album/:albumId` | `MyAlbumDetails` (UserDetailsAlbum) | privé | `GET /users/albums/:id` + images CRUD |
+| `/collection/album/:albumId` | `MyAlbumDetails` (UserDetailsAlbum) | privé | `GET /users/albums/:id` + images CRUD + `PUT /collections/:id` |
 | `/wishlist` | `MyWishlist` | privé | `GET /wishlists` |
 | `/my-stats` | `MyStats` | privé | `useCollection` + `GET /wishlists` (calc local) |
 | `/profile` | `Profile` | privé | `UserContext` + `POST /users/changePassword` + `DELETE /users/me` |
 | `/dashboard` | `Dashboard` | ADMIN | `GET /users/role` guard + `GET /users` + `GET /albums` |
 | `/login` | `Login` | public | `UserContext.login` |
 | `/signup` | `Signup` | public | `UserContext.signup` |
+| `/forgot-password` | `ForgotPassword` | public | `POST /users/forgot-password` |
+| `/reset-password?token=` | `ResetPassword` | public | `POST /users/reset-password` |
 
 * Pas de `ProtectedRoute` (`REVUE_CODE.md:60`) — pages privées fetch 401 + flash si non loggé.
+* En attente sur la branche `docs/cgu` (non fusionnée) : page `/cgu` lisant `app/src/content/CGU.md`, liée depuis le Header et les pages Login/Signup.
 
 ### 9.2 Composants (`app/src/components/`)
-- `Album` : card 80×80, title/artist/year•color, `onClick` → détail.
-- `Modale` (253 lignes) : form title/artist/coverUrl/barCode/year/trackCount/diskCount + selects format/variant/genre/style/color + checkbox collection + price/condition. Réutilisée Catalog & MyCollection.
-- `Header` : logo → `/`, badge ADMIN `/dashboard`, avatar `username[0]` → `/profile`, logout.
+- `Album` : card 9 rem, title/artist/year•color, `onClick` → détail.
+- `Modale` : form title/artist/coverUrl/barCode/year/trackCount/diskCount/**editionSize** + selects format/variant/genre/style/color + checkbox collection + price/condition/**boughtAt**/**notes**/**copyNumber**/gifted. Réutilisée Catalog & MyCollection.
+- `AddAlbumFab` : bouton flottant partagé (`IoAddOutline`, `fixed bottom-24 right-6`) sur Catalog et MyCollection.
+- `BackButton` : bouton Retour partagé (avec fallback), sur les fiches album et `MyAlbumDetails`.
+- `Header` : logo → `/`, toggle de thème clair/sombre, badge ADMIN `/dashboard`, avatar `username[0]` → `/profile`, logout.
 - `NavBar` : bottom fixed 16h, switch `IoHome` | `IoLibrary`/`IoHeart`/`IoStatsChart` (loggé) vs `IoLogIn`/`IoPersonAdd` (visiteur).
-- `Layout` : `flex-col h-svh`, `Header` + `main overflow-y-auto bg-gray-900` + `NavBar`.
-- `SearchBar` : stub Discogs `api.discogs.com/database/search?token=TON_TOKEN` debounce 500ms ≥3 chars — non câblé.
+- `Layout` : `flex-col h-dvh`, `Header` + `main overflow-y-auto` + `NavBar`.
+- `SearchBar` : stub Discogs debounce 500 ms ≥3 chars — non câblé (recherche Discogs réelle intégrée dans `Modale`).
+
+Thème clair : `ThemeProvider` (`localStorage va-theme`, attribut `data-theme` sur `<html>`) + overrides CSS `[data-theme=light]` dans `app/src/styles/index.css`.
 
 ### 9.3 State & Data fetching
 - `userContext.tsx:70-225` : god-object (email/password/username/confirmation + login/signup/logout/checkToken/deleteAccount/navigate/toast).
@@ -280,7 +293,8 @@ Dette : axios non centralisé (pas d'instance `withCredentials`/interceptor 401)
 
 ## 11. Sécurité & RGPD
 
-- **Auth :** bcrypt 10, JWT 1h `JWT_SECRET`, cookie `httpOnly` `secure` (prod `sameSite:none partitioned:true` `user.controller.js:84-89`), `helmet`, `trust proxy 1`.
+- **Auth :** bcrypt 10, JWT 1h `JWT_SECRET`, cookie `httpOnly` `secure` (prod `sameSite:none partitioned:true`), `helmet`, `trust proxy 1`.
+- **Reset mot de passe :** token aléatoire stocké **hashé** (SHA-256) dans `PasswordResetToken`, expiration 1 h, usage unique, réponse générique pour ne pas révéler l'existence d'un compte ; envoi via SMTP Infomaniak (voir `EMAIL_SETUP.md`).
 - **RBAC :** checks `role===ADMIN` copiés 5× (`user.controller.js:331-426`) — à factoriser `requireAdmin`.
 - **Upload :** `fileFilter` MIME, `limits.fileSize 5MB`, `memoryStorage` + sharp `rotate` (EXIF auto) + `webp` (strip GPS), filename `uuid.webp`, `.gitignore api/uploads/*`, `onDelete:Cascade` `CollectionImage` (`schema.prisma:138`).
 - **RGPD suppression :** `DELETE /users/me` anonymise : `Album.userId → system@va.eu` (`canConnect=false`, pwd random `seed.ts:62`), `UserAlbum/Wishlist` purgés via Cascade, FS clean. **Ne jamais log `system@va.eu` + `Password123!`** — `DEV_USER_PASSWORD` est pour `dev@va.eu` local uniquement (`api/.env:DEV_USER_PASSWORD`).
@@ -379,7 +393,9 @@ Aligné `UPDATE.md:31-35` (3 phases) + `REVUE_CODE.md:90-112` + `TODO.md:26-38`.
 | Livrable | Critère |
 |----------|---------|
 | **API** | Tous endpoints §8 passent `vitest` intégration + `POST /albums` sans `formatId` → 400 zod (pas 500) |
-| **Collection** | Upload 10 photos WebP ≤5MB, EXIF nettoyé, delete FS+DB, limite 10 bloquée côté API |
+| **Collection** | Upload **5** photos WebP ≤5MB, EXIF nettoyé, delete FS+DB, limite 5 bloquée côté API |
+| **Édition/Observation** | `editionSize`, `copyNumber`, `boughtAt`, `notes` enregistrés via `POST /albums`, `POST /collections/:id` et `PUT /collections/:id`, affichés et modifiables dans `MyAlbumDetails` ; libellé « Date du cadeau » si `gifted` |
+| **Reset MDP** | Email reçu sur Gmail (SPF/DKIM/DMARC verts), token 1 h à usage unique, réponse générique si compte inexistant |
 | **Anonymisation** | `DELETE /users/me` → `Album.userId === system@va.eu` (uuid `a0000000-...0001`), `canConnect=false` bloque login même avec pwd valide |
 | **Catalog** | `?artist`/`?title` insensible, `Versions` et `Artist` listent correctement, cover `max-h 480px` responsive |
 | **PWA** | Installable, `manifest.json` icons, offline cache métadonnées |
