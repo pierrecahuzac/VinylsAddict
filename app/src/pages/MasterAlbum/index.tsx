@@ -27,6 +27,7 @@ const MasterAlbum = () => {
     useState<AlbumData | null>(null);
   const { onError } = useToast();
   const [isWishlisted, setIsWishlisted] = useState(false);
+  const [ownedUserAlbumId, setOwnedUserAlbumId] = useState<string | null>(null);
   const [modalAddAlbumToUserCollection, setModalAddAlbumToUserCollection] =
     useState(false);
   const [albumAddedToCollection, setAlbumAddedToCollection] = useState({
@@ -56,6 +57,20 @@ const MasterAlbum = () => {
       return false;
     }
   };
+  const albumIsInUserCollection = async () => {
+    if (!userIsLogged) return;
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/users/albums/check/${id}`,
+        { withCredentials: true },
+      );
+      setOwnedUserAlbumId(response.data?.userAlbum?.id ?? null);
+    } catch {
+      // 404 = album pas encore dans la collection.
+      setOwnedUserAlbumId(null);
+    }
+  };
+
   const getCatalog = async () => {
     try {
       const response = await axios.get(
@@ -65,7 +80,7 @@ const MasterAlbum = () => {
         },
       );
       setMasterAlbumDetails(response.data);
-      await albumIsInUserWishlist();
+      await Promise.all([albumIsInUserWishlist(), albumIsInUserCollection()]);
     } catch (error) {
       console.error("Erreur lors de la récupération des données", error);
     }
@@ -208,11 +223,21 @@ const MasterAlbum = () => {
         {userIsLogged && (
           <div className="flex flex-wrap justify-center gap-3 w-full">
             <button
-              onClick={() => setModalAddAlbumToUserCollection(true)}
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-lg bg-[#8b5cf6] text-white hover:bg-[#7c3aed] active:scale-95"
+              onClick={() =>
+                ownedUserAlbumId
+                  ? navigate(`/collection/album/${ownedUserAlbumId}`)
+                  : setModalAddAlbumToUserCollection(true)
+              }
+              className={`flex items-center justify-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-lg active:scale-95 ${
+                ownedUserAlbumId
+                  ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 hover:bg-emerald-500/30"
+                  : "bg-[#8b5cf6] text-white hover:bg-[#7c3aed]"
+              }`}
             >
               <IoLibraryOutline size={20} />
-              <span className="text-sm">Posséder</span>
+              <span className="text-sm">
+                {ownedUserAlbumId ? "Dans ma collection" : "Posséder"}
+              </span>
             </button>
             <button
               onClick={isWishlisted ? deleteAlbumFromWishlist : addAlbumToWishlist}
