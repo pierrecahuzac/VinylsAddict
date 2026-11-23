@@ -5,7 +5,7 @@ export interface ModaleProps {
   submitNewAlbum: (e: SyntheticEvent<HTMLFormElement>) => void | Promise<void>;
   album: AlbumFormState;
   changeDataAlbum: (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => void;
   setAlbum?: Dispatch<SetStateAction<any>>;
   allMetadata: AllMetadata | null;

@@ -15,6 +15,8 @@ export interface AlbumFormState {
   diskCount?: string | number;
   editionSize?: string | number | null;
   copyNumber?: string;
+  boughtAt?: string;
+  notes?: string;
   barCode?: string | bigint;
 }
 
@@ -63,6 +65,8 @@ export interface AlbumState {
   diskCount?: string;
   editionSize?: string;
   copyNumber?: string;
+  boughtAt?: string;
+  notes?: string;
 }
 
 export interface AlbumData {
@@ -96,10 +100,11 @@ export interface UserAlbumData {
   id: string;
   price?: number;
   copyNumber?: string | null;
+  boughtAt?: string | null;
+  notes?: string | null;
   editionSize?: number | null;
   signed?: boolean;
   gifted?: boolean;
-  notes?: string;
   condition?: MetadataItem;
   album: AlbumData;
   userId?: string;

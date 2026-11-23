@@ -657,6 +657,29 @@ const Modale = ({
                   className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                 />
               </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">
+                  {album.gifted ? "Date du cadeau (facultatif)" : "Date d'achat (facultatif)"}
+                </label>
+                <input
+                  type="date"
+                  name="boughtAt"
+                  value={album.boughtAt ?? ""}
+                  onChange={changeDataAlbum}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Observation (facultatif)</label>
+                <textarea
+                  name="notes"
+                  rows={3}
+                  value={album.notes ?? ""}
+                  onChange={changeDataAlbum}
+                  placeholder="Une info particulière sur ce vinyle..."
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all resize-y"
+                />
+              </div>
               <label className="flex items-center gap-3 p-3 bg-[#0a0a0a]/60 rounded-xl border border-white/10 cursor-pointer group">
                 <input
                   type="checkbox"

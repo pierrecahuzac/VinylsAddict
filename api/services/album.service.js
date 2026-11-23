@@ -53,6 +53,8 @@ export const AlbumService = {
             gifted: data.gifted === true || data.gifted === "true" || data.gifted === 1 || data.gifted === "1",
             conditionId: data.conditionId ? data.conditionId : null,
             copyNumber: data.copyNumber ?? null,
+            boughtAt: data.parsedBoughtAt,
+            notes: data.notes ?? null,
           },
         });
       }
