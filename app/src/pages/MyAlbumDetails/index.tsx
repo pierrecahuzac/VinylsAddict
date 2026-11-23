@@ -711,6 +711,7 @@ const MyAlbumDetails = () => {
                   type="number"
                   step="0.01"
                   min="0"
+                  max="20000000"
                   name="price"
                   value={editForm.price}
                   onChange={handleEditChange}
@@ -795,7 +796,7 @@ const MyAlbumDetails = () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-3">
                 {[
                   { name: "signed", label: "Dédicassé" },
                   { name: "gifted", label: "Offert (cadeau)" },
