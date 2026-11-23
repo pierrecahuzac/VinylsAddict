@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent, type SyntheticEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { 
   IoTrashOutline, 
@@ -14,12 +14,23 @@ import {
   IoImagesOutline,
   IoCloudUploadOutline,
   IoCameraOutline,
+  IoPencilOutline,
 } from "react-icons/io5";
 import { useUser } from "../../contexts/userContext";
 import useToast from "../../hooks/useToast";
+import { useCollection } from "../../hooks/useCollection.ts";
 import BackButton from "../../components/BackButton/index.tsx";
 
 import type { FullAlbumState } from "../../types/album";
+
+type EditFormState = {
+  price: string;
+  conditionId: string;
+  copyNumber: string;
+  editionSize: string;
+  signed: boolean;
+  gifted: boolean;
+};
 
 const getImageUrl = (url: string) => {
   if (!url) return "/placeholder.jpg";
@@ -36,6 +47,7 @@ const getImageUrl = (url: string) => {
 const MyAlbumDetails = () => {
   const { albumId } = useParams<{ albumId: string }>();
   const { userIsLogged } = useUser();
+  const { allMetadata, getAllMetadata } = useCollection();
 
   const [data, setData] = useState<FullAlbumState | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -47,6 +59,16 @@ const MyAlbumDetails = () => {
   const [updatingSigned, setUpdatingSigned] = useState(false);
   const [updatingGifted, setUpdatingGifted] = useState(false);
   const [updatingEditionSize, setUpdatingEditionSize] = useState(false);
+  const [modaleEditAlbum, setModaleEditAlbum] = useState(false);
+  const [editForm, setEditForm] = useState<EditFormState>({
+    price: "",
+    conditionId: "",
+    copyNumber: "",
+    editionSize: "",
+    signed: false,
+    gifted: false,
+  });
+  const [updatingEdit, setUpdatingEdit] = useState(false);
   const navigate = useNavigate();
   const { onSuccess, onError } = useToast();
 
@@ -76,6 +98,8 @@ const MyAlbumDetails = () => {
     };
 
     fetchFullDetails();
+    getAllMetadata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [albumId, userIsLogged]);
 
   if (loading)
@@ -108,6 +132,76 @@ const MyAlbumDetails = () => {
       setData(userRes.data);
     } catch (err) {
       console.log("Erreur refresh:", err);
+    }
+  };
+
+  const openEditModal = () => {
+    setEditForm({
+      price: userAlbum?.price != null ? String(userAlbum.price) : "",
+      conditionId: userAlbum?.condition?.id || "",
+      copyNumber: userAlbum?.copyNumber || "",
+      editionSize: userAlbum?.editionSize != null ? String(userAlbum.editionSize) : "",
+      signed: userAlbum?.signed === true,
+      gifted: userAlbum?.gifted === true,
+    });
+    setModaleEditAlbum(true);
+  };
+
+  const handleEditChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      const checked = (e.target as HTMLInputElement).checked;
+      setEditForm((prev) => ({ ...prev, [name]: checked }));
+      return;
+    }
+    setEditForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const submitEdit = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!userAlbum) return;
+
+    const rawPrice = editForm.price.trim();
+    const price = rawPrice === "" ? null : Number(rawPrice);
+    if (price !== null && (Number.isNaN(price) || price < 0)) {
+      onError("Le prix d'achat est invalide.");
+      return;
+    }
+
+    const rawEdition = editForm.editionSize.trim();
+    const editionSize = rawEdition === "" ? null : Number(rawEdition);
+    if (editionSize !== null && (!Number.isInteger(editionSize) || editionSize < 1)) {
+      onError("Le nombre d'exemplaires doit être un entier positif.");
+      return;
+    }
+
+    setUpdatingEdit(true);
+    try {
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL_DEV}/collections/${userAlbum.id}`,
+        {
+          price,
+          conditionId: editForm.conditionId || null,
+          copyNumber: editForm.copyNumber.trim() || null,
+          editionSize,
+          signed: editForm.signed,
+          gifted: editForm.gifted,
+        },
+        { withCredentials: true },
+      );
+      onSuccess("Vinyle mis à jour !");
+      setModaleEditAlbum(false);
+      await refreshDetails();
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        onError(err.response?.data?.message || "Erreur lors de la mise à jour.");
+      } else {
+        onError("Erreur lors de la mise à jour.");
+      }
+    } finally {
+      setUpdatingEdit(false);
     }
   };
 
@@ -311,8 +405,15 @@ const MyAlbumDetails = () => {
       </div>
 
       <div className="p-6 space-y-8 max-w-5xl mx-auto w-full">
-        {/* Quick Actions (Delete) */}
-        <div className="flex justify-center">
+        {/* Quick Actions (Edit / Delete) */}
+        <div className="flex flex-wrap justify-center gap-3">
+          <button
+            onClick={openEditModal}
+            className="flex items-center gap-2 px-4 py-2 bg-[#8b5cf6]/15 text-[#8b5cf6] border border-[#8b5cf6]/40 rounded-lg hover:bg-[#8b5cf6] hover:text-gray-950 transition-all text-sm font-bold"
+          >
+            <IoPencilOutline size={18} />
+            Modifier
+          </button>
           <button
             onClick={() => setModaleDeleteAlbum(true)}
             className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-500 border border-red-500/30 rounded-lg hover:bg-red-500 hover:text-white transition-all text-sm font-bold"
@@ -555,6 +656,130 @@ const MyAlbumDetails = () => {
             className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           />
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {modaleEditAlbum && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+          <div className="bg-white/5 w-full max-w-md rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
+            <div className="flex justify-between items-center p-5 border-b border-white/10">
+              <h2 className="text-lg font-bold text-white">Modifier le vinyle</h2>
+              <button
+                type="button"
+                onClick={() => setModaleEditAlbum(false)}
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Fermer"
+              >
+                <IoCloseOutline size={24} />
+              </button>
+            </div>
+
+            <form onSubmit={submitEdit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                  Prix d'achat (€)
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  name="price"
+                  value={editForm.price}
+                  onChange={handleEditChange}
+                  placeholder="20.00"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6]"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                  État
+                </label>
+                <select
+                  name="conditionId"
+                  value={editForm.conditionId}
+                  onChange={handleEditChange}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6]"
+                >
+                  <option value="">-- Non renseigné --</option>
+                  {allMetadata?.conditions?.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nameFR || c.nameEN || c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                    Exemplaires
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    name="editionSize"
+                    value={editForm.editionSize}
+                    onChange={handleEditChange}
+                    placeholder="100"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6]"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                    N° exemplaire
+                  </label>
+                  <input
+                    type="text"
+                    name="copyNumber"
+                    value={editForm.copyNumber}
+                    onChange={handleEditChange}
+                    placeholder="4/10"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6]"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                {[
+                  { name: "signed", label: "Dédicassé" },
+                  { name: "gifted", label: "Offert (cadeau)" },
+                ].map(({ name, label }) => (
+                  <label
+                    key={name}
+                    className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10 cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      name={name}
+                      checked={editForm[name as "signed" | "gifted"]}
+                      onChange={handleEditChange}
+                      className="w-5 h-5 rounded border-white/10 text-[#8b5cf6] focus:ring-[#8b5cf6] bg-black"
+                    />
+                    <span className="text-sm text-gray-300">{label}</span>
+                  </label>
+                ))}
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setModaleEditAlbum(false)}
+                  className="flex-1 px-4 py-3 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={updatingEdit}
+                  className="flex-1 px-4 py-3 bg-[#8b5cf6] text-gray-950 font-bold rounded-xl hover:bg-amber-400 transition-colors disabled:opacity-50"
+                >
+                  {updatingEdit ? "..." : "Enregistrer"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 
