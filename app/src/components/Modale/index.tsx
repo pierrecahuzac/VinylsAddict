@@ -624,6 +624,7 @@ const Modale = ({
                     type="number"
                     step="0.01"
                     min="0"
+                    max="20000000"
                     placeholder="20.00"
                     name="price"
                     value={album.price}
@@ -631,6 +632,18 @@ const Modale = ({
                     className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
                   />
                 </div>
+                <label className="flex items-center gap-3 p-3 bg-[#0a0a0a]/60 rounded-xl border border-white/10 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    name="gifted"
+                    checked={album.gifted === true}
+                    onChange={changeDataAlbum}
+                    className="w-5 h-5 rounded border-white/10 text-[#8b5cf6] focus:ring-[#8b5cf6] bg-black"
+                  />
+                  <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Offert (cadeau)</span>
+                </label>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">État</label>
                   <select
@@ -645,17 +658,17 @@ const Modale = ({
                     ))}
                   </select>
                 </div>
-              </div>
-              <div className="space-y-1">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Numéro de l'exemplaire (facultatif)</label>
-                <input
-                  type="text"
-                  placeholder="Ex : 4/10"
-                  name="copyNumber"
-                  value={album.copyNumber ?? ""}
-                  onChange={changeDataAlbum}
-                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
-                />
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">Numéro de l'exemplaire (facultatif)</label>
+                  <input
+                    type="text"
+                    placeholder="Ex : 4/10"
+                    name="copyNumber"
+                    value={album.copyNumber ?? ""}
+                    onChange={changeDataAlbum}
+                    className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all"
+                  />
+                </div>
               </div>
               <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase tracking-widest text-[#8b5cf6]-500/70 ml-1">
@@ -680,16 +693,6 @@ const Modale = ({
                   className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] transition-all resize-y"
                 />
               </div>
-              <label className="flex items-center gap-3 p-3 bg-[#0a0a0a]/60 rounded-xl border border-white/10 cursor-pointer group">
-                <input
-                  type="checkbox"
-                  name="gifted"
-                  checked={album.gifted === true}
-                  onChange={changeDataAlbum}
-                  className="w-5 h-5 rounded border-white/10 text-[#8b5cf6] focus:ring-[#8b5cf6] bg-black"
-                />
-                <span className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">Offert (cadeau)</span>
-              </label>
             </div>
           )}
 
