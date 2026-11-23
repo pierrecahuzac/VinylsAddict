@@ -36,6 +36,8 @@ const MasterAlbum = () => {
     gifted: false,
     editionSize: "",
     copyNumber: "",
+    boughtAt: "",
+    notes: "",
   });
 
   const albumIsInUserWishlist = async () => {
@@ -144,6 +146,8 @@ const MasterAlbum = () => {
           copyNumber: albumAddedToCollection.copyNumber
             ? albumAddedToCollection.copyNumber.trim()
             : null,
+          boughtAt: albumAddedToCollection.boughtAt || null,
+          notes: albumAddedToCollection.notes.trim() || null,
         },
         {
           withCredentials: true,
@@ -159,7 +163,7 @@ const MasterAlbum = () => {
   };
 
   const changeDataAlbum = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -377,6 +381,31 @@ const MasterAlbum = () => {
                   onChange={changeDataAlbum}
                   placeholder="Ex : 4/10"
                   className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-300">
+                  {albumAddedToCollection.gifted ? "Date du cadeau (facultatif)" : "Date d'achat (facultatif)"}
+                </label>
+                <input
+                  type="date"
+                  name="boughtAt"
+                  value={albumAddedToCollection.boughtAt}
+                  onChange={changeDataAlbum}
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-300">Observation (facultatif)</label>
+                <textarea
+                  name="notes"
+                  rows={3}
+                  value={albumAddedToCollection.notes}
+                  onChange={changeDataAlbum}
+                  placeholder="Une info particulière sur ce vinyle..."
+                  className="w-full bg-[#0a0a0a] border border-white/10 rounded-xl p-3 focus:outline-none focus:border-[#8b5cf6] text-white resize-y"
                 />
               </div>
 

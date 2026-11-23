@@ -28,6 +28,8 @@ type EditFormState = {
   conditionId: string;
   copyNumber: string;
   editionSize: string;
+  boughtAt: string;
+  notes: string;
   signed: boolean;
   gifted: boolean;
 };
@@ -65,6 +67,8 @@ const MyAlbumDetails = () => {
     conditionId: "",
     copyNumber: "",
     editionSize: "",
+    boughtAt: "",
+    notes: "",
     signed: false,
     gifted: false,
   });
@@ -141,6 +145,8 @@ const MyAlbumDetails = () => {
       conditionId: userAlbum?.condition?.id || "",
       copyNumber: userAlbum?.copyNumber || "",
       editionSize: userAlbum?.editionSize != null ? String(userAlbum.editionSize) : "",
+      boughtAt: userAlbum?.boughtAt ? String(userAlbum.boughtAt).slice(0, 10) : "",
+      notes: userAlbum?.notes || "",
       signed: userAlbum?.signed === true,
       gifted: userAlbum?.gifted === true,
     });
@@ -148,7 +154,7 @@ const MyAlbumDetails = () => {
   };
 
   const handleEditChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -186,6 +192,8 @@ const MyAlbumDetails = () => {
           conditionId: editForm.conditionId || null,
           copyNumber: editForm.copyNumber.trim() || null,
           editionSize,
+          boughtAt: editForm.boughtAt || null,
+          notes: editForm.notes.trim() || null,
           signed: editForm.signed,
           gifted: editForm.gifted,
         },
@@ -442,6 +450,16 @@ const MyAlbumDetails = () => {
                 </p>
                 <p className="text-gray-100 font-medium">{userAlbum?.condition?.nameFR || "—"}</p>
               </div>
+              <div className="space-y-1">
+                <p className="text-[10px] text-gray-400 font-bold uppercase flex items-center gap-1">
+                  <IoCalendarOutline size={12} /> {userAlbum?.gifted ? "Date du cadeau" : "Date d'achat"}
+                </p>
+                <p className="text-gray-100 font-medium">
+                  {userAlbum?.boughtAt
+                    ? new Date(`${String(userAlbum.boughtAt).slice(0, 10)}T12:00:00`).toLocaleDateString("fr-FR")
+                    : "—"}
+                </p>
+              </div>
             </div>
             <div className="space-y-1 pt-2 border-t border-white/10">
               <p className="text-[10px] text-gray-400 font-bold uppercase">Exemplaires de mon édition (facultatif)</p>
@@ -500,6 +518,15 @@ const MyAlbumDetails = () => {
               </button>
             </div>
           </div>
+
+          {userAlbum?.notes && (
+            <div className="bg-white/5/40 p-5 rounded-2xl border border-white/10/50 space-y-2">
+              <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 border-b border-white/10 pb-2">
+                Observation
+              </h3>
+              <p className="text-sm text-gray-300 whitespace-pre-wrap">{userAlbum.notes}</p>
+            </div>
+          )}
 
           {/* Technical Details Card */}
           <div className="bg-white/5/40 p-5 rounded-2xl border border-white/10/50 space-y-4">
@@ -709,6 +736,33 @@ const MyAlbumDetails = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                  {editForm.gifted ? "Date du cadeau (facultatif)" : "Date d'achat (facultatif)"}
+                </label>
+                <input
+                  type="date"
+                  name="boughtAt"
+                  value={editForm.boughtAt}
+                  onChange={handleEditChange}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6]"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-black uppercase tracking-widest text-gray-500 ml-1">
+                  Observation (facultatif)
+                </label>
+                <textarea
+                  name="notes"
+                  rows={3}
+                  value={editForm.notes}
+                  onChange={handleEditChange}
+                  placeholder="Une info particulière sur ce vinyle..."
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white focus:outline-none focus:border-[#8b5cf6] resize-y"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-3">

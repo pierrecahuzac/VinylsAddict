@@ -10,7 +10,7 @@ const CollectionController = {
 
     try {
       const { albumId } = req.params;
-      const { price, conditionId, signed, gifted, editionSize, copyNumber } = req.body;
+      const { price, conditionId, signed, gifted, editionSize, copyNumber, boughtAt, notes } = req.body;
 
       if (!albumId) {
         return res.status(400).json({ message: "albumId requis." });
@@ -25,6 +25,11 @@ const CollectionController = {
         return res.status(400).json({ message: "editionSize doit être un entier positif." });
       }
 
+      const parsedBoughtAt = boughtAt ? new Date(boughtAt) : null;
+      if (parsedBoughtAt && Number.isNaN(parsedBoughtAt.getTime())) {
+        return res.status(400).json({ message: "boughtAt doit être une date valide." });
+      }
+
       const userAlbum = await CollectionService.create(
         userId,
         albumId,
@@ -33,7 +38,9 @@ const CollectionController = {
         signed === true || signed === "true" || signed === 1 || signed === "1",
         gifted === true || gifted === "true" || gifted === 1 || gifted === "1",
         parsedEditionSize,
-        copyNumber ? String(copyNumber).trim() : null
+        copyNumber ? String(copyNumber).trim() : null,
+        parsedBoughtAt,
+        notes ? String(notes).trim() : null
       );
 
       return res
@@ -48,7 +55,7 @@ const CollectionController = {
     try {
       const { userAlbumId } = req.params;
       const userId = req.userId;
-      const { price, conditionId, signed, gifted, editionSize, copyNumber } = req.body;
+      const { price, conditionId, signed, gifted, editionSize, copyNumber, boughtAt, notes } = req.body;
 
       const existing = await CollectionService.getById(userAlbumId);
       if (!existing || existing.userId !== userId) {
@@ -67,10 +74,19 @@ const CollectionController = {
         return res.status(400).json({ message: "editionSize doit être un entier positif." });
       }
 
+      const parsedBoughtAt = boughtAt === undefined
+        ? existing.boughtAt
+        : (boughtAt ? new Date(boughtAt) : null);
+      if (parsedBoughtAt && Number.isNaN(parsedBoughtAt.getTime())) {
+        return res.status(400).json({ message: "boughtAt doit être une date valide." });
+      }
+
       const updated = await CollectionService.update(userAlbumId, {
         price: parsedPrice,
         editionSize: parsedEditionSize,
+        boughtAt: parsedBoughtAt,
         copyNumber: copyNumber === undefined ? existing.copyNumber : (copyNumber ? String(copyNumber).trim() : null),
+        notes: notes === undefined ? existing.notes : (notes ? String(notes).trim() : null),
         conditionId: conditionId === undefined ? existing.conditionId : (conditionId ? conditionId : null),
         signed: signed === undefined ? existing.signed : (signed === true || signed === "true" || signed === 1 || signed === "1"),
         gifted: gifted === undefined ? existing.gifted : (gifted === true || gifted === "true" || gifted === 1 || gifted === "1"),

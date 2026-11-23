@@ -35,6 +35,8 @@ const initialAlbumState: AlbumState = {
   diskCount: "",
   editionSize: "",
   copyNumber: "",
+  boughtAt: "",
+  notes: "",
 };
 
 const Catalog = () => {
@@ -49,7 +51,7 @@ const Catalog = () => {
   const [addAlbumToCollection, setAddAlbumToCollection] = useState(false);
 
   const changeDataAlbum = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -82,6 +84,8 @@ const Catalog = () => {
       diskCount: album.diskCount ? Number(album.diskCount) : null,
       editionSize: album.editionSize ? Number(album.editionSize) : null,
       copyNumber: album.copyNumber ? album.copyNumber.trim() : null,
+      boughtAt: album.boughtAt || null,
+      notes: album.notes?.trim() || null,
       addAlbumToCollection,
       gifted: album.gifted === true,
     };

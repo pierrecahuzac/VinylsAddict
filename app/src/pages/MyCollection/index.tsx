@@ -21,6 +21,8 @@ interface AlbumState {
   price: string;
   editionSize?: string;
   copyNumber?: string;
+  boughtAt?: string;
+  notes?: string;
   gifted: boolean;
   coverUrl: string;
   color: string;
@@ -46,6 +48,8 @@ const initialAlbumState: AlbumState = {
   diskCount: "",
   editionSize: "",
   copyNumber: "",
+  boughtAt: "",
+  notes: "",
 };
 
 const MyCollection = () => {
@@ -57,7 +61,7 @@ const MyCollection = () => {
   const [addAlbumToCollection, setAddAlbumToCollection] = useState(true);
 
   const changeDataAlbum = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
   ) => {
     const { name, value, type } = e.target;
     if (type === "checkbox") {
@@ -95,6 +99,8 @@ const MyCollection = () => {
       diskCount: album.diskCount ? parseInt(album.diskCount) : null,
       editionSize: album.editionSize ? parseInt(album.editionSize) : null,
       copyNumber: album.copyNumber ? album.copyNumber.trim() : null,
+      boughtAt: album.boughtAt || null,
+      notes: album.notes?.trim() || null,
       addAlbumToCollection: true,
       gifted: album.gifted,
     };
