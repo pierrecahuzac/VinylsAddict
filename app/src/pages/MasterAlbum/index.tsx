@@ -333,6 +333,9 @@ const MasterAlbum = () => {
                 <label className="text-sm font-medium text-gray-300">Prix d'achat (€)</label>
                 <input
                   type="number"
+                  min="0"
+                  max="20000000"
+                  step="0.01"
                   name="price"
                   value={albumAddedToCollection.price}
                   onChange={changeDataAlbum}
