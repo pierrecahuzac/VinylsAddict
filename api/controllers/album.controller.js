@@ -60,6 +60,8 @@ const AlbumController = {
         barCode,
         editionSize,
         copyNumber,
+        boughtAt,
+        notes,
       } = req.body;
 
       if (!title || !artist || !formatId) {
@@ -78,6 +80,10 @@ const AlbumController = {
       const parsedEditionSize = editionSize !== undefined && editionSize !== null && editionSize !== "" ? Number(editionSize) : null;
       if (parsedEditionSize !== null && (!Number.isInteger(parsedEditionSize) || parsedEditionSize < 1)) {
         return res.status(400).json({ message: "editionSize doit être un entier positif." });
+      }
+      const parsedBoughtAt = boughtAt ? new Date(boughtAt) : null;
+      if (parsedBoughtAt && Number.isNaN(parsedBoughtAt.getTime())) {
+        return res.status(400).json({ message: "boughtAt doit être une date valide." });
       }
 
       const result = await AlbumService.create(userId, {
@@ -100,6 +106,8 @@ const AlbumController = {
         gifted,
         parsedEditionSize,
         copyNumber: copyNumber ? String(copyNumber).trim() : null,
+        parsedBoughtAt,
+        notes: notes ? String(notes).trim() : null,
       });
 
       return res.status(201).json({
